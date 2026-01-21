@@ -1,0 +1,77 @@
+.is-invalid {
+    -fx-border-color: #dc3545;
+    -fx-border-width: 1.5px;
+}
+
+.is-valid {
+    -fx-border-color: #198754;
+    -fx-border-width: 1.5px;
+}
+
+.popover {
+    -fx-background-color: transparent;
+}
+
+.popover > .border {
+    -fx-background-color: #dc3545; /* rojo error */
+    -fx-background-radius: 4;
+    -fx-padding: 1;
+}
+
+.popover > .content {
+    -fx-background-color: #dc3545;
+    -fx-background-radius: 6;
+    -fx-padding: 6 6;
+}
+
+.popover .label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.containerInfo{
+    -fx-background-color: #f9fafc;
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+.sidebar {
+    -fx-background-color: #1E6FB8;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: rgba(255,255,255,0.15);
+}
+
+.sidebar-button.active {
+    -fx-background-color: white;
+    -fx-text-fill: #1E6FB8;
+    -fx-background-radius: 8;
+}
+
+.header {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 0 0 1 0;
+}
+
+.header-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1F2933;
+}
+
+
+
+
+

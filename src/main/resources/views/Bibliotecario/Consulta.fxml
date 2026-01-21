@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane stylesheets="@../../styles/Bibliotecario/ConsultaStyle.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Bibliotecario.ConsultaController">
+   <children>
+      <VBox spacing="30" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+         <padding>
+            <Insets left="40" right="40" top="20" />
+         </padding>
+         <children>
+            <Label text="Consulta">
+               <font>
+                  <Font name="Roboto Medium" size="30" />
+               </font>
+            </Label>
+            <Label text="Bienvenido al panel de inicio. Aquí encontrarás un resumen general de la actividad de la biblioteca, incluyendo registros, préstamos y consultas recientes." textFill="#4b5563" wrapText="true">
+               <font>
+                  <Font name="Roboto Regular" size="16.0" />
+               </font>
+            </Label>
+            <Separator prefHeight="20.0" prefWidth="1100.0" />
+            <HBox spacing="40.0">
+               <children>
+                  <TextField fx:id="txtBuscarLibro" maxWidth="300.0" prefHeight="60.0" prefWidth="1003.0" promptText="Titulo del libro">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <contextMenu>
+                        <ContextMenu>
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                          </items>
+                        </ContextMenu>
+                     </contextMenu>
+                  </TextField>
+               </children>
+            </HBox>
+            <VBox fx:id="contenedorInfoLibro" prefHeight="66.0" prefWidth="100.0" spacing="30.0" styleClass="containerInfo">
+               <children>
+                  <HBox spacing="20.0">
+                     <children>
+                        <Label text="- Autor:">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="txtAutor" text="Nombre ">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="35.0" />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox spacing="20.0">
+                     <children>
+                        <Label text="- Editorial: ">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="txtEditorial" text="SAS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox spacing="20.0">
+                     <children>
+                        <Label text="- Categoría: ">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="txtCategoria" text="LITERATURA">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox spacing="20.0">
+                     <children>
+                        <Label text="- Ubicación: ">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="txtUbicacion" text="H-2">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox spacing="20.0">
+                     <children>
+                        <Label text="- Unidades: ">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="txtUnidades" text="30">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

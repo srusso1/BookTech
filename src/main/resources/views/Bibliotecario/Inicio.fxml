@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Bibliotecario.InicioController">
+
+    <children>
+        <VBox spacing="30" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+            <!-- Título -->
+            <Label text="Inicio">
+                <font>
+                    <Font name="Roboto Medium" size="30" />
+                </font>
+            </Label>
+
+            <Label text="Bienvenido al panel de inicio. Aquí encontrarás un resumen general de la actividad de la biblioteca, incluyendo registros, préstamos y consultas recientes." textFill="#4b5563" wrapText="true">
+            <font>
+               <Font name="Roboto Regular" size="16.0" />
+            </font></Label>
+         <Separator prefHeight="20.0" prefWidth="1100.0" />
+
+            <!-- Cards -->
+            <HBox spacing="20">
+                <children>
+
+                    <VBox alignment="CENTER" prefHeight="140" prefWidth="260" spacing="15" styleClass="containerInfo">
+                        <Label text="Libros registrados">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font></Label>
+                        <Label text="N">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Label>
+                    </VBox>
+
+                    <VBox alignment="CENTER" prefHeight="140" prefWidth="260" spacing="15" styleClass="containerInfo">
+                        <Label text="Unidades registradas">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font></Label>
+                        <Label text="N">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Label>
+                    </VBox>
+
+                    <VBox alignment="CENTER" prefHeight="140" prefWidth="260" spacing="15" styleClass="containerInfo">
+                        <Label text="Prestamos activos">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font></Label>
+                        <Label text="N">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Label>
+                    </VBox>
+
+                    <VBox alignment="CENTER" prefHeight="140" prefWidth="260" spacing="15" styleClass="containerInfo">
+                        <Label text="Prestamos realizados">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font></Label>
+                        <Label text="N">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Label>
+                    </VBox>
+
+                </children>
+            </HBox>
+
+            <padding>
+                <Insets left="40" right="40" top="20" />
+            </padding>
+        </VBox>
+    </children>
+</AnchorPane>
