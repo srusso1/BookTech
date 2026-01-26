@@ -3,10 +3,15 @@ package controllers.Bibliotecario;
 import database.LibrosDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import model.Libro;
+import utils.Alertas;
 import utils.Validaciones;
 
 import java.util.ArrayList;
@@ -39,6 +44,9 @@ public class ConsultaController {
     private Label txtUnidades;
 
     @FXML
+    private Button btnRegistrarPrestamo;
+
+    @FXML
     void clickConsultar(ActionEvent event) {
 
     }
@@ -46,6 +54,39 @@ public class ConsultaController {
     private static Libro libroSeleccionado;
 
     private final ContextMenu sugerenciasMenu = new ContextMenu();
+
+    @FXML
+    void clickRegistrarPrestamo(ActionEvent event) {
+
+        if (libroSeleccionado == null) return;
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/views/Bibliotecario/Prestamo.fxml")
+            );
+
+            // 🔹 El root ES un VBox
+            VBox root = loader.load();
+
+            // 🔹 Controller del préstamo
+            PrestamoController controller = loader.getController();
+            controller.setLibro(libroSeleccionado);
+
+            // 🔹 Diálogo
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setTitle("Registrar préstamo");
+            dialog.getDialogPane().setContent(root);
+
+            // 🔹 Botón cerrar (el formulario maneja registrar/cancelar)
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+
+            dialog.showAndWait();
+
+        } catch (Exception e) {
+            Alertas.mostrarError("ERROR: " + e.getMessage());
+        }
+    }
+
 
     @FXML
     public void initialize() {
@@ -56,6 +97,7 @@ public class ConsultaController {
 
             if (newText.length() < 3) {
                 sugerenciasMenu.hide();
+                ocultarElementos();
                 return;
             }
 
@@ -64,6 +106,7 @@ public class ConsultaController {
             if (resultados.isEmpty()) {
                 sugerenciasMenu.hide();
                 Validaciones.agregarPopOver(txtBuscarLibro, "No hay coincidencias");
+                ocultarElementos();
                 return;
             }
 
@@ -121,11 +164,17 @@ public class ConsultaController {
     private void ocultarElementos(){
         contenedorInfoLibro.setVisible(false);
         contenedorInfoLibro.setManaged(false);
+
+        btnRegistrarPrestamo.setVisible(false);
+        btnRegistrarPrestamo.setManaged(false);
     }
 
     private void mostrarElementos(){
         contenedorInfoLibro.setVisible(true);
         contenedorInfoLibro.setManaged(true);
+
+        btnRegistrarPrestamo.setVisible(true);
+        btnRegistrarPrestamo.setManaged(true);
     }
 
 
