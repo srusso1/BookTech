@@ -127,15 +127,28 @@
                   </HBox>
                </children>
             </VBox>
-            <Button fx:id="btnRegistrarPrestamo" mnemonicParsing="false" onAction="#clickRegistrarPrestamo" text="Registrar prestamo">
-               <font>
-                  <Font size="15.0" />
-               </font>
-               <styleClass>
-                  <String fx:value="btn" />
-                  <String fx:value="btn-lg" />
-               </styleClass>
-            </Button>
+            <HBox spacing="40.0">
+               <children>
+                  <Button fx:id="btnRegistrarPrestamo" mnemonicParsing="false" onAction="#clickRegistrarPrestamo" text="Registrar prestamo">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="btn" />
+                        <String fx:value="btn-lg" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="btnRegistrarDevolucion" mnemonicParsing="false" onAction="#clickRegistrarDevolucion" text="Registrar devolucion">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="btn" />
+                        <String fx:value="btn-lg" />
+                     </styleClass>
+                  </Button>
+               </children>
+            </HBox>
          </children>
       </VBox>
    </children>

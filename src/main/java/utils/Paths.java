@@ -11,4 +11,6 @@ public class Paths {
     // BIBLIOTECARIO
     public static final String INICIO_BIBLIOTECARIO = "/views/Bibliotecario/Inicio.fxml";
     public static final String CONSULTA_BIBLIOTECARIO = "/views/Bibliotecario/Consulta.fxml";
+    public static final String PRESTAMO_BIBLIOTECARIO = "/views/Bibliotecario/Prestamo.fxml";
+    public static final String DEVOLUCION_BIBLIOTECARIO = "/views/Bibliotecario/Devolucion.fxml";
 }

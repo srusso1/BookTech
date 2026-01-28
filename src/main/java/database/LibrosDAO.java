@@ -12,7 +12,7 @@ import java.util.List;
 
 public class LibrosDAO {
 
-    public static List<Libro> buscarSimilares(String texto) {
+    public List<Libro> buscarSimilares(String texto) {
 
         List<Libro> lista = new ArrayList<>();
 
@@ -50,6 +50,20 @@ public class LibrosDAO {
         }
 
         return lista;
+    }
+
+    public boolean disminuirUnidadLibro(int idLibro){
+        String sql = "UPDATE libros SET unidades = unidades - 1 WHERE id = ?";
+        try (Connection conn = ConexionSQLite.conectar();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idLibro);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            Alertas.mostrarError("Error SQL al disminuir unidad de libro: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
+        }
+        return false;
     }
 
 }

@@ -1,6 +1,7 @@
 package controllers.Bibliotecario;
 
 import database.LibrosDAO;
+import database.PrestamosDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,10 +12,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Libro;
+import model.Prestamo;
 import utils.Alertas;
+import utils.Paths;
 import utils.Validaciones;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ConsultaController {
@@ -47,22 +51,30 @@ public class ConsultaController {
     private Button btnRegistrarPrestamo;
 
     @FXML
-    void clickConsultar(ActionEvent event) {
+    private Button btnRegistrarDevolucion;
 
-    }
+    PrestamosDAO prestamosDAO = new PrestamosDAO();
 
     private static Libro libroSeleccionado;
 
+    private static ArrayList<Prestamo> prestamosActivos = new ArrayList<>();
+
     private final ContextMenu sugerenciasMenu = new ContextMenu();
+    LibrosDAO librosDAO = new LibrosDAO();
 
     @FXML
     void clickRegistrarPrestamo(ActionEvent event) {
 
         if (libroSeleccionado == null) return;
 
+        if(libroSeleccionado.getUnidades() < 3){
+            Alertas.mostrarError("No hay suficientes unidades disponibles para realizar un prestamo");
+            return;
+        }
+
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/views/Bibliotecario/Prestamo.fxml")
+                    getClass().getResource(Paths.PRESTAMO_BIBLIOTECARIO)
             );
 
             // 🔹 El root ES un VBox
@@ -87,6 +99,48 @@ public class ConsultaController {
         }
     }
 
+    @FXML
+    void clickRegistrarDevolucion(ActionEvent event) {
+        if (libroSeleccionado == null) return;
+
+        prestamosActivos = prestamosDAO.buscarPrestamos(libroSeleccionado.getId());
+
+        if(prestamosActivos.isEmpty()){
+            Alertas.mostrarError("No hay prestamos activos para este libro");
+            return;
+        }
+
+        System.out.println("Prestamos activos: " + prestamosActivos.size() + " para el libro: " + prestamosActivos.getFirst().getEstudiante());
+
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource(Paths.DEVOLUCION_BIBLIOTECARIO)
+            );
+
+            // 🔹 El root ES un VBox
+            VBox root = loader.load();
+
+            // 🔹 Controller del préstamo
+            DevolucionController controller = loader.getController();
+            controller.setLibro(libroSeleccionado);
+            controller.setPrestamos(prestamosActivos);
+
+            // 🔹 Diálogo
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setTitle("Registrar devolución");
+            dialog.getDialogPane().setContent(root);
+
+            // 🔹 Botón cerrar (el formulario maneja registrar/cancelar)
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+
+            dialog.showAndWait();
+
+        } catch (Exception e) {
+            System.out.println(Arrays.toString(e.getStackTrace()));
+        }
+    }
+
 
     @FXML
     public void initialize() {
@@ -101,7 +155,7 @@ public class ConsultaController {
                 return;
             }
 
-            List<Libro> resultados = LibrosDAO.buscarSimilares(newText);
+            List<Libro> resultados = librosDAO.buscarSimilares(newText);
 
             if (resultados.isEmpty()) {
                 sugerenciasMenu.hide();
@@ -167,6 +221,9 @@ public class ConsultaController {
 
         btnRegistrarPrestamo.setVisible(false);
         btnRegistrarPrestamo.setManaged(false);
+
+        btnRegistrarDevolucion.setVisible(false);
+        btnRegistrarDevolucion.setManaged(false);
     }
 
     private void mostrarElementos(){
@@ -175,6 +232,9 @@ public class ConsultaController {
 
         btnRegistrarPrestamo.setVisible(true);
         btnRegistrarPrestamo.setManaged(true);
+
+        btnRegistrarDevolucion.setVisible(true);
+        btnRegistrarDevolucion.setManaged(true);
     }
 
 

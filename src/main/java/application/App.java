@@ -35,6 +35,7 @@ public class App extends Application {
 
         stage.setTitle("BookTech");
         stage.setScene(scene);
+        stage.setMaximized(true);
         stage.show();
     }
 
