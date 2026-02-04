@@ -25,7 +25,7 @@
                   <Font name="Roboto Medium" size="30" />
                </font>
             </Label>
-            <Label text="Bienvenido al panel de inicio. Aquí encontrarás un resumen general de la actividad de la biblioteca, incluyendo registros, préstamos y consultas recientes." textFill="#4b5563" wrapText="true">
+            <Label text="Consulta libros, revisa su disponibilidad, gestiona préstamos y devoluciones desde un solo lugar." textFill="#4b5563" wrapText="true">
                <font>
                   <Font name="Roboto Regular" size="16.0" />
                </font>

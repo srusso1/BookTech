@@ -30,6 +30,26 @@ public class PrestamoController {
 
     @FXML
     void clickRegistrar() {
+        registrarPrestamo();
+    }
+
+    @FXML
+    void clickCancelar() {
+        cerrar();
+    }
+
+    private void cerrar() {
+        Stage stage = (Stage) lblLibro.getScene().getWindow();
+        stage.close();
+    }
+
+    @FXML
+    void initialize() {
+        dpFechaDevolucion.setEditable(false);
+        comboBoxGrados.getItems().addAll(6, 7, 8, 9, 10);
+    }
+
+    private void registrarPrestamo(){
         Validaciones.ocultarPopOver(txtEstudiante);
         Validaciones.ocultarPopOver(dpFechaDevolucion.getEditor());
 
@@ -63,21 +83,5 @@ public class PrestamoController {
 
         System.out.println("Préstamo registrado de: " + libro.getTitulo());
         cerrar();
-    }
-
-    @FXML
-    void clickCancelar() {
-        cerrar();
-    }
-
-    private void cerrar() {
-        Stage stage = (Stage) lblLibro.getScene().getWindow();
-        stage.close();
-    }
-
-    @FXML
-    void initialize() {
-        dpFechaDevolucion.setEditable(false);
-        comboBoxGrados.getItems().addAll(6, 7, 8, 9, 10);
     }
 }

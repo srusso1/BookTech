@@ -66,4 +66,46 @@ public class LibrosDAO {
         return false;
     }
 
+    public boolean aumentarUnidadLibro(int idLibro){
+        String sql = "UPDATE libros SET unidades = unidades + 1 WHERE id = ?";
+        try (Connection conn = ConexionSQLite.conectar();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idLibro);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            Alertas.mostrarError("Error SQL al aumentar unidad de libro: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
+        }
+        return false;
+    }
+
+    public ArrayList<Integer> infoDashboardBibliotecario(){
+        ArrayList<Integer> info = new ArrayList<>();
+        String query = """
+            SELECT
+                (SELECT COUNT(*) FROM libros) AS libros_registrados,
+                (SELECT SUM(unidades) FROM libros) AS unidades_registradas,
+                (SELECT COUNT(*) FROM prestamos WHERE estado = 0) AS prestamos_activos,
+                (SELECT COUNT(*) FROM prestamos) AS prestamos_realizados
+        """;
+        try (Connection con = ConexionSQLite.conectar();
+             PreparedStatement ps = con.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()){
+
+            if (rs.next()) {
+                info.add(rs.getInt("libros_registrados"));
+                info.add(rs.getInt("unidades_registradas"));
+                info.add(rs.getInt("prestamos_activos"));
+                info.add(rs.getInt("prestamos_realizados"));
+
+            }
+        }catch (SQLException e){
+            Alertas.mostrarError("Error al obtener datos del dashboard: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
+        }
+        return info;
+    }
+
 }

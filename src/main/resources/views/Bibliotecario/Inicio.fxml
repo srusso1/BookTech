@@ -35,18 +35,18 @@
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font></Label>
-                        <Label text="N">
+                        <Label fx:id="librosRegistrados" text="N">
                      <font>
                         <Font size="14.0" />
                      </font></Label>
                     </VBox>
 
                     <VBox alignment="CENTER" prefHeight="140" prefWidth="260" spacing="15" styleClass="containerInfo">
-                        <Label text="Unidades registradas">
+                        <Label text="Unidades disponibles">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font></Label>
-                        <Label text="N">
+                        <Label fx:id="unidadesRegistradas" text="N">
                      <font>
                         <Font size="14.0" />
                      </font></Label>
@@ -57,7 +57,7 @@
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font></Label>
-                        <Label text="N">
+                        <Label fx:id="prestamosActivos" text="N">
                      <font>
                         <Font size="14.0" />
                      </font></Label>
@@ -68,7 +68,7 @@
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font></Label>
-                        <Label text="N">
+                        <Label fx:id="prestamosRealizados" text="N">
                      <font>
                         <Font size="14.0" />
                      </font></Label>
@@ -76,6 +76,37 @@
 
                 </children>
             </HBox>
+         <VBox maxWidth="1000.0" prefHeight="200.0" prefWidth="100.0">
+            <children>
+               <Label text="Módulo Consulta">
+                  <font>
+                     <Font name="System Bold" size="20.0" />
+                  </font>
+               </Label>
+               <Label text="Aquí podrás visualizar la información detallada de cada libro, incluyendo su ubicación dentro de la biblioteca. Desde este módulo también podrás registrar préstamos y devoluciones de forma rápida y sencilla." textFill="#4b5563" wrapText="true">
+                  <VBox.margin>
+                     <Insets top="5.0" />
+                  </VBox.margin>
+                  <font>
+                     <Font size="16.0" />
+                  </font>
+               </Label>
+               <AnchorPane maxHeight="50.0" prefHeight="200.0" prefWidth="200.0" />
+               <Label text="Módulo Prestamos Activos">
+                  <font>
+                     <Font name="System Bold" size="20.0" />
+                  </font>
+               </Label>
+               <Label text="En este apartado podrás monitorear los préstamos vigentes, identificar libros que aún no han sido devueltos y llevar un control claro del estado de cada préstamo." textFill="#4b5563" wrapText="true">
+                  <VBox.margin>
+                     <Insets top="5.0" />
+                  </VBox.margin>
+                  <font>
+                     <Font size="16.0" />
+                  </font>
+               </Label>
+            </children>
+         </VBox>
 
             <padding>
                 <Insets left="40" right="40" top="20" />

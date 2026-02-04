@@ -97,13 +97,14 @@ public class ConsultaController {
         } catch (Exception e) {
             Alertas.mostrarError("ERROR: " + e.getMessage());
         }
+        txtBuscarLibro.clear();
     }
 
     @FXML
     void clickRegistrarDevolucion(ActionEvent event) {
         if (libroSeleccionado == null) return;
 
-        prestamosActivos = prestamosDAO.buscarPrestamos(libroSeleccionado.getId());
+        prestamosActivos = prestamosDAO.buscarPrestamosLibro(libroSeleccionado.getId());
 
         if(prestamosActivos.isEmpty()){
             Alertas.mostrarError("No hay prestamos activos para este libro");
@@ -139,6 +140,8 @@ public class ConsultaController {
         } catch (Exception e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
         }
+
+        txtBuscarLibro.clear();
     }
 
 

@@ -3,6 +3,7 @@ package controllers.Bibliotecario;
 import database.LibrosDAO;
 import database.PrestamosDAO;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.stage.Stage;
 import model.Libro;
 
 import javafx.event.ActionEvent;
@@ -11,10 +12,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import model.Prestamo;
+import utils.Alertas;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+
+import static utils.Fechas.esDespues;
+import static utils.Fechas.fechaActual;
 
 public class DevolucionController {
 
@@ -58,20 +63,46 @@ public class DevolucionController {
     @FXML
     private TableColumn<Prestamo, String> tbGrado;
 
-
-    @FXML
-    void clickCancelar(ActionEvent event) {
-
-    }
+    Prestamo prestamoSeleccionado;
 
     @FXML
     void clickDevolucion(ActionEvent event) {
-
+        registrarDevolucion();
     }
 
     @FXML
     public void initialize() {
+        configurarTabla();
+    }
 
+    private void cargarPrestamos(){
+        if(libro == null){
+            return;
+        }
+
+        tabla.getItems().setAll(prestamos);
+        lbUnidadesPrestadas.setText("Unidades prestadas: " + prestamos.size());
+    }
+
+    private void registrarDevolucion(){
+        if(tabla.getSelectionModel().getSelectedItem() == null){
+            Alertas.mostrarError("Seleccione un prestamo para registrar su devolución");
+            return;
+        }
+
+        prestamoSeleccionado = tabla.getSelectionModel().getSelectedItem();
+        if(prestamosDAO.registrarDevolucion(prestamoSeleccionado)){
+            if (esDespues(fechaActual(), prestamoSeleccionado.getFecha_limite())) {
+                Alertas.mostrarInfo("Se registro la devolución correctamente. Sin embargo, fue devuelto fuera de tiempo, la fecha límite era hasta: " + prestamoSeleccionado.getFecha_limite());
+            }else{
+                Alertas.mostrarExito("Se registro correctamente la devolución y fue dentro de la fecha establecida.");
+            }
+            librosDAO.aumentarUnidadLibro(libro.getId());
+            cerrar();
+        }
+    }
+
+    private void configurarTabla(){
         tbPrestamo.setCellValueFactory(data ->
                 new SimpleStringProperty(data.getValue().getFecha_prestamo())
         );
@@ -81,7 +112,7 @@ public class DevolucionController {
         );
 
         tbEstado.setCellValueFactory(data ->
-            new SimpleStringProperty(Integer.toString(data.getValue().getEstado()))
+                new SimpleStringProperty(("Prestado"))
         );
 
         tbEstudiante.setCellValueFactory(data ->
@@ -91,14 +122,13 @@ public class DevolucionController {
         tbGrado.setCellValueFactory(data ->
                 new SimpleStringProperty(Integer.toString(data.getValue().getGrado()))
         );
+
+        tabla.getColumns().forEach(col -> col.setReorderable(false));
     }
 
-    private void cargarPrestamos(){
-        if(libro == null){
-            return;
-        }
-
-        tabla.getItems().setAll(prestamos);
+    private void cerrar() {
+        Stage stage = (Stage) lblLibro.getScene().getWindow();
+        stage.close();
     }
 
 

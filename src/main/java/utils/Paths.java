@@ -13,4 +13,5 @@ public class Paths {
     public static final String CONSULTA_BIBLIOTECARIO = "/views/Bibliotecario/Consulta.fxml";
     public static final String PRESTAMO_BIBLIOTECARIO = "/views/Bibliotecario/Prestamo.fxml";
     public static final String DEVOLUCION_BIBLIOTECARIO = "/views/Bibliotecario/Devolucion.fxml";
+    public static final String PRESTAMOS_ACTIVOS = "/views/Bibliotecario/PrestamosActivos.fxml";
 }

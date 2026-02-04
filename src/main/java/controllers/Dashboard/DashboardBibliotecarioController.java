@@ -38,7 +38,7 @@ public class DashboardBibliotecarioController {
 
     @FXML
     void clickPrestamos(ActionEvent event) {
-
+        ManagerView.cargarCentro(contenedor, Paths.PRESTAMOS_ACTIVOS);
     }
 
     @FXML

@@ -71,6 +71,48 @@
     -fx-text-fill: #1F2933;
 }
 
+/* Quitar borde azul al hacer focus */
+.table-view:focused {
+    -fx-background-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* Quitar borde azul de filas/celdas */
+.table-row-cell:focused,
+.table-cell:focused {
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+}
+
+/* Texto de la tabla un poco más grande */
+.table-view {
+    -fx-font-size: 14px;
+}
+
+/* Encabezados de columnas */
+.table-view .column-header {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* Texto de las celdas */
+.table-cell {
+    -fx-font-size: 16px;
+    -fx-alignment: CENTER;
+}
+
+/* Quitar fondo azul de selección (por si acaso) */
+.table-row-cell:selected {
+    -fx-background-color: transparent;
+}
+
+/* Hover suave (opcional, queda elegante) */
+.table-row-cell:hover {
+    -fx-background-color: rgba(30, 111, 184, 0.08);
+}
+
+
 
 
 

@@ -8,6 +8,7 @@ public class Prestamo {
     private String fecha_limite;
     private int estado;
     private int grado;
+    private String tituloLibro;
 
     public Prestamo(int estado, String fecha_limite, String fecha_prestamo, String estudiante, int id_libro, int id, int grado) {
         this.estado = estado;
@@ -17,6 +18,17 @@ public class Prestamo {
         this.id_libro = id_libro;
         this.id = id;
         this.grado = grado;
+    }
+
+    public Prestamo(int id, String tituloLibro, int grado, int estado, String fecha_limite, String fecha_prestamo, String estudiante, int id_libro) {
+        this.id = id;
+        this.tituloLibro = tituloLibro;
+        this.grado = grado;
+        this.estado = estado;
+        this.fecha_limite = fecha_limite;
+        this.fecha_prestamo = fecha_prestamo;
+        this.estudiante = estudiante;
+        this.id_libro = id_libro;
     }
 
     public int getGrado() {
@@ -29,6 +41,14 @@ public class Prestamo {
 
     public int getId() {
         return id;
+    }
+
+    public String getTituloLibro() {
+        return tituloLibro;
+    }
+
+    public void setTituloLibro(String tituloLibro) {
+        this.tituloLibro = tituloLibro;
     }
 
     public void setId(int id) {
