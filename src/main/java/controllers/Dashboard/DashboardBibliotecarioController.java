@@ -46,5 +46,10 @@ public class DashboardBibliotecarioController {
         ManagerView.cargarCentro(contenedor, Paths.INICIO_BIBLIOTECARIO);
     }
 
+    @FXML
+    void clickSalir(ActionEvent event) {
+
+    }
+
 
 }

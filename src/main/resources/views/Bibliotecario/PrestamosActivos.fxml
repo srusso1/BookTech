@@ -21,7 +21,7 @@
                   <Font name="Roboto Medium" size="30" />
                </font>
             </Label>
-            <Label text="Bienvenido al panel de inicio. Aquí encontrarás un resumen general de la actividad de la biblioteca, incluyendo registros, préstamos y consultas recientes." textFill="#4b5563" wrapText="true">
+            <Label text="En este módulo podrás visualizar todos los préstamos que se encuentran actualmente activos, permitiéndote monitorear su estado, verificar las fechas de préstamo y de devolución, y detectar fácilmente aquellos libros que aún no han sido regresados dentro del plazo establecido." textFill="#4b5563" wrapText="true">
                <font>
                   <Font name="Roboto Regular" size="16.0" />
                </font>

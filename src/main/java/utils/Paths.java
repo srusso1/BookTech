@@ -7,6 +7,7 @@ public class Paths {
 
     // DASHBOARD - BIBLIOTECARIO
     public static final String DASHBOARD_BIBLIOTECARIO = "/views/Dashboard/DashboardBibliotecario.fxml";
+    public static final String DASHBOARD_RECTORIA = "/views/Dashboard/DashboardRector.fxml";
 
     // BIBLIOTECARIO
     public static final String INICIO_BIBLIOTECARIO = "/views/Bibliotecario/Inicio.fxml";
@@ -14,4 +15,7 @@ public class Paths {
     public static final String PRESTAMO_BIBLIOTECARIO = "/views/Bibliotecario/Prestamo.fxml";
     public static final String DEVOLUCION_BIBLIOTECARIO = "/views/Bibliotecario/Devolucion.fxml";
     public static final String PRESTAMOS_ACTIVOS = "/views/Bibliotecario/PrestamosActivos.fxml";
+
+    // RECTORIA
+
 }

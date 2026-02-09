@@ -104,7 +104,43 @@ public class PrestamosDAO {
         return prestamos;
     }
 
+    public void actualizarPrestamosTarde(){
+        int actualizados = 0;
+        ArrayList<Prestamo> prestamos = buscarPrestamosActivos();
+        ArrayList<Prestamo> prestadosTarde = new ArrayList<>();
+        for(Prestamo prestados : prestamos){
+            if(Fechas.esDespues(fechaActual(), prestados.getFecha_limite())){
+                prestadosTarde.add(prestados);
+            }
+        }
 
+        for(Prestamo prestados : prestadosTarde){
+            if(actualizarEstado(prestados)){
+                actualizados++;
+            }
+        }
+        if(actualizados > 0){
+            Alertas.mostrarInfo("Se actualizaron " + actualizados + " prestamos. Consulte el modulo 'Prestamos activos'");
+        }
+
+
+    }
+
+    public boolean actualizarEstado(Prestamo prestamo){
+        String query = "UPDATE prestamos SET estado = ? WHERE id = ?";
+        try{
+            Connection conexion = ConexionSQLite.conectar();
+            PreparedStatement ps = conexion.prepareStatement(query);
+            ps.setInt(1, 2);
+            ps.setInt(2, prestamo.getId());
+            return ps.executeUpdate() > 0;
+        }catch (SQLException e){
+            Alertas.mostrarError("Error al actualizar el estado: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
+        }
+        return false;
+    }
 
 
     public boolean registrarDevolucion(Prestamo prestamo){

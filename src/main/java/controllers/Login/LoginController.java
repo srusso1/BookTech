@@ -1,5 +1,6 @@
 package controllers.Login;
 
+import database.PrestamosDAO;
 import database.UsuariosDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,6 +34,7 @@ public class LoginController {
     private TextField txtUsuario;
 
     UsuariosDAO usuariosDAO = new UsuariosDAO();
+    PrestamosDAO prestamosDAO = new PrestamosDAO();
 
     @FXML
     void clickIngresar(ActionEvent event) {
@@ -68,6 +70,9 @@ public class LoginController {
         Alertas.mostrarExito("Bienvenido " + user.getClass().getSimpleName().toUpperCase() + " " + user.getNombreCompleto());
         if(user.getRol() == 0){
             ManagerView.cargarVista(contenedor, Paths.DASHBOARD_BIBLIOTECARIO);
+            prestamosDAO.actualizarPrestamosTarde();
+        }else if(user.getRol() == 1){
+            ManagerView.cargarVista(contenedor, Paths.DASHBOARD_RECTORIA);
         }
 
 
