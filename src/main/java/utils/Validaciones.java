@@ -96,4 +96,13 @@ public class Validaciones {
         campo.getStyleClass().add("is-valid");
     }
 
+    public static boolean validarCampoNumerico(TextInputControl campo){
+        try{
+            Integer.parseInt(campo.getText());
+            return true;
+        }catch(NumberFormatException e){
+            return false;
+        }
+    }
+
 }

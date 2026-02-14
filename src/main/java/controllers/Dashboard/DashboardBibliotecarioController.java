@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import utils.Alertas;
 import utils.ManagerView;
 import utils.Paths;
 
@@ -25,6 +26,9 @@ public class DashboardBibliotecarioController {
 
     @FXML
     private BorderPane contenedor;
+
+    @FXML
+    private AnchorPane contenedorPrincipal;
 
     @FXML
     void clickConsulta(ActionEvent event) {
@@ -48,7 +52,9 @@ public class DashboardBibliotecarioController {
 
     @FXML
     void clickSalir(ActionEvent event) {
-
+        if(Alertas.mostrarConfirmacion("¿Estás seguro que deseas cerrar sesión?")){
+            ManagerView.cargarVista(contenedorPrincipal, Paths.LOGIN);
+        }
     }
 
 

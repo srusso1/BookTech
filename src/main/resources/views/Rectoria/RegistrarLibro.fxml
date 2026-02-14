@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="516.0" prefWidth="447.0" spacing="15" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Rectoria.RegistrarLibroController">
+   <padding>
+      <Insets bottom="20" left="20" right="20" top="20" />
+   </padding>
+   <children>
+      <Label fx:id="lblLibro" style="-fx-font-weight: bold" text="Registrar nuevo libro">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtTitulo" prefHeight="50.0" prefWidth="202.0" promptText="Titulo">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="txtUbicacion" prefHeight="50.0" prefWidth="202.0" promptText="Ubicación">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="txtCategoria" prefHeight="50.0" prefWidth="202.0" promptText="Categoría">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="txtEditorial" prefHeight="50.0" prefWidth="202.0" promptText="Editorial">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="txtAutor" prefHeight="50.0" prefWidth="202.0" promptText="Autor">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="txtUnidades" prefHeight="50.0" prefWidth="202.0" promptText="Unidades">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <Label style="-fx-text-fill: #666;" text="Ingrese los campos requeridos para registrar un nuevo libro">
+         <font>
+            <Font name="System Bold Italic" size="13.0" />
+         </font>
+      </Label>
+      <HBox alignment="CENTER_RIGHT" spacing="10">
+         <children>
+            <Button onAction="#clickRegistrar" prefHeight="36.0" prefWidth="89.0" text="Registrar">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+   </children>
+</VBox>

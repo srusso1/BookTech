@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class LibrosDAO {
@@ -106,6 +107,71 @@ public class LibrosDAO {
             ConexionSQLite.cerrarConexion();
         }
         return info;
+    }
+
+    public ArrayList<Libro> inventarioLibros(){
+        ArrayList<Libro> libros = new ArrayList<>();
+        String query = "SELECT * FROM libros";
+        try{
+            Connection conexion = ConexionSQLite.conectar();
+            PreparedStatement ps = conexion.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                String titulo = rs.getString("titulo");
+                String ubicacion = rs.getString("ubicacion");
+                String categoria = rs.getString("categoria");
+                String editorial = rs.getString("editorial");
+                String autor = rs.getString("autor");
+                int unidades = rs.getInt("unidades");
+                int id = rs.getInt("id");
+                libros.add(new Libro(id, titulo, ubicacion, categoria, editorial, autor, unidades));
+            }
+            return libros;
+        }catch (SQLException e){
+            Alertas.mostrarError("Error al obtener datos del inventario: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
+        }
+        return libros;
+    }
+
+    public boolean editarLibro(Libro libro, String campo, String nuevoValor) {
+        String query = "UPDATE libros SET " + campo.toLowerCase() + " = ? WHERE id = ?";
+
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
+
+            ps.setString(1, nuevoValor.toUpperCase());
+            ps.setInt(2, libro.getId());
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            Alertas.mostrarError("Error al editar el libro: " + e.getMessage());
+        }
+
+        return false;
+    }
+
+    public boolean registrarLibro(Libro libro) {
+        String query = "INSERT INTO libros (titulo, ubicacion, categoria, editorial, autor, unidades) VALUES (?, ?, ?, ?, ?, ?)";
+        try{
+            Connection conexion = ConexionSQLite.conectar();
+            PreparedStatement ps = conexion.prepareStatement(query);
+            ps.setString(1, libro.getTitulo());
+            ps.setString(2, libro.getUbicacion());
+            ps.setString(3, libro.getCategoria());
+            ps.setString(4, libro.getEditorial());
+            ps.setString(5, libro.getAutor());
+            ps.setInt(6, libro.getUnidades());
+
+            return ps.executeUpdate() > 0;
+        }catch (SQLException e){
+            Alertas.mostrarError("Error al registrar el libro: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
+        }
+        return false;
     }
 
 }

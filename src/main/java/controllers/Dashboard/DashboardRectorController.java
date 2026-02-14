@@ -3,6 +3,7 @@ package controllers.Dashboard;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import utils.Alertas;
 import utils.ManagerView;
@@ -17,6 +18,9 @@ public class DashboardRectorController {
     private Button btnConsulta;
 
     @FXML
+    private Button btnInformes;
+
+    @FXML
     private Button btnInicio;
 
     @FXML
@@ -24,6 +28,9 @@ public class DashboardRectorController {
 
     @FXML
     private BorderPane contenedor;
+
+    @FXML
+    private AnchorPane contenedorPrincipal;
 
     @FXML
     void clickConfig(ActionEvent event) {
@@ -36,20 +43,30 @@ public class DashboardRectorController {
     }
 
     @FXML
-    void clickInicio(ActionEvent event) {
+    void clickInformes(ActionEvent event) {
 
     }
 
     @FXML
-    void clickInventario(ActionEvent event) {
+    void clickInicio(ActionEvent event) {
+        ManagerView.cargarCentro(contenedor, Paths.INICIO_RECTORIA);
+    }
 
+    @FXML
+    void clickInventario(ActionEvent event) {
+        ManagerView.cargarCentro(contenedor, Paths.INVENTARIO_RECTORIA);
     }
 
     @FXML
     void clickSalir(ActionEvent event) {
         if(Alertas.mostrarConfirmacion("¿Estás seguro que deseas cerrar sesión?")){
-            ManagerView.cargarVista(contenedor, Paths.LOGIN);
+            ManagerView.cargarVista(contenedorPrincipal, Paths.LOGIN);
         }
+    }
+
+    @FXML
+    void initialize() {
+        ManagerView.cargarCentro(contenedor, Paths.INICIO_RECTORIA);
     }
 
 }

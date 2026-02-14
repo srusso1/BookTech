@@ -103,15 +103,6 @@
 }
 
 /* Quitar fondo azul de selección (por si acaso) */
-.table-row-cell:selected {
-    -fx-background-color: transparent;
-}
-
-/* Hover suave (opcional, queda elegante) */
-.table-row-cell:hover {
-    -fx-background-color: rgba(30, 111, 184, 0.08);
-}
-
 
 
 
