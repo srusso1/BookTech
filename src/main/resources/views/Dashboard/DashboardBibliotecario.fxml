@@ -14,7 +14,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane fx:id="contenedorPrincipal" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Dashboard.DashboardBibliotecarioController">
    <children>
       <BorderPane fx:id="contenedor" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -155,6 +154,9 @@
                   </padding>
               </VBox>
           </left>
+         <padding>
+            <Insets bottom="30.0" />
+         </padding>
       
       </BorderPane>
    </children>
