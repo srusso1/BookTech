@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.Libro;
 import utils.Alertas;
+import utils.Validaciones;
 
 public class EditarLibroController {
 
@@ -58,6 +59,16 @@ public class EditarLibroController {
 
         String campo = comboBoxModificar.getSelectionModel().getSelectedItem();
         String nuevoValor = txtEditar.getText();
+
+        if(comboBoxModificar.getSelectionModel().getSelectedItem().equals("Unidades")){
+            if(!Validaciones.validarCampoNumerico(txtEditar)){
+                Alertas.mostrarError("Sólo se admiten valores númericos al intentar modificar el campo 'Unidades'");
+                return;
+            }else if(Integer.parseInt(nuevoValor) < 0){
+                Alertas.mostrarError("El valor no puede ser negativo");
+                return;
+            }
+        }
 
         boolean ok = Alertas.mostrarConfirmacion("¿Estas seguro de modificar el " + campo + "? Se cambiará por '" + nuevoValor + "'");
         if(ok){

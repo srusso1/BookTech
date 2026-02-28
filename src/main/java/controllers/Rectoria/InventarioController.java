@@ -41,6 +41,9 @@ public class InventarioController {
     private TableColumn<Libro, String> tbUnidades;
 
     @FXML
+    private TextField txtBuscarLibro;
+
+    @FXML
     private TextField txtEditar;
 
     ArrayList<Libro> inventarioLibros = new ArrayList<Libro>();
@@ -116,6 +119,38 @@ public class InventarioController {
     void initialize() {
         inventarioLibros = librosDAO.inventarioLibros();
         configurarTabla();
+        tabla.setPlaceholder(new Label("No hay libros que coincidan"));
+        configurarBusquedaTitulo();
+    }
+
+    private void configurarBusquedaTitulo(){
+        txtBuscarLibro.textProperty().addListener((obs, oldText, newText) -> {
+
+            // Si está vacío → mostrar todos
+            if (newText == null || newText.isBlank()) {
+                tabla.getItems().setAll(inventarioLibros);
+                return;
+            }
+
+            String texto = newText.toLowerCase();
+
+            ArrayList<Libro> filtrados = new ArrayList<>();
+
+            for (Libro libro : inventarioLibros) {
+
+                if (
+                        libro.getTitulo().toLowerCase().contains(texto) ||
+                                libro.getAutor().toLowerCase().contains(texto) ||
+                                libro.getCategoria().toLowerCase().contains(texto) ||
+                                libro.getEditorial().toLowerCase().contains(texto) ||
+                                libro.getUbicacion().toLowerCase().contains(texto)
+                ) {
+                    filtrados.add(libro);
+                }
+            }
+
+            tabla.getItems().setAll(filtrados);
+        });
     }
 
     private void configurarTabla(){
