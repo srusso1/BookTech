@@ -16,16 +16,15 @@ import static utils.Fechas.fechaActual;
 public class PrestamosDAO {
     // ESTADO: 0 - Prestado, 1 - Devuelto, 2 - Pendiente
 
-    public boolean registrarPrestamo(int idLibro, String estudiante, int grado, String fechaPrestamo, String fechaLimite){
-        String query = "INSERT INTO prestamos (id_libro, estudiante, grado, fecha_prestamo, fecha_limite) VALUES (?, ?, ?, ?, ?)";
+    public boolean registrarPrestamo(int idLibro, int id_estudiante, String fechaPrestamo, String fechaLimite){
+        String query = "INSERT INTO prestamos (id_libro, id_estudiante, fecha_prestamo, fecha_limite) VALUES (?, ?, ?, ?)";
         try{
             Connection conexion = ConexionSQLite.conectar();
             PreparedStatement ps = conexion.prepareStatement(query);
             ps.setInt(1, idLibro);
-            ps.setString(2, estudiante);
-            ps.setInt(3, grado);
-            ps.setString(4, fechaPrestamo);
-            ps.setString(5, fechaLimite);
+            ps.setInt(2, id_estudiante);
+            ps.setString(3, fechaPrestamo);
+            ps.setString(4, fechaLimite);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             Alertas.mostrarError("Error al registrar el prestamo: " + e.getMessage());
@@ -36,12 +35,26 @@ public class PrestamosDAO {
     }
 
     public ArrayList<Prestamo> buscarPrestamosLibro(int idLibro) {
-        String query = "SELECT * FROM prestamos WHERE id_libro = ? AND estado != 1";
+
+        String query = """
+        SELECT 
+            p.id,
+            p.id_libro,
+            p.estado,
+            p.fecha_prestamo,
+            p.fecha_limite,
+            e.grado,
+            e.apellido_1 || ' ' || e.apellido_2 || ' ' || e.nombre_1 || ' ' || e.nombre_2 AS estudiante
+        FROM prestamos p
+        JOIN estudiantes e ON e.id = p.id_estudiante
+        WHERE p.id_libro = ? AND p.estado != 1
+    """;
+
         ArrayList<Prestamo> prestamos = new ArrayList<>();
 
-        try {
-            Connection conexion = ConexionSQLite.conectar();
-            PreparedStatement ps = conexion.prepareStatement(query);
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
+
             ps.setInt(1, idLibro);
             ResultSet rs = ps.executeQuery();
 
@@ -59,46 +72,50 @@ public class PrestamosDAO {
 
         } catch (SQLException e) {
             Alertas.mostrarError("Error al buscar los préstamos: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
         }
 
-        return prestamos; //
+        return prestamos;
     }
 
     public ArrayList<Prestamo> buscarPrestamosActivos() {
 
-            String query = """
-            SELECT p.*, l.titulo
-            FROM prestamos p
-            JOIN libros l ON l.id = p.id_libro
-            WHERE p.estado != 1
-        """;
+        String query = """
+        SELECT 
+            p.id,
+            p.id_libro,
+            p.estado,
+            p.fecha_prestamo,
+            p.fecha_limite,
+            e.grado,
+            l.titulo,
+            e.apellido_1 || ' ' || e.apellido_2 || ' ' || e.nombre_1 || ' ' || e.nombre_2 AS estudiante
+        FROM prestamos p
+        JOIN libros l ON l.id = p.id_libro
+        JOIN estudiantes e ON e.id = p.id_estudiante
+        WHERE p.estado != 1
+    """;
 
         ArrayList<Prestamo> prestamos = new ArrayList<>();
 
-        try {
-            Connection conexion = ConexionSQLite.conectar();
-            PreparedStatement ps = conexion.prepareStatement(query);
-            ResultSet rs = ps.executeQuery();
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 prestamos.add(new Prestamo(
-                        rs.getInt("id"),                 // id
-                        rs.getString("titulo"),          // tituloLibro
-                        rs.getInt("grado"),              // grado
-                        rs.getInt("estado"),             // estado
-                        rs.getString("fecha_limite"),    // fecha_limite
-                        rs.getString("fecha_prestamo"),  // fecha_prestamo
-                        rs.getString("estudiante"),      // estudiante
-                        rs.getInt("id_libro")             // id_libro
+                        rs.getInt("id"),
+                        rs.getString("titulo"),
+                        rs.getInt("grado"),
+                        rs.getInt("estado"),
+                        rs.getString("fecha_limite"),
+                        rs.getString("fecha_prestamo"),
+                        rs.getString("estudiante"),
+                        rs.getInt("id_libro")
                 ));
             }
 
         } catch (SQLException e) {
             Alertas.mostrarError("Error al buscar los préstamos: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
         }
 
         return prestamos;
@@ -159,6 +176,23 @@ public class PrestamosDAO {
             return ps.executeUpdate() > 0;
         }catch (SQLException e) {
             Alertas.mostrarError("Error al registrar la devolución: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
+        }
+        return false;
+    }
+
+    public boolean validarPrestamo(int idLibro, int idEstudiante){
+        String query = "SELECT * FROM prestamos WHERE id_estudiante = ? AND (estado = 0 OR estado = 2) AND id_libro = ?";
+        try{
+            Connection conexion = ConexionSQLite.conectar();
+            PreparedStatement ps = conexion.prepareStatement(query);
+            ps.setInt(1, idEstudiante);
+            ps.setInt(2, idLibro);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        }catch (SQLException e){
+            Alertas.mostrarError("Error al validar el prestamo: " + e.getMessage());
         }finally {
             ConexionSQLite.cerrarConexion();
         }

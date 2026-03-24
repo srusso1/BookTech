@@ -109,6 +109,28 @@ public class LibrosDAO {
         return info;
     }
 
+    public ArrayList<String> infoDashboardRectoria(){
+        ArrayList<String> info = new ArrayList<>();
+        String query = "SELECT (SELECT COUNT(*) FROM libros) AS libros_registrados, " +
+                "(SELECT SUM(unidades) FROM libros) AS unidades_registradas, " +
+                "(SELECT l.categoria FROM prestamos p JOIN libros l ON p.id_libro = l.id GROUP BY l.categoria ORDER BY COUNT(p.id) DESC LIMIT 1) AS categoria_mas_prestada;";
+
+        try(Connection con = ConexionSQLite.conectar();
+            PreparedStatement ps = con.prepareStatement(query);
+            ResultSet rs = ps.executeQuery()){
+            if(rs.next()){
+                info.add(rs.getString("libros_registrados"));
+                info.add(rs.getString("unidades_registradas"));
+                info.add(rs.getString("categoria_mas_prestada"));
+            }
+        }catch (SQLException e){
+            Alertas.mostrarError("Error al obtener datos del dashboard: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
+        }
+        return info;
+    }
+
     public ArrayList<Libro> inventarioLibros(){
         ArrayList<Libro> libros = new ArrayList<>();
         String query = "SELECT * FROM libros";
