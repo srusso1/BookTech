@@ -43,8 +43,6 @@ public class InventarioController {
     @FXML
     private TextField txtBuscarLibro;
 
-    @FXML
-    private TextField txtEditar;
 
     ArrayList<Libro> inventarioLibros = new ArrayList<Libro>();
     LibrosDAO librosDAO = new LibrosDAO();
@@ -112,6 +110,24 @@ public class InventarioController {
 
         } catch (Exception e) {
             Alertas.mostrarError("ERROR: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    void clickEliminarLibro(ActionEvent event) {
+        libroSeleccionado = tabla.getSelectionModel().getSelectedItem();
+        if(libroSeleccionado == null){
+            Alertas.mostrarError("Seleccione un libro para eliminar");
+            return;
+        }
+        boolean ok = Alertas.mostrarConfirmacion("¿Estás seguro de eliminar el libro: '" + libroSeleccionado.getTitulo() +"'? Está acción no se puede deshacer");
+        if(ok){
+            if(librosDAO.eliminarLibro(libroSeleccionado.getId())){
+                Alertas.mostrarExito("Se eliminado correctamente el libro: '" + libroSeleccionado.getTitulo() + "' del inventario.");
+                cargarLibros();
+            }
+        }else{
+            Alertas.mostrarInfo("Acción cancelada por el usuario");
         }
     }
 

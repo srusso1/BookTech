@@ -4,6 +4,7 @@ package controllers.Rectoria;
 import database.LibrosDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -18,6 +19,9 @@ public class RegistrarLibroController {
 
     @FXML
     private TextField txtAutor;
+
+    @FXML
+    private ComboBox<String> comboBoxCategoria;
 
     @FXML
     private TextField txtCategoria;
@@ -49,9 +53,11 @@ public class RegistrarLibroController {
             return;
         }
 
-        if(!Validaciones.campoRequerido(txtCategoria)){
+        if(comboBoxCategoria.getSelectionModel().getSelectedItem() == null){
+            Alertas.mostrarError("Es obligatorio elegir una categoria");
             return;
         }
+
         if(!Validaciones.campoRequerido(txtEditorial)){
             return;
         }
@@ -72,7 +78,7 @@ public class RegistrarLibroController {
         String titulo = txtTitulo.getText().toUpperCase();
         String autor = txtAutor.getText().toUpperCase();
         String editorial = txtEditorial.getText().toUpperCase();
-        String categoria = txtCategoria.getText().toUpperCase();
+        String categoria = comboBoxCategoria.getSelectionModel().getSelectedItem();
         String ubicacion = txtUbicacion.getText().toUpperCase();
         int unidades = Integer.parseInt(txtUnidades.getText());
 
@@ -96,6 +102,12 @@ public class RegistrarLibroController {
         Validaciones.ocultarPopOver(txtCategoria);
         Validaciones.ocultarPopOver(txtUbicacion);
         Validaciones.ocultarPopOver(txtUnidades);
+    }
+
+    @FXML
+    void initialize() {
+        comboBoxCategoria.getItems().addAll("DICCIONARIO", "MEDIO AMBIENTE", "EDUCACIÓN PARA LA PAZ", "EDUCACIÓN SEXUAL",
+                "PRUEBA SABER", "COMPRENSIÓN Y PRODUCCIÓN TEXTUAL", "LITERATURA", "FORMACIÓN VOCACIONAL");
     }
 
 }

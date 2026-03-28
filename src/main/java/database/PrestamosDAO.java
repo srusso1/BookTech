@@ -9,6 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static utils.Fechas.esDespues;
 import static utils.Fechas.fechaActual;
@@ -198,5 +201,108 @@ public class PrestamosDAO {
         }
         return false;
     }
+
+    public Map<String, Integer> obtenerPrestamosPorGenero() {
+
+        String query = """
+        SELECT 
+            e.genero,
+            COUNT(p.id) AS total_prestamos
+        FROM prestamos p
+        JOIN estudiantes e ON e.id = p.id_estudiante
+        GROUP BY e.genero
+    """;
+
+        Map<String, Integer> datos = new HashMap<>();
+
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String genero = rs.getString("genero");
+                int total = rs.getInt("total_prestamos");
+
+                datos.put(genero, total);
+            }
+
+        } catch (SQLException e) {
+            Alertas.mostrarError("Error al obtener estadísticas: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
+        }
+
+        return datos;
+    }
+
+    public Map<String, Integer> obtenerPrestamosPorCategoria() {
+
+        String query = """
+        SELECT l.categoria, COUNT(p.id) AS total
+        FROM libros l
+        LEFT JOIN prestamos p ON l.id = p.id_libro
+        GROUP BY l.categoria
+        ORDER BY total DESC
+    """;
+
+        Map<String, Integer> datos = new LinkedHashMap<>();
+
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String categoria = rs.getString("categoria");
+                int total = rs.getInt("total");
+
+                datos.put(categoria, total);
+            }
+
+        } catch (SQLException e) {
+            Alertas.mostrarError("Error al obtener préstamos por categoría: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
+        }
+
+        return datos;
+    }
+
+    public Map<String, Integer> obtenerPrestamosPorGradoTop(int limite) {
+
+        String query = """
+        SELECT e.grado, COUNT(p.id) AS total
+        FROM prestamos p
+        JOIN estudiantes e ON e.id = p.id_estudiante
+        GROUP BY e.grado
+        ORDER BY total DESC
+        LIMIT ?
+    """;
+
+        Map<String, Integer> datos = new LinkedHashMap<>();
+
+        try (Connection conn = ConexionSQLite.conectar();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, limite);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                datos.put(
+                        "Grado " + rs.getInt("grado"),
+                        rs.getInt("total")
+                );
+            }
+
+        } catch (SQLException e) {
+            Alertas.mostrarError("Error al obtener préstamos por grado: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
+        }
+
+        return datos;
+    }
+
+
 
 }

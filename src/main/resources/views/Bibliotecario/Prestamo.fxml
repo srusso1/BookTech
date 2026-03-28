@@ -19,7 +19,7 @@
 
     <Label fx:id="lblLibro" style="-fx-font-weight: bold" />
 
-    <TextField fx:id="txtEstudiante" prefHeight="31.0" prefWidth="254.0" promptText="Nombre completo del estudiante">
+    <TextField fx:id="txtEstudiante" prefHeight="56.0" prefWidth="254.0" promptText="Nombre completo del estudiante">
       <font>
          <Font size="15.0" />
       </font>
@@ -30,7 +30,7 @@
            </items>
          </ContextMenu>
       </contextMenu></TextField>
-   <VBox prefWidth="100.0">
+   <VBox fx:id="contenedorInfoEstudiante" alignment="CENTER" prefWidth="100.0">
       <children>
          <HBox prefHeight="30.0" prefWidth="254.0" spacing="10.0">
             <children>
@@ -62,7 +62,7 @@
          </HBox>
       </children>
    </VBox>
-    <DatePicker fx:id="dpFechaDevolucion" prefHeight="38.0" prefWidth="174.0" />
+    <DatePicker fx:id="dpFechaDevolucion" prefHeight="50.0" prefWidth="174.0" />
 
     <HBox alignment="CENTER_RIGHT" spacing="10">
         <Button onAction="#clickRegistrar" prefHeight="36.0" prefWidth="89.0" text="Registrar">

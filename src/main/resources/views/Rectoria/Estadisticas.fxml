@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="870.0" prefWidth="1180.0" stylesheets="@../../styles/Rectoria/EstadisticasStyle.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Rectoria.EstadisticasController">
+    <children>
+        <VBox prefWidth="1180.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0.0">
+            <padding>
+                <Insets left="40.0" right="40.0" top="20.0" />
+            </padding>
+            <children>
+                <Label text="Estadisticas">
+                    <font>
+                        <Font name="Roboto Medium" size="30" />
+                    </font>
+                </Label>
+                <Label text="Bienvenido al panel de estadisticas" textFill="#4b5563" wrapText="true">
+                    <font>
+                        <Font name="Roboto Regular" size="16.0" />
+                    </font>
+                </Label>
+                <Separator prefHeight="20.0" prefWidth="1100.0" />
+                <HBox prefHeight="257.0" prefWidth="1100.0" spacing="70.0">
+                    <children>
+
+                        <!-- 🔹 Gráfica de género (se queda igual) -->
+                        <BarChart fx:id="gfBarraGenero" styleClass="graficaBarrasGenero">
+                            <xAxis>
+                                <CategoryAxis side="BOTTOM" />
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT" />
+                            </yAxis>
+                        </BarChart>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+
+                        <!-- 🔥 Gráfica de categoría CORREGIDA -->
+                        <BarChart fx:id="gfBarraCategoria" styleClass="graficaBarrasCategoria">
+                            <xAxis>
+                                <NumberAxis side="BOTTOM" />
+                            </xAxis>
+                            <yAxis>
+                                <CategoryAxis side="LEFT" />
+                            </yAxis>
+                        </BarChart>
+
+                    </children>
+                </HBox>
+            <Separator prefWidth="200.0" />
+            <HBox prefHeight="290.0" prefWidth="1100.0">
+               <children>
+                  <PieChart fx:id="gfTortaPrestamosGrado" />
+               </children>
+            </HBox>
+            </children>
+        </VBox>
+    </children>
+    <padding>
+        <Insets bottom="30.0" top="30.0" />
+    </padding>
+</AnchorPane>

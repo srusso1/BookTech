@@ -47,6 +47,7 @@ public class ManagerView {
 
         } catch (IOException e) {
             Alertas.mostrarError("Error al cargar vista central: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 

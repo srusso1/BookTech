@@ -11,6 +11,8 @@ import model.Libro;
 import utils.Alertas;
 import utils.Validaciones;
 
+import java.util.Map;
+
 public class EditarLibroController {
 
     private Libro libro;
@@ -96,7 +98,20 @@ public class EditarLibroController {
                 (obs, oldVal, newVal) -> {
                     if (newVal != null) {
                         mostrarElementos();
-                        txtEditar.setPromptText("Ingrese el nuevo " + newVal);
+
+                        Map<String, String> prompts = Map.of(
+                                "Titulo", "Ingrese el nuevo título",
+                                "Autor", "Ingrese el nuevo autor",
+                                "Editorial", "Ingrese la nueva editorial",
+                                "Ubicacion", "Ingrese la nueva ubicación",
+                                "Categoria", "Ingrese la nueva categoría",
+                                "Unidades", "Ingrese la nueva cantidad de unidades"
+                        );
+
+                        txtEditar.setPromptText(prompts.getOrDefault(
+                                newVal,
+                                "Ingrese el nuevo valor"
+                        ));
                     }
                 }
         );

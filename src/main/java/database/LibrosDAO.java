@@ -196,4 +196,19 @@ public class LibrosDAO {
         return false;
     }
 
+    public boolean eliminarLibro(int idLibro){
+        String query = "DELETE FROM libros WHERE id = ?";
+        try{
+            Connection conexion = ConexionSQLite.conectar();
+            PreparedStatement ps = conexion.prepareStatement(query);
+            ps.setInt(1, idLibro);
+            return ps.executeUpdate() > 0;
+        }catch (SQLException e){
+            Alertas.mostrarError("Error al eliminar el libro: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
+        }
+        return false;
+    }
+
 }

@@ -6,6 +6,7 @@ import database.PrestamosDAO;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Estudiante;
 import model.Libro;
@@ -24,9 +25,11 @@ public class PrestamoController {
     @FXML private DatePicker dpFechaDevolucion;
     @FXML private Label infoGrado;
     @FXML private Label infoIdentificacion;
+    @FXML private VBox contenedorInfoEstudiante;
     private final ContextMenu sugerenciasMenu = new ContextMenu();
     private ArrayList<Estudiante> listaEstudiantes = new ArrayList<>();
     private Estudiante estudianteSeleccionado;
+
 
     private Libro libro;
     PrestamosDAO prestamosDAO = new PrestamosDAO();
@@ -103,6 +106,8 @@ public class PrestamoController {
 
     private void configurarBusquedaEstudiantes() {
 
+        ocultarInfoEstudiante();
+
         txtEstudiante.textProperty().addListener((obs, oldText, newText) -> {
 
             if (newText.length() < 2) {
@@ -139,6 +144,7 @@ public class PrestamoController {
                     infoGrado.setText(String.valueOf(est.getGrado()));
                     infoIdentificacion.setText(String.valueOf(est.getIdentificacion()));
                     sugerenciasMenu.hide();
+                    mostrarInfoEstudiante();
                 });
 
                 items.add(item);
@@ -148,6 +154,7 @@ public class PrestamoController {
 
             if (!sugerenciasMenu.isShowing()) {
                 sugerenciasMenu.show(txtEstudiante, Side.BOTTOM, 0, 0);
+                ocultarInfoEstudiante();
             }
         });
 
@@ -157,5 +164,15 @@ public class PrestamoController {
                 Validaciones.ocultarPopOver(txtEstudiante);
             }
         });
+    }
+
+    private void ocultarInfoEstudiante(){
+        contenedorInfoEstudiante.setVisible(false);
+        contenedorInfoEstudiante.setManaged(false);
+    }
+
+    private void mostrarInfoEstudiante(){
+        contenedorInfoEstudiante.setVisible(true);
+        contenedorInfoEstudiante.setManaged(true);
     }
 }
