@@ -170,6 +170,8 @@ public class LibrosDAO {
 
         } catch (SQLException e) {
             Alertas.mostrarError("Error al editar el libro: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
         }
 
         return false;

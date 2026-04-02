@@ -75,6 +75,8 @@ public class PrestamosDAO {
 
         } catch (SQLException e) {
             Alertas.mostrarError("Error al buscar los préstamos: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
         }
 
         return prestamos;
@@ -119,6 +121,8 @@ public class PrestamosDAO {
 
         } catch (SQLException e) {
             Alertas.mostrarError("Error al buscar los préstamos: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
         }
 
         return prestamos;

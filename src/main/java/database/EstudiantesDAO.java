@@ -33,6 +33,8 @@ public class EstudiantesDAO {
 
         } catch (Exception e) {
             Alertas.mostrarError("Error al obtener los estudiantes: " + e.getMessage());
+        }finally {
+            ConexionSQLite.cerrarConexion();
         }
 
         return lista;

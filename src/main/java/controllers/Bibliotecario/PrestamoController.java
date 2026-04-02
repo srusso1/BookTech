@@ -1,13 +1,12 @@
 package controllers.Bibliotecario;
 
-import database.EstudiantesDAO;
-import database.LibrosDAO;
-import database.PrestamosDAO;
+import database.*;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import model.Docente;
 import model.Estudiante;
 import model.Libro;
 import utils.Alertas;
@@ -15,7 +14,9 @@ import utils.Fechas;
 import utils.Validaciones;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class PrestamoController {
@@ -24,18 +25,25 @@ public class PrestamoController {
     @FXML private TextField txtEstudiante;
     @FXML private DatePicker dpFechaDevolucion;
     @FXML private Label infoGrado;
+    @FXML private ComboBox<String> comboMotivosPrestamos;
+    @FXML private ContextMenu sugerenciasDocente;
+    @FXML private TextField txtDocente;
     @FXML private Label infoIdentificacion;
     @FXML private VBox contenedorInfoEstudiante;
     private final ContextMenu sugerenciasMenu = new ContextMenu();
     private ArrayList<Estudiante> listaEstudiantes = new ArrayList<>();
     private Estudiante estudianteSeleccionado;
+    private Docente docenteSeleccionado;
 
 
     private Libro libro;
     PrestamosDAO prestamosDAO = new PrestamosDAO();
     LibrosDAO librosDAO = new LibrosDAO();
     EstudiantesDAO estudiantesDAO = new EstudiantesDAO();
-
+    MotivosPrestamoDAO motivosPrestamoDAO = new MotivosPrestamoDAO();
+    DocentesDAO docentesDAO = new DocentesDAO();
+    Map<Integer, String> motivosPrestamos = new HashMap<>();
+    ArrayList<Docente> listaDocentes = new ArrayList<>();
     // 🔹 método para recibir el libro
     public void setLibro(Libro libro) {
         this.libro = libro;
@@ -64,6 +72,13 @@ public class PrestamoController {
         listaEstudiantes = estudiantesDAO.obtenerEstudiantes();
 
         configurarBusquedaEstudiantes();
+
+        motivosPrestamos = motivosPrestamoDAO.obtenerMotivosPrestamo();
+        comboMotivosPrestamos.getItems().addAll(motivosPrestamos.values());
+
+        listaDocentes = docentesDAO.obtenerDocentes();
+
+        configurarBusquedaDocentes();
     }
 
     private void registrarPrestamo(){
@@ -102,6 +117,62 @@ public class PrestamoController {
             Alertas.mostrarError("Error al registrar el prestamo");
         }
         cerrar();
+    }
+
+    private void configurarBusquedaDocentes() {
+
+        txtDocente.textProperty().addListener((obs, oldText, newText) -> {
+
+            if (newText.length() < 2) {
+                sugerenciasDocente.hide();
+                return;
+            }
+
+            String filtro = newText.toUpperCase();
+
+            List<Docente> resultados = listaDocentes.stream()
+                    .filter(d -> d.getNombreCompleto().toUpperCase().contains(filtro))
+                    .limit(5)
+                    .toList();
+
+            if (resultados.isEmpty()) {
+                sugerenciasDocente.hide();
+                Validaciones.agregarPopOver(txtDocente, "No hay coincidencias");
+                return;
+            }
+
+            Validaciones.ocultarPopOver(txtDocente);
+
+            List<MenuItem> items = new ArrayList<>();
+
+            for (Docente doc : resultados) {
+
+                MenuItem item = new MenuItem(
+                        doc.getNombreCompleto()
+                );
+
+                item.setOnAction(e -> {
+                    txtDocente.setText(doc.getNombreCompleto());
+                    docenteSeleccionado = doc; // 🔥 guarda el objeto
+                    sugerenciasDocente.hide();
+                });
+
+                items.add(item);
+            }
+
+            sugerenciasDocente.getItems().setAll(items);
+
+            if (!sugerenciasDocente.isShowing()) {
+                sugerenciasDocente.show(txtDocente, Side.BOTTOM, 0, 0);
+            }
+        });
+
+        txtDocente.focusedProperty().addListener((obs, old, focused) -> {
+            if (!focused) {
+                sugerenciasDocente.hide();
+                Validaciones.ocultarPopOver(txtDocente);
+            }
+        });
     }
 
     private void configurarBusquedaEstudiantes() {

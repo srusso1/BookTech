@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
@@ -62,7 +63,21 @@
          </HBox>
       </children>
    </VBox>
+   <ComboBox fx:id="comboMotivosPrestamos" prefHeight="52.0" prefWidth="243.0" promptText="Elige un motivo del prestamo" />
+   <TextField fx:id="txtDocente" prefHeight="50.0" prefWidth="338.0" promptText="Docente que lo envía">
+      <font>
+         <Font size="15.0" />
+      </font>
+      <contextMenu>
+         <ContextMenu fx:id="sugerenciasDocente">
+           <items>
+             <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+           </items>
+         </ContextMenu>
+      </contextMenu>
+   </TextField>
     <DatePicker fx:id="dpFechaDevolucion" prefHeight="50.0" prefWidth="174.0" />
+   <Label text="NOTA: Si ningún docente envia al estudiante, escriba 'No aplica'" />
 
     <HBox alignment="CENTER_RIGHT" spacing="10">
         <Button onAction="#clickRegistrar" prefHeight="36.0" prefWidth="89.0" text="Registrar">

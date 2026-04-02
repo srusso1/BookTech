@@ -108,9 +108,9 @@ public class EstadisticasController {
 
                     if (total == 0) {
                         color = "#9ca3af"; // gris
-                    } else if (total < 3) {
+                    } else if (total < 20) {
                         color = "#60a5fa"; // azul claro
-                    } else if (total < 6) {
+                    } else if (total < 60) {
                         color = "#34d399"; // verde
                     } else {
                         color = "#f59e0b"; // naranja fuerte
