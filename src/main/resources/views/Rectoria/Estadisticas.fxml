@@ -57,9 +57,18 @@
                     </children>
                 </HBox>
             <Separator prefWidth="200.0" />
-            <HBox prefHeight="290.0" prefWidth="1100.0">
+            <HBox prefHeight="290.0" prefWidth="1100.0" spacing="70.0">
                <children>
-                  <PieChart fx:id="gfTortaPrestamosGrado" />
+                  <PieChart fx:id="gfTortaPrestamosGrado" prefHeight="290.0" prefWidth="478.0" />
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <BarChart fx:id="gfBarraDocentes" prefHeight="290.0" prefWidth="480.0">
+                    <xAxis>
+                       <NumberAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                       <CategoryAxis side="LEFT" />
+                    </yAxis>
+                  </BarChart>
                </children>
             </HBox>
             </children>

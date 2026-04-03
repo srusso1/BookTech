@@ -7,11 +7,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import model.Prestamo;
+import utils.Fechas;
 
 public class PrestamosActivosController {
 
     @FXML
     private TableView<Prestamo> tabla;
+
+    @FXML
+    private TableColumn<Prestamo, String> tbMotivo;
+
+    @FXML
+    private TableColumn<Prestamo, String> tbDocente;
 
     @FXML
     private TableColumn<Prestamo, String> tbTituloLibro;
@@ -49,11 +56,11 @@ public class PrestamosActivosController {
         );
 
         tbFPrestamo.setCellValueFactory(d ->
-                new SimpleStringProperty(d.getValue().getFecha_prestamo())
+                new SimpleStringProperty(formatearFechaUI(d.getValue().getFecha_prestamo()))
         );
 
         tbFLimite.setCellValueFactory(d ->
-                new SimpleStringProperty(d.getValue().getFecha_limite())
+                new SimpleStringProperty(formatearFechaUI(d.getValue().getFecha_limite()))
         );
 
         tbEstado.setCellValueFactory(d -> {
@@ -61,6 +68,16 @@ public class PrestamosActivosController {
             return new SimpleStringProperty(
                     estado == 0 ? "Prestado" : "Pendiente"
             );
+        });
+
+        tbMotivo.setCellValueFactory(d -> {
+            var motivo = d.getValue().getMotivoPrestamo();
+            return new SimpleStringProperty(motivo != null ? motivo.getNombre() : "");
+        });
+
+        tbDocente.setCellValueFactory(d -> {
+            var docente = d.getValue().getDocente();
+            return new SimpleStringProperty(docente != null ? docente.getNombreCompleto() : "");
         });
 
         tabla.setEditable(false);
@@ -75,5 +92,10 @@ public class PrestamosActivosController {
 
     private void cargarPrestamos() {
         tabla.getItems().setAll(prestamosDAO.buscarPrestamosActivos());
+    }
+
+    private String formatearFechaUI(String fechaBD) {
+        String fechaUI = Fechas.convertirAUI(fechaBD);
+        return fechaUI != null ? fechaUI : fechaBD;
     }
 }

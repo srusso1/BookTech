@@ -111,6 +111,7 @@ public class InventarioController {
         } catch (Exception e) {
             Alertas.mostrarError("ERROR: " + e.getMessage());
         }
+        cargarLibros();
     }
 
     @FXML
@@ -129,6 +130,7 @@ public class InventarioController {
         }else{
             Alertas.mostrarInfo("Acción cancelada por el usuario");
         }
+        cargarLibros();
     }
 
     @FXML

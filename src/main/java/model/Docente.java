@@ -16,11 +16,11 @@ public class Docente {
     }
 
     public String getNombreApellido(){
-        return apellido_1 + " " + nombre_1;
+        return nombre_1 + " " + apellido_1;
     }
 
     public String getNombreCompleto(){
-        return apellido_1 + " " + apellido_2 + " " + nombre_1 + " " + nombre_2;
+        return nombre_1 + " " + nombre_2 + " " + apellido_1 + " " + apellido_2;
     }
 
     public int getId() {

@@ -1,6 +1,7 @@
 package controllers.Rectoria;
 
 
+import database.CategoriasDAO;
 import database.LibrosDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,9 +9,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import model.Categoria;
 import model.Libro;
 import utils.Alertas;
 import utils.Validaciones;
+
+import java.util.ArrayList;
 
 public class RegistrarLibroController {
 
@@ -21,7 +25,7 @@ public class RegistrarLibroController {
     private TextField txtAutor;
 
     @FXML
-    private ComboBox<String> comboBoxCategoria;
+    private ComboBox<Categoria> comboBoxCategoria;
 
     @FXML
     private TextField txtCategoria;
@@ -39,6 +43,7 @@ public class RegistrarLibroController {
     private TextField txtUnidades;
 
     LibrosDAO librosDAO = new LibrosDAO();
+    CategoriasDAO categoriasDAO = new CategoriasDAO();
 
     @FXML
     void clickRegistrar(ActionEvent event) {
@@ -78,11 +83,12 @@ public class RegistrarLibroController {
         String titulo = txtTitulo.getText().toUpperCase();
         String autor = txtAutor.getText().toUpperCase();
         String editorial = txtEditorial.getText().toUpperCase();
-        String categoria = comboBoxCategoria.getSelectionModel().getSelectedItem();
+        Categoria categoria = comboBoxCategoria.getSelectionModel().getSelectedItem();
+        int id_categoria = categoria.getId();
         String ubicacion = txtUbicacion.getText().toUpperCase();
         int unidades = Integer.parseInt(txtUnidades.getText());
 
-        Libro libro = new Libro(titulo, ubicacion, categoria, editorial, autor, unidades);
+        Libro libro = new Libro(titulo, ubicacion, id_categoria, editorial, autor, unidades);
         if(librosDAO.registrarLibro(libro)){
             Alertas.mostrarExito("Se registro correctamente el libro");
         }
@@ -106,8 +112,8 @@ public class RegistrarLibroController {
 
     @FXML
     void initialize() {
-        comboBoxCategoria.getItems().addAll("DICCIONARIO", "MEDIO AMBIENTE", "EDUCACIÓN PARA LA PAZ", "EDUCACIÓN SEXUAL",
-                "PRUEBA SABER", "COMPRENSIÓN Y PRODUCCIÓN TEXTUAL", "LITERATURA", "FORMACIÓN VOCACIONAL");
+        ArrayList<Categoria> listaCategorias = categoriasDAO.obtenerCategorias();
+        comboBoxCategoria.getItems().addAll(listaCategorias);
     }
 
 }

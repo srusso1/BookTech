@@ -20,6 +20,9 @@ public class EstadisticasController {
     private BarChart<Number, String> gfBarraCategoria;
 
     @FXML
+    private BarChart<Number, String> gfBarraDocentes;
+
+    @FXML
     private PieChart gfTortaPrestamosGrado;
 
     private final PrestamosDAO prestamosDAO = new PrestamosDAO();
@@ -29,6 +32,7 @@ public class EstadisticasController {
         cargarGraficaGenero();
         cargarGraficaCategoria();
         cargarGraficaGrados();
+        cargarGraficaDocentes();
     }
 
     private void cargarGraficaGenero() {
@@ -159,5 +163,47 @@ public class EstadisticasController {
         }
 
         gfTortaPrestamosGrado.setData(pieData);
+    }
+
+    private void cargarGraficaDocentes() {
+
+        gfBarraDocentes.setAnimated(false);
+        gfBarraDocentes.setLegendVisible(false);
+        gfBarraDocentes.setTitle("Top 5 docentes con más préstamos");
+
+        Map<String, Integer> datos = prestamosDAO.obtenerPrestamosPorDocenteTop(5);
+
+        XYChart.Series<Number, String> serie = new XYChart.Series<>();
+        serie.setName("Docentes");
+
+        for (Map.Entry<String, Integer> entry : datos.entrySet()) {
+            String docente = entry.getKey();
+            Integer total = entry.getValue();
+
+            XYChart.Data<Number, String> data = new XYChart.Data<>(total, docente);
+            serie.getData().add(data);
+
+            data.nodeProperty().addListener((obs, oldNode, node) -> {
+                if (node != null) {
+                    Tooltip.install(node, new Tooltip(docente + ": " + total));
+
+                    String color;
+                    if (total == 0) {
+                        color = "#9ca3af";
+                    } else if (total < 20) {
+                        color = "#60a5fa";
+                    } else if (total < 60) {
+                        color = "#34d399";
+                    } else {
+                        color = "#f59e0b";
+                    }
+
+                    node.setStyle("-fx-bar-fill: " + color + ";");
+                }
+            });
+        }
+
+        gfBarraDocentes.getData().clear();
+        gfBarraDocentes.getData().add(serie);
     }
 }

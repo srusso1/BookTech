@@ -9,6 +9,8 @@ public class Prestamo {
     private int estado;
     private int grado;
     private String tituloLibro;
+    private Docente docente;
+    private MotivoPrestamo motivoPrestamo;
 
     public Prestamo(int estado, String fecha_limite, String fecha_prestamo, String estudiante, int id_libro, int id, int grado) {
         this.estado = estado;
@@ -29,6 +31,35 @@ public class Prestamo {
         this.fecha_prestamo = fecha_prestamo;
         this.estudiante = estudiante;
         this.id_libro = id_libro;
+    }
+
+    public Prestamo(int id, int id_libro, String estudiante, String fecha_prestamo, String fecha_limite, int estado, int grado, String tituloLibro, Docente docente, MotivoPrestamo motivoPrestamo) {
+        this.id = id;
+        this.id_libro = id_libro;
+        this.estudiante = estudiante;
+        this.fecha_prestamo = fecha_prestamo;
+        this.fecha_limite = fecha_limite;
+        this.estado = estado;
+        this.grado = grado;
+        this.tituloLibro = tituloLibro;
+        this.docente = docente;
+        this.motivoPrestamo = motivoPrestamo;
+    }
+
+    public Docente getDocente() {
+        return docente;
+    }
+
+    public void setDocente(Docente docente) {
+        this.docente = docente;
+    }
+
+    public MotivoPrestamo getMotivoPrestamo() {
+        return motivoPrestamo;
+    }
+
+    public void setMotivoPrestamo(MotivoPrestamo motivoPrestamo) {
+        this.motivoPrestamo = motivoPrestamo;
     }
 
     public int getGrado() {

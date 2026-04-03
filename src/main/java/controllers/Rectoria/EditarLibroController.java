@@ -1,5 +1,6 @@
 package controllers.Rectoria;
 
+import database.CategoriasDAO;
 import database.LibrosDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -7,10 +8,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import model.Categoria;
 import model.Libro;
 import utils.Alertas;
 import utils.Validaciones;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class EditarLibroController {
@@ -24,6 +27,9 @@ public class EditarLibroController {
 
     @FXML
     private ComboBox<String> comboBoxModificar;
+
+    @FXML
+    private ComboBox<Categoria> comboCategorias;
 
     @FXML
     private Label lblAutor;
@@ -47,24 +53,37 @@ public class EditarLibroController {
     private TextField txtEditar;
 
     LibrosDAO librosDAO = new LibrosDAO();
+    CategoriasDAO categoriasDAO = new CategoriasDAO();
 
     @FXML
     void clickRegistrar(ActionEvent event) {
-        if(comboBoxModificar.getSelectionModel().getSelectedItem() == null){
+        String campo = comboBoxModificar.getSelectionModel().getSelectedItem();
+
+        if(campo == null){
             Alertas.mostrarError("Seleccione el campo a editar");
             return;
         }
-        if(txtEditar.getText().isEmpty()){
-            Alertas.mostrarError("Ingrese el nuevo valor");
-            return;
+
+        String nuevoValor;
+
+        if(campo.equals("Categoria")){
+            Categoria categoriaSeleccionada = comboCategorias.getSelectionModel().getSelectedItem();
+            if(categoriaSeleccionada == null){
+                Alertas.mostrarError("Seleccione una categoria");
+                return;
+            }
+            nuevoValor = String.valueOf(categoriaSeleccionada.getId());
+        }else{
+            if(txtEditar.getText().isEmpty()){
+                Alertas.mostrarError("Ingrese el nuevo valor");
+                return;
+            }
+            nuevoValor = txtEditar.getText();
         }
 
-        String campo = comboBoxModificar.getSelectionModel().getSelectedItem();
-        String nuevoValor = txtEditar.getText();
-
-        if(comboBoxModificar.getSelectionModel().getSelectedItem().equals("Unidades")){
+        if(campo.equals("Unidades")){
             if(!Validaciones.validarCampoNumerico(txtEditar)){
-                Alertas.mostrarError("Sólo se admiten valores númericos al intentar modificar el campo 'Unidades'");
+                Alertas.mostrarError("Solo se admiten valores numericos al intentar modificar el campo 'Unidades'");
                 return;
             }else if(Integer.parseInt(nuevoValor) < 0){
                 Alertas.mostrarError("El valor no puede ser negativo");
@@ -72,21 +91,26 @@ public class EditarLibroController {
             }
         }
 
-        boolean ok = Alertas.mostrarConfirmacion("¿Estas seguro de modificar el " + campo + "? Se cambiará por '" + nuevoValor + "'");
+        String valorVisible = nuevoValor;
+        if(campo.equals("Categoria")){
+            Categoria categoriaSeleccionada = comboCategorias.getSelectionModel().getSelectedItem();
+            valorVisible = categoriaSeleccionada != null ? categoriaSeleccionada.getNombreCategoria() : "";
+        }
+
+        boolean ok = Alertas.mostrarConfirmacion("Estas seguro de modificar el " + campo + "? Se cambiara por '" + valorVisible + "'");
         if(ok){
             if(librosDAO.editarLibro(libro, campo, nuevoValor)){
-                Alertas.mostrarExito("Se actualizó correctamente el libro");
+                Alertas.mostrarExito("Se actualizo correctamente el libro");
             }
-
         }
 
         cerrar();
-
     }
 
     @FXML
     void initialize() {
 
+        cargarCategorias();
         ocultarElementos();
 
         comboBoxModificar.getItems().addAll(
@@ -96,15 +120,21 @@ public class EditarLibroController {
 
         comboBoxModificar.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldVal, newVal) -> {
-                    if (newVal != null) {
-                        mostrarElementos();
+                    if (newVal == null) {
+                        return;
+                    }
+
+                    if (newVal.equals("Categoria")) {
+                        mostrarComboCategorias();
+                        txtEditar.setPromptText("");
+                    } else {
+                        mostrarCampoTexto();
 
                         Map<String, String> prompts = Map.of(
-                                "Titulo", "Ingrese el nuevo título",
+                                "Titulo", "Ingrese el nuevo titulo",
                                 "Autor", "Ingrese el nuevo autor",
                                 "Editorial", "Ingrese la nueva editorial",
-                                "Ubicacion", "Ingrese la nueva ubicación",
-                                "Categoria", "Ingrese la nueva categoría",
+                                "Ubicacion", "Ingrese la nueva ubicacion",
                                 "Unidades", "Ingrese la nueva cantidad de unidades"
                         );
 
@@ -117,14 +147,31 @@ public class EditarLibroController {
         );
     }
 
+    private void cargarCategorias() {
+        ArrayList<Categoria> categorias = categoriasDAO.obtenerCategorias();
+        comboCategorias.getItems().setAll(categorias);
+    }
+
     private void ocultarElementos() {
         txtEditar.setVisible(false);
         txtEditar.setManaged(false);
+        comboCategorias.setVisible(false);
+        comboCategorias.setManaged(false);
     }
 
-    private void mostrarElementos(){
+    private void mostrarCampoTexto(){
         txtEditar.setVisible(true);
         txtEditar.setManaged(true);
+        comboCategorias.setVisible(false);
+        comboCategorias.setManaged(false);
+    }
+
+    private void mostrarComboCategorias(){
+        txtEditar.clear();
+        txtEditar.setVisible(false);
+        txtEditar.setManaged(false);
+        comboCategorias.setVisible(true);
+        comboCategorias.setManaged(true);
     }
 
     private void cargarDatos() {

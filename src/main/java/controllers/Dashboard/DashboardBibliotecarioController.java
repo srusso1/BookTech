@@ -51,6 +51,11 @@ public class DashboardBibliotecarioController {
     }
 
     @FXML
+    void clickBibliotecaVirtual(ActionEvent event) {
+        ManagerView.cargarCentro(contenedor, Paths.BIBLIOTECA_VIRTUAL);
+    }
+
+    @FXML
     void clickSalir(ActionEvent event) {
         if(Alertas.mostrarConfirmacion("¿Estás seguro que deseas cerrar sesión?")){
             ManagerView.cargarVista(contenedorPrincipal, Paths.LOGIN);

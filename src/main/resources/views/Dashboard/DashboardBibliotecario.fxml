@@ -125,6 +125,23 @@
                               </font>
                                   </Button>
                               </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                           <children>
+                              <ImageView fitHeight="40.0" fitWidth="40.0">
+                                 <image>
+                                    <Image url="@../../images/iconLibro.png" />
+                                 </image>
+                              </ImageView>
+                              <Button fx:id="btnBibliotecaVirtual" onAction="#clickBibliotecaVirtual" styleClass="sidebar-button" text="Biblioteca virtual">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </HBox>
       
                               <HBox alignment="CENTER_LEFT" spacing="15">
                                   <ImageView fitHeight="40.0" fitWidth="40.0">
@@ -150,13 +167,10 @@
                   </children>
       
                   <padding>
-                      <Insets left="25.0" top="80.0" />
+                      <Insets bottom="40.0" left="25.0" top="80.0" />
                   </padding>
               </VBox>
           </left>
-         <padding>
-            <Insets bottom="30.0" />
-         </padding>
       
       </BorderPane>
    </children>

@@ -13,13 +13,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import model.Prestamo;
 import utils.Alertas;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import utils.Fechas;
 import java.util.ArrayList;
 
 import static utils.Fechas.esDespues;
-import static utils.Fechas.fechaActual;
+import static utils.Fechas.fechaActualISO;
 
 public class DevolucionController {
 
@@ -44,6 +42,12 @@ public class DevolucionController {
 
     @FXML
     private Label lbUnidadesPrestadas;
+
+    @FXML
+    private TableColumn<Prestamo, String> tbDocente;
+
+    @FXML
+    private TableColumn<Prestamo, String> tbMotivo;
 
     @FXML
     private TableView<Prestamo> tabla;
@@ -92,8 +96,9 @@ public class DevolucionController {
 
         prestamoSeleccionado = tabla.getSelectionModel().getSelectedItem();
         if(prestamosDAO.registrarDevolucion(prestamoSeleccionado)){
-            if (esDespues(fechaActual(), prestamoSeleccionado.getFecha_limite())) {
-                Alertas.mostrarInfo("Se registro la devolución correctamente. Sin embargo, fue devuelto fuera de tiempo, la fecha límite era hasta: " + prestamoSeleccionado.getFecha_limite());
+            if (esDespues(fechaActualISO(), prestamoSeleccionado.getFecha_limite())) {
+                String fechaLimiteUI = Fechas.convertirAUI(prestamoSeleccionado.getFecha_limite());
+                Alertas.mostrarInfo("Se registro la devolución correctamente. Sin embargo, fue devuelto fuera de tiempo, la fecha límite era hasta: " + (fechaLimiteUI != null ? fechaLimiteUI : prestamoSeleccionado.getFecha_limite()));
             }else{
                 Alertas.mostrarExito("Se registro correctamente la devolución y fue dentro de la fecha establecida.");
             }
@@ -104,11 +109,11 @@ public class DevolucionController {
 
     private void configurarTabla(){
         tbPrestamo.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getFecha_prestamo())
+                new SimpleStringProperty(formatearFechaUI(data.getValue().getFecha_prestamo()))
         );
 
         tbLimite.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getFecha_limite())
+                new SimpleStringProperty(formatearFechaUI(data.getValue().getFecha_limite()))
         );
 
         tbEstado.setCellValueFactory(data ->
@@ -123,7 +128,22 @@ public class DevolucionController {
                 new SimpleStringProperty(Integer.toString(data.getValue().getGrado()))
         );
 
+        tbMotivo.setCellValueFactory(data -> {
+            var motivo = data.getValue().getMotivoPrestamo();
+            return new SimpleStringProperty(motivo != null ? motivo.getNombre() : "");
+        });
+
+        tbDocente.setCellValueFactory(data -> {
+            var docente = data.getValue().getDocente();
+            return new SimpleStringProperty(docente != null ? docente.getNombreCompleto() : "");
+        });
+
         tabla.getColumns().forEach(col -> col.setReorderable(false));
+    }
+
+    private String formatearFechaUI(String fechaBD) {
+        String fechaUI = Fechas.convertirAUI(fechaBD);
+        return fechaUI != null ? fechaUI : fechaBD;
     }
 
     private void cerrar() {

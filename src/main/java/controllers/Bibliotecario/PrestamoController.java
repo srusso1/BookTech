@@ -2,21 +2,19 @@ package controllers.Bibliotecario;
 
 import database.*;
 import javafx.fxml.FXML;
-import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Docente;
 import model.Estudiante;
 import model.Libro;
+import model.MotivoPrestamo;
 import utils.Alertas;
+import utils.BusquedaSugerencias;
 import utils.Fechas;
 import utils.Validaciones;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 public class PrestamoController {
@@ -25,7 +23,7 @@ public class PrestamoController {
     @FXML private TextField txtEstudiante;
     @FXML private DatePicker dpFechaDevolucion;
     @FXML private Label infoGrado;
-    @FXML private ComboBox<String> comboMotivosPrestamos;
+    @FXML ComboBox<MotivoPrestamo> comboMotivosPrestamos;
     @FXML private ContextMenu sugerenciasDocente;
     @FXML private TextField txtDocente;
     @FXML private Label infoIdentificacion;
@@ -42,7 +40,7 @@ public class PrestamoController {
     EstudiantesDAO estudiantesDAO = new EstudiantesDAO();
     MotivosPrestamoDAO motivosPrestamoDAO = new MotivosPrestamoDAO();
     DocentesDAO docentesDAO = new DocentesDAO();
-    Map<Integer, String> motivosPrestamos = new HashMap<>();
+    ArrayList<MotivoPrestamo> motivosPrestamos = new ArrayList<>();
     ArrayList<Docente> listaDocentes = new ArrayList<>();
     // 🔹 método para recibir el libro
     public void setLibro(Libro libro) {
@@ -74,7 +72,7 @@ public class PrestamoController {
         configurarBusquedaEstudiantes();
 
         motivosPrestamos = motivosPrestamoDAO.obtenerMotivosPrestamo();
-        comboMotivosPrestamos.getItems().addAll(motivosPrestamos.values());
+        comboMotivosPrestamos.getItems().addAll(motivosPrestamos);
 
         listaDocentes = docentesDAO.obtenerDocentes();
 
@@ -89,13 +87,30 @@ public class PrestamoController {
             return;
         }
 
+        if(estudianteSeleccionado == null){
+            Alertas.mostrarError("Es necesario seleccionar un estudiante");
+            return;
+        }
+
+        if(docenteSeleccionado == null){
+            Alertas.mostrarError("Es necesario seleccionar un docente");
+            return;
+        }
+
+        if(comboMotivosPrestamos.getSelectionModel().getSelectedItem() == null){
+            Alertas.mostrarError("Es necesario seleccionar un motivo de prestamo");
+            return;
+        }
+
+
         if(dpFechaDevolucion.getValue() == null){
             Alertas.mostrarError("Es necesario establecer una fecha límite de devolución");
             return;
         }
 
-        String fechaDevolucion = dpFechaDevolucion.getValue().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        String fechaHoy = Fechas.fechaActual();
+
+        String fechaDevolucion = Fechas.convertirAISO(dpFechaDevolucion.getValue());
+        String fechaHoy = Fechas.fechaActualISO();
 
         if(!Fechas.esDespues(fechaDevolucion, fechaHoy)){
             Alertas.mostrarError("Fecha no válida, asegurate de elegir una fecha posterior a la actual");
@@ -103,6 +118,9 @@ public class PrestamoController {
         }
         int idLibro = libro.getId();
         int id_estudiante = estudianteSeleccionado.getId();
+        MotivoPrestamo motivoPrestamo = comboMotivosPrestamos.getSelectionModel().getSelectedItem();
+        int id_motivo = motivoPrestamo.getId();
+        int id_docente = docenteSeleccionado.getId();
 
         if(prestamosDAO.validarPrestamo(idLibro, id_estudiante)){
             Alertas.mostrarError("El estudiante ya tiene un prestamo activo/pendiente para este libro");
@@ -110,7 +128,7 @@ public class PrestamoController {
         }
 
 
-        if(prestamosDAO.registrarPrestamo(idLibro, id_estudiante,fechaHoy, fechaDevolucion)){
+        if(prestamosDAO.registrarPrestamo(idLibro, id_estudiante, id_motivo, id_docente, fechaHoy, fechaDevolucion)){
             librosDAO.disminuirUnidadLibro(idLibro);
             Alertas.mostrarExito("Se registro el prestamo del libro: '" + libro.getTitulo() + "' al estudiante: " + estudianteSeleccionado.getNombreCompleto());
         }else{
@@ -120,121 +138,41 @@ public class PrestamoController {
     }
 
     private void configurarBusquedaDocentes() {
-
-        txtDocente.textProperty().addListener((obs, oldText, newText) -> {
-
-            if (newText.length() < 2) {
-                sugerenciasDocente.hide();
-                return;
-            }
-
-            String filtro = newText.toUpperCase();
-
-            List<Docente> resultados = listaDocentes.stream()
-                    .filter(d -> d.getNombreCompleto().toUpperCase().contains(filtro))
-                    .limit(5)
-                    .toList();
-
-            if (resultados.isEmpty()) {
-                sugerenciasDocente.hide();
-                Validaciones.agregarPopOver(txtDocente, "No hay coincidencias");
-                return;
-            }
-
-            Validaciones.ocultarPopOver(txtDocente);
-
-            List<MenuItem> items = new ArrayList<>();
-
-            for (Docente doc : resultados) {
-
-                MenuItem item = new MenuItem(
-                        doc.getNombreCompleto()
-                );
-
-                item.setOnAction(e -> {
-                    txtDocente.setText(doc.getNombreCompleto());
-                    docenteSeleccionado = doc; // 🔥 guarda el objeto
-                    sugerenciasDocente.hide();
-                });
-
-                items.add(item);
-            }
-
-            sugerenciasDocente.getItems().setAll(items);
-
-            if (!sugerenciasDocente.isShowing()) {
-                sugerenciasDocente.show(txtDocente, Side.BOTTOM, 0, 0);
-            }
-        });
-
-        txtDocente.focusedProperty().addListener((obs, old, focused) -> {
-            if (!focused) {
-                sugerenciasDocente.hide();
-                Validaciones.ocultarPopOver(txtDocente);
-            }
-        });
+        BusquedaSugerencias.configurar(
+                txtDocente,
+                sugerenciasDocente,
+                listaDocentes,
+                2,
+                5,
+                Docente::getNombreCompleto,
+                Docente::getNombreCompleto,
+                Docente::getNombreCompleto,
+                doc -> docenteSeleccionado = doc,
+                null
+        );
     }
 
     private void configurarBusquedaEstudiantes() {
 
         ocultarInfoEstudiante();
 
-        txtEstudiante.textProperty().addListener((obs, oldText, newText) -> {
-
-            if (newText.length() < 2) {
-                sugerenciasMenu.hide();
-                return;
-            }
-
-            String filtro = newText.toUpperCase();
-
-            List<Estudiante> resultados = listaEstudiantes.stream()
-                    .filter(e -> e.getNombreCompleto().toUpperCase().contains(filtro))
-                    .limit(5)
-                    .toList();
-
-            if (resultados.isEmpty()) {
-                sugerenciasMenu.hide();
-                Validaciones.agregarPopOver(txtEstudiante, "No hay coincidencias");
-                return;
-            }
-
-            Validaciones.ocultarPopOver(txtEstudiante);
-
-            List<MenuItem> items = new ArrayList<>();
-
-            for (Estudiante est : resultados) {
-
-                MenuItem item = new MenuItem(
-                        est.getNombreCompletoYGrado()
-                );
-
-                item.setOnAction(e -> {
-                    txtEstudiante.setText(est.getNombreCompleto());
-                    estudianteSeleccionado = est; // 🔥 guardas el objeto completo
+        BusquedaSugerencias.configurar(
+                txtEstudiante,
+                sugerenciasMenu,
+                listaEstudiantes,
+                2,
+                5,
+                Estudiante::getNombreCompleto,
+                Estudiante::getNombreCompletoYGrado,
+                Estudiante::getNombreCompleto,
+                est -> {
+                    estudianteSeleccionado = est;
                     infoGrado.setText(String.valueOf(est.getGrado()));
                     infoIdentificacion.setText(String.valueOf(est.getIdentificacion()));
-                    sugerenciasMenu.hide();
                     mostrarInfoEstudiante();
-                });
-
-                items.add(item);
-            }
-
-            sugerenciasMenu.getItems().setAll(items);
-
-            if (!sugerenciasMenu.isShowing()) {
-                sugerenciasMenu.show(txtEstudiante, Side.BOTTOM, 0, 0);
-                ocultarInfoEstudiante();
-            }
-        });
-
-        txtEstudiante.focusedProperty().addListener((obs, old, focused) -> {
-            if (!focused) {
-                sugerenciasMenu.hide();
-                Validaciones.ocultarPopOver(txtEstudiante);
-            }
-        });
+                },
+                this::ocultarInfoEstudiante
+        );
     }
 
     private void ocultarInfoEstudiante(){

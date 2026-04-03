@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="800.0" spacing="15" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Bibliotecario.DevolucionController">
+<VBox prefHeight="400.0" prefWidth="1039.0" spacing="15" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Bibliotecario.DevolucionController">
    <padding>
       <Insets bottom="20" left="20" right="20" top="20" />
    </padding>
@@ -20,13 +20,15 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <TableView fx:id="tabla">
+      <TableView fx:id="tabla" prefHeight="240.0" prefWidth="805.0">
         <columns>
           <TableColumn fx:id="tbEstudiante" prefWidth="127.0" text="ESTUDIANTE" />
           <TableColumn fx:id="tbGrado" prefWidth="85.0" text="GRADO" />
             <TableColumn fx:id="tbPrestamo" prefWidth="85.0" text="F. PRESTAMO" />
             <TableColumn fx:id="tbLimite" prefWidth="85.0" text="F. LIMITE" />
             <TableColumn fx:id="tbEstado" prefWidth="85.0" text="ESTADO" />
+            <TableColumn fx:id="tbMotivo" prefWidth="75.0" text="MOTIVO" />
+            <TableColumn fx:id="tbDocente" prefWidth="75.0" text="DOCENTE" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
