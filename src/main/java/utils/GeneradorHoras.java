@@ -63,13 +63,45 @@ public class GeneradorHoras {
     }
 
     /**
+     * Calcula la diferencia entre dos horarios en minutos.
+     * Es la base exacta para mostrar y guardar duraciones sin perder precisión.
+     */
+    public static int calcularDiferenciaMinutos(String horaInicio, String horaFin) {
+        try {
+            String[] partsInicio = horaInicio.split(":");
+            String[] partsFin = horaFin.split(":");
+
+            int horaI = Integer.parseInt(partsInicio[0]);
+            int minutoI = Integer.parseInt(partsInicio[1]);
+
+            int horaF = Integer.parseInt(partsFin[0]);
+            int minutoF = Integer.parseInt(partsFin[1]);
+
+            int totalMinutosInicio = horaI * 60 + minutoI;
+            int totalMinutosFin = horaF * 60 + minutoF;
+
+            return Math.max(totalMinutosFin - totalMinutosInicio, 0);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    /**
      * Formatea horas con decimales a formato legible (ej: 2.5 -> "2h 30min")
      * @param horas Horas en formato decimal
      * @return String formateado
      */
     public static String formatearHoras(double horas) {
-        int horasEnteras = (int) horas;
-        int minutos = (int) ((horas - horasEnteras) * 60);
+        int totalMinutos = (int) Math.round(horas * 60);
+        return formatearMinutos(totalMinutos);
+    }
+
+    /**
+     * Formatea una cantidad total de minutos a texto legible (ej: 270 -> "4h 30min").
+     */
+    public static String formatearMinutos(int totalMinutos) {
+        int horasEnteras = totalMinutos / 60;
+        int minutos = totalMinutos % 60;
         
         if (minutos == 0) {
             return horasEnteras + "h";

@@ -95,6 +95,18 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.50.3.0</version>
         </dependency>
+        <!-- iText 7 para generación de PDFs -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itext-core</artifactId>
+            <version>8.0.3</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itext-layout</artifactId>
+            <version>8.0.3</version>
+        </dependency>
     </dependencies>
 
     <build>

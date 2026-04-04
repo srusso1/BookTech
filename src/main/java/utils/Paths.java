@@ -23,5 +23,6 @@ public class Paths {
     public static final String EDITAR_LIBRO_RECTORIA = "/views/Rectoria/EditarLibro.fxml";
     public static final String REGISTRAR_LIBRO_RECTORIA = "/views/Rectoria/RegistrarLibro.fxml";
     public static final String ESTADISTICAS_RECTORIA = "/views/Rectoria/Estadisticas.fxml";
+    public static final String INFORMES_RECTORIA = "/views/Rectoria/Informes.fxml";
 
 }

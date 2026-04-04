@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -19,7 +21,7 @@ public class PrestamosDAO {
     // ESTADO: 0 - Prestado, 1 - Devuelto, 2 - Pendiente
 
     public boolean registrarPrestamo(int idLibro, int id_estudiante, int id_motivo, int id_docente, String fechaPrestamo, String fechaLimite){
-        String query = "INSERT INTO prestamos (id_libro, id_estudiante, id_motivo, id_docente, fecha_prestamo, fecha_limite) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO prestamos (id_libro, id_estudiante, id_motivo, id_docente, fecha_prestamo, fecha_limite, devuelto_tarde, dias_atraso) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try{
             Connection conexion = ConexionSQLite.conectar();
             PreparedStatement ps = conexion.prepareStatement(query);
@@ -29,6 +31,8 @@ public class PrestamosDAO {
             ps.setInt(4, id_docente);
             ps.setString(5, fechaPrestamo);
             ps.setString(6, fechaLimite);
+            ps.setInt(7, 0);
+            ps.setInt(8, 0);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             Alertas.mostrarError("Error al registrar el prestamo: " + e.getMessage());
@@ -49,6 +53,8 @@ public class PrestamosDAO {
             p.estado,
             p.fecha_prestamo,
             p.fecha_limite,
+            p.devuelto_tarde,
+            p.dias_atraso,
             e.grado,
             l.titulo,
             e.apellido_1 || ' ' || e.apellido_2 || ' ' || e.nombre_1 || ' ' || e.nombre_2 AS estudiante
@@ -85,6 +91,9 @@ public class PrestamosDAO {
                         docente,
                         motivoPrestamo
                 ));
+                Prestamo prestamo = prestamos.get(prestamos.size() - 1);
+                prestamo.setDevuelto_tarde(rs.getInt("devuelto_tarde"));
+                prestamo.setDias_atraso(rs.getInt("dias_atraso"));
             }
 
         } catch (SQLException e) {
@@ -107,6 +116,8 @@ public class PrestamosDAO {
             p.estado,
             p.fecha_prestamo,
             p.fecha_limite,
+            p.devuelto_tarde,
+            p.dias_atraso,
             e.grado,
             l.titulo,
             e.apellido_1 || ' ' || e.apellido_2 || ' ' || e.nombre_1 || ' ' || e.nombre_2 AS estudiante
@@ -141,6 +152,9 @@ public class PrestamosDAO {
                         docente,
                         motivoPrestamo
                 ));
+                Prestamo prestamo = prestamos.get(prestamos.size() - 1);
+                prestamo.setDevuelto_tarde(rs.getInt("devuelto_tarde"));
+                prestamo.setDias_atraso(rs.getInt("dias_atraso"));
             }
 
         } catch (SQLException e) {
@@ -196,17 +210,23 @@ public class PrestamosDAO {
 
     public boolean registrarDevolucion(Prestamo prestamo){
 
+        String fechaDevolucion = Fechas.fechaActualISO();
+        int diasAtraso = calcularDiasAtraso(prestamo.getFecha_limite(), fechaDevolucion);
+        int devueltoTarde = diasAtraso > 0 ? 1 : 0;
+
         String query = """
                 UPDATE prestamos
-                SET estado = ?, fecha_devolucion = ?
+                SET estado = ?, fecha_devolucion = ?, devuelto_tarde = ?, dias_atraso = ?
                 WHERE id = ?
             """;
         try{
             Connection conexion = ConexionSQLite.conectar();
             PreparedStatement ps = conexion.prepareStatement(query);
             ps.setInt(1, 1);
-            ps.setString(2, Fechas.fechaActualISO());
-            ps.setInt(3, prestamo.getId());
+            ps.setString(2, fechaDevolucion);
+            ps.setInt(3, devueltoTarde);
+            ps.setInt(4, diasAtraso);
+            ps.setInt(5, prestamo.getId());
             return ps.executeUpdate() > 0;
         }catch (SQLException e) {
             Alertas.mostrarError("Error al registrar la devolución: " + e.getMessage());
@@ -214,6 +234,19 @@ public class PrestamosDAO {
             ConexionSQLite.cerrarConexion();
         }
         return false;
+    }
+
+    private int calcularDiasAtraso(String fechaLimite, String fechaDevolucion) {
+        try {
+            LocalDate limite = LocalDate.parse(fechaLimite);
+            LocalDate devolucion = LocalDate.parse(fechaDevolucion);
+            if (!devolucion.isAfter(limite)) {
+                return 0;
+            }
+            return (int) ChronoUnit.DAYS.between(limite, devolucion);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public boolean validarPrestamo(int idLibro, int idEstudiante){
@@ -423,5 +456,158 @@ public class PrestamosDAO {
         return null;
     }
 
+    // ==================== MÉTODOS CON FILTRO DE FECHAS ====================
+
+    public Map<String, Integer> obtenerPrestamosPorGenero(String fechaInicio, String fechaFin) {
+        String query = """
+        SELECT 
+            e.genero,
+            COUNT(p.id) AS total_prestamos
+        FROM prestamos p
+        JOIN estudiantes e ON e.id = p.id_estudiante
+        WHERE p.fecha_prestamo >= ? AND p.fecha_prestamo <= ?
+        GROUP BY e.genero
+    """;
+
+        Map<String, Integer> datos = new HashMap<>();
+
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
+
+            ps.setString(1, fechaInicio);
+            ps.setString(2, fechaFin);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String genero = rs.getString("genero");
+                    int total = rs.getInt("total_prestamos");
+
+                    datos.put(genero, total);
+                }
+            }
+
+        } catch (SQLException e) {
+            Alertas.mostrarError("Error al obtener estadísticas por género: " + e.getMessage());
+        } finally {
+            ConexionSQLite.cerrarConexion();
+        }
+
+        return datos;
+    }
+
+    public Map<String, Integer> obtenerPrestamosPorCategoria(String fechaInicio, String fechaFin) {
+        String query = """
+        SELECT c.nombre_categoria, COUNT(p.id) AS total
+        FROM libros l
+        JOIN categorias c ON c.id = l.id_categoria
+        LEFT JOIN prestamos p ON l.id = p.id_libro AND p.fecha_prestamo >= ? AND p.fecha_prestamo <= ?
+        GROUP BY c.nombre_categoria
+        ORDER BY total DESC
+    """;
+
+        Map<String, Integer> datos = new LinkedHashMap<>();
+
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
+
+            ps.setString(1, fechaInicio);
+            ps.setString(2, fechaFin);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String categoria = rs.getString("nombre_categoria");
+                    int total = rs.getInt("total");
+
+                    datos.put(categoria, total);
+                }
+            }
+
+        } catch (SQLException e) {
+            Alertas.mostrarError("Error al obtener préstamos por categoría: " + e.getMessage());
+        } finally {
+            ConexionSQLite.cerrarConexion();
+        }
+
+        return datos;
+    }
+
+    public Map<String, Integer> obtenerPrestamosPorDocenteTop(int limite, String fechaInicio, String fechaFin) {
+        String query = """
+        SELECT 
+            d.id,
+            d.nombre_1 || ' ' || d.nombre_2 || ' ' || d.apellido_1 || ' ' || d.apellido_2 AS docente,
+            COUNT(p.id) AS total
+        FROM prestamos p
+        JOIN docentes d ON d.id = p.id_docente
+        WHERE p.fecha_prestamo >= ? AND p.fecha_prestamo <= ?
+        GROUP BY d.id, d.apellido_1, d.apellido_2, d.nombre_1, d.nombre_2
+        ORDER BY total DESC
+        LIMIT ?
+    """;
+
+        Map<String, Integer> datos = new LinkedHashMap<>();
+
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
+
+            ps.setString(1, fechaInicio);
+            ps.setString(2, fechaFin);
+            ps.setInt(3, limite);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    datos.put(
+                            rs.getString("docente"),
+                            rs.getInt("total")
+                    );
+                }
+            }
+
+        } catch (SQLException e) {
+            Alertas.mostrarError("Error al obtener préstamos por docente: " + e.getMessage());
+        } finally {
+            ConexionSQLite.cerrarConexion();
+        }
+
+        return datos;
+    }
+
+    public Map<String, Integer> obtenerPrestamosPorGradoTop(int limite, String fechaInicio, String fechaFin) {
+        String query = """
+        SELECT e.grado, COUNT(p.id) AS total
+        FROM prestamos p
+        JOIN estudiantes e ON e.id = p.id_estudiante
+        WHERE p.fecha_prestamo >= ? AND p.fecha_prestamo <= ?
+        GROUP BY e.grado
+        ORDER BY total DESC
+        LIMIT ?
+    """;
+
+        Map<String, Integer> datos = new LinkedHashMap<>();
+
+        try (Connection conn = ConexionSQLite.conectar();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setString(1, fechaInicio);
+            ps.setString(2, fechaFin);
+            ps.setInt(3, limite);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    datos.put(
+                            "Grado " + rs.getInt("grado"),
+                            rs.getInt("total")
+                    );
+                }
+            }
+
+        } catch (SQLException e) {
+            Alertas.mostrarError("Error al obtener préstamos por grado: " + e.getMessage());
+        } finally {
+            ConexionSQLite.cerrarConexion();
+        }
+
+        return datos;
+    }
 
 }

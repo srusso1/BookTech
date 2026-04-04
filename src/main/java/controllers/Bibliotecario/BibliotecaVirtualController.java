@@ -1,19 +1,15 @@
 package controllers.Bibliotecario;
 
 import database.DocentesDAO;
+import database.EstudiantesDAO;
 import database.RegistroPlataformaDAO;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import model.Docente;
 import utils.Alertas;
 import utils.BusquedaSugerencias;
 import utils.GeneradorHoras;
-import utils.Validaciones;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +23,9 @@ public class BibliotecaVirtualController {
     private TextField txtUso;
 
     @FXML
+    private ComboBox<Integer> comboGrados;
+
+    @FXML
     private Spinner<String> spinnerInicio;
 
     @FXML
@@ -36,14 +35,17 @@ public class BibliotecaVirtualController {
     private Label lblHorasCalculadas;
 
     private final DocentesDAO docentesDAO = new DocentesDAO();
+    private final EstudiantesDAO estudiantesDAO = new EstudiantesDAO();
     private final ArrayList<Docente> listaDocentes = new ArrayList<>();
     private final ContextMenu sugerenciasDocente = new ContextMenu();
     private Docente docenteSeleccionado;
-    private RegistroPlataformaDAO registroPlataformaDAO = new RegistroPlataformaDAO();
+    private final RegistroPlataformaDAO registroPlataformaDAO = new RegistroPlataformaDAO();
 
     @FXML
     void initialize() {
         listaDocentes.addAll(docentesDAO.obtenerDocentes());
+        ArrayList<Integer> grados = estudiantesDAO.obtenerGrados();
+        comboGrados.getItems().addAll(grados);
         txtDocente.setContextMenu(sugerenciasDocente);
 
         BusquedaSugerencias.configurar(
@@ -83,13 +85,9 @@ public class BibliotecaVirtualController {
         spinnerFin.setEditable(true);
 
         // Listeners para calcular diferencia automáticamente
-        spinnerInicio.valueProperty().addListener((obs, oldVal, newVal) -> {
-            actualizarDiferencia();
-        });
+        spinnerInicio.valueProperty().addListener((obs, oldVal, newVal) -> actualizarDiferencia());
 
-        spinnerFin.valueProperty().addListener((obs, oldVal, newVal) -> {
-            actualizarDiferencia();
-        });
+        spinnerFin.valueProperty().addListener((obs, oldVal, newVal) -> actualizarDiferencia());
 
         // Calcular inicial
         actualizarDiferencia();
@@ -100,8 +98,8 @@ public class BibliotecaVirtualController {
         String horaFin = spinnerFin.getValue();
 
         if (horaInicio != null && horaFin != null) {
-            double diferencia = GeneradorHoras.calcularDiferencia(horaInicio, horaFin);
-            String formatted = GeneradorHoras.formatearHoras(diferencia);
+            int totalMinutos = GeneradorHoras.calcularDiferenciaMinutos(horaInicio, horaFin);
+            String formatted = GeneradorHoras.formatearMinutos(totalMinutos);
             lblHorasCalculadas.setText("Tiempo: " + formatted);
         }
     }
@@ -113,12 +111,13 @@ public class BibliotecaVirtualController {
             return;
         }
 
-        if(!Validaciones.campoRequerido(txtUso)){
+        if (comboGrados.getValue() == null) {
+            Alertas.mostrarError("Es necesario seleccionar un grado");
             return;
         }
 
-        if(txtUso.getText().length() < 5){
-            Alertas.mostrarError("El campo de uso debe tener al menos 5 caracteres");
+        if(txtUso.getText().length() < 5 || txtUso.getText().isEmpty()){
+            Alertas.mostrarError("El campo de uso debe tener al menos 5 caracteres y es obligatorio");
             return;
         }
 
@@ -126,15 +125,15 @@ public class BibliotecaVirtualController {
         String uso = txtUso.getText();
         String horaInicio = spinnerInicio.getValue();
         String horaFin = spinnerFin.getValue();
-        double diferenciaHoras = GeneradorHoras.calcularDiferencia(horaInicio, horaFin);
-        int totalHoras = (int) Math.round(diferenciaHoras);
+        int totalMinutos = GeneradorHoras.calcularDiferenciaMinutos(horaInicio, horaFin);
+        int grado = comboGrados.getValue();
 
-        if (diferenciaHoras <= 0) {
+        if (totalMinutos <= 0) {
             Alertas.mostrarError("La hora fin debe ser mayor que la hora inicio");
             return;
         }
 
-        if(registroPlataformaDAO.registrarUsoConHoras(id_docente, uso, horaInicio, horaFin, totalHoras)){
+        if(registroPlataformaDAO.registrarUsoConHorasYGrado(id_docente, uso, horaInicio, horaFin, totalMinutos, grado)){
             Alertas.mostrarExito("Registro de plataforma realizado correctamente");
             limpiarCampos();
         } else {
@@ -149,6 +148,7 @@ public class BibliotecaVirtualController {
         spinnerInicio.getValueFactory().setValue("06:00");
         spinnerFin.getValueFactory().setValue("08:00");
         docenteSeleccionado = null;
+        comboGrados.setValue(null);
         actualizarDiferencia();
     }
 }

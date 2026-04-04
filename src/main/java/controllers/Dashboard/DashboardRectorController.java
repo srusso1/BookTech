@@ -44,7 +44,7 @@ public class DashboardRectorController {
 
     @FXML
     void clickInformes(ActionEvent event) {
-
+        ManagerView.cargarCentro(contenedor, Paths.INFORMES_RECTORIA);
     }
 
     @FXML
