@@ -2,11 +2,13 @@ package controllers.Bibliotecario;
 
 import database.DocentesDAO;
 import database.EstudiantesDAO;
+import database.MotivosPlataformaDAO;
 import database.RegistroPlataformaDAO;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import model.Docente;
+import model.MotivoPlataforma;
 import utils.Alertas;
 import utils.BusquedaSugerencias;
 import utils.GeneradorHoras;
@@ -14,13 +16,13 @@ import utils.GeneradorHoras;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BibliotecaVirtualController {
+public class PlataformaVirtualController {
 
     @FXML
     private TextField txtDocente;
 
     @FXML
-    private TextField txtUso;
+    private ComboBox<MotivoPlataforma> comboMotivoUso;
 
     @FXML
     private ComboBox<Integer> comboGrados;
@@ -36,6 +38,7 @@ public class BibliotecaVirtualController {
 
     private final DocentesDAO docentesDAO = new DocentesDAO();
     private final EstudiantesDAO estudiantesDAO = new EstudiantesDAO();
+    private final MotivosPlataformaDAO motivosPlataformaDAO = new MotivosPlataformaDAO();
     private final ArrayList<Docente> listaDocentes = new ArrayList<>();
     private final ContextMenu sugerenciasDocente = new ContextMenu();
     private Docente docenteSeleccionado;
@@ -45,7 +48,12 @@ public class BibliotecaVirtualController {
     void initialize() {
         listaDocentes.addAll(docentesDAO.obtenerDocentes());
         ArrayList<Integer> grados = estudiantesDAO.obtenerGrados();
+        ArrayList<MotivoPlataforma> motivos = motivosPlataformaDAO.obtenerMotivosPlataformaActivos();
         comboGrados.getItems().addAll(grados);
+        comboMotivoUso.getItems().setAll(motivos);
+        if (motivos.isEmpty()) {
+            Alertas.mostrarError("No hay motivos de plataforma activos. Solicite activarlos en Configuración.");
+        }
         txtDocente.setContextMenu(sugerenciasDocente);
 
         BusquedaSugerencias.configurar(
@@ -116,13 +124,13 @@ public class BibliotecaVirtualController {
             return;
         }
 
-        if(txtUso.getText().length() < 5 || txtUso.getText().isEmpty()){
-            Alertas.mostrarError("El campo de uso debe tener al menos 5 caracteres y es obligatorio");
+        if (comboMotivoUso.getValue() == null) {
+            Alertas.mostrarError("Es necesario seleccionar un motivo de uso");
             return;
         }
 
         int id_docente = docenteSeleccionado.getId();
-        String uso = txtUso.getText();
+        int idMotivoUso = comboMotivoUso.getValue().getId();
         String horaInicio = spinnerInicio.getValue();
         String horaFin = spinnerFin.getValue();
         int totalMinutos = GeneradorHoras.calcularDiferenciaMinutos(horaInicio, horaFin);
@@ -133,7 +141,7 @@ public class BibliotecaVirtualController {
             return;
         }
 
-        if(registroPlataformaDAO.registrarUsoConHorasYGrado(id_docente, uso, horaInicio, horaFin, totalMinutos, grado)){
+        if(registroPlataformaDAO.registrarUsoConHorasYGrado(id_docente, idMotivoUso, horaInicio, horaFin, totalMinutos, grado)){
             Alertas.mostrarExito("Registro de plataforma realizado correctamente");
             limpiarCampos();
         } else {
@@ -144,7 +152,7 @@ public class BibliotecaVirtualController {
 
     private void limpiarCampos() {
         txtDocente.clear();
-        txtUso.clear();
+        comboMotivoUso.setValue(null);
         spinnerInicio.getValueFactory().setValue("06:00");
         spinnerFin.getValueFactory().setValue("08:00");
         docenteSeleccionado = null;

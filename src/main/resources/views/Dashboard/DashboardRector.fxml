@@ -141,7 +141,7 @@
                            <children>
                               <ImageView fitHeight="40.0" fitWidth="40.0">
                                  <image>
-                                    <Image url="@../../images/config.png" />
+                                    <Image url="@../../images/pdf.png" />
                                  </image>
                               </ImageView>
                               <Button fx:id="btnInformes" onAction="#clickInformes" styleClass="sidebar-button" text="Informes">

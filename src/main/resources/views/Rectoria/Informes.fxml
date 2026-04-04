@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -32,7 +33,7 @@
                         </Label>
 
                         <!-- Descripción -->
-                        <Label fx:id="lblDescripcion" text="Genere reportes PDF de préstamos con filtros por fecha y tipo de reporte" textFill="#4b5563" wrapText="true">
+                        <Label fx:id="lblDescripcion" text="Genere reportes PDF de prestamos, plataforma e inventario con filtros por tipo de reporte" textFill="#4b5563" wrapText="true">
                             <font>
                                 <Font name="Roboto Regular" size="16.0" />
                             </font>
@@ -54,6 +55,8 @@
                                         <ComboBox fx:id="cbTipoReporte" prefWidth="250.0" styleClass="combo-filtro" />
                                         <Label minWidth="100.0" styleClass="label-filtro" text="Estudiante:" />
                                         <TextField fx:id="txtEstudiante" managed="false" prefWidth="260.0" promptText="Escriba nombre del estudiante" styleClass="combo-filtro" visible="false" />
+                                         <Label minWidth="90.0" styleClass="label-filtro" text="Docente:" />
+                                         <TextField fx:id="txtDocente" managed="false" prefWidth="260.0" promptText="Escriba nombre del docente" styleClass="combo-filtro" visible="false" />
                                         <Label fx:id="lblGrado" minWidth="70.0" styleClass="label-filtro" text="Grado:" managed="false" visible="false" />
                                         <ComboBox fx:id="cbGrado" managed="false" prefWidth="140.0" styleClass="combo-filtro" visible="false" />
                                     </children>
@@ -75,6 +78,7 @@
                                 <HBox alignment="CENTER_LEFT" spacing="15.0">
                                     <children>
                                         <Button fx:id="btnGenerarReporte" onAction="#clickGenerarReporte" prefWidth="200.0" styleClass="btn-success" text="Generar Reporte PDF" />
+                                        <CheckBox fx:id="chkIncluirTablas" selected="true" text="Incluir tablas detalladas" />
                                         <Label text="Descargará el reporte en PDF con los filtros aplicados" textFill="#4b5563">
                                             <font>
                                                 <Font name="Roboto Regular" size="12.0" />
@@ -89,7 +93,7 @@
                         <Separator prefHeight="10.0" prefWidth="1100.0" />
 
                         <!-- Tabla de préstamos -->
-                        <Label styleClass="subtitulo-seccion" text="Datos de Préstamos">
+                        <Label fx:id="lblDatosTabla" styleClass="subtitulo-seccion" text="Datos de Préstamos">
                             <font>
                                 <Font name="Roboto Medium" size="16.0" />
                             </font>
@@ -100,6 +104,7 @@
                                 <TableColumn fx:id="colLibro" prefWidth="150.0" text="Libro" />
                                 <TableColumn fx:id="colEstudiante" prefWidth="150.0" text="Estudiante" />
                                 <TableColumn fx:id="colDocente" prefWidth="150.0" text="Docente" />
+                                <TableColumn fx:id="colMotivo" prefWidth="130.0" text="Motivo" />
                                 <TableColumn fx:id="colFechaPrestamo" prefWidth="120.0" text="Fecha Préstamo" />
                                 <TableColumn fx:id="colFechaLimite" prefWidth="120.0" text="Fecha Límite" />
                                 <TableColumn fx:id="colFechaDevolucion" prefWidth="120.0" text="Fecha Devolución" />

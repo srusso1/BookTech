@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="870.0" prefWidth="1180.0" stylesheets="@/styles/Rectoria/ConfiguracionStyle.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Rectoria.ConfiguracionController">
+    <children>
+        <VBox spacing="16.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <padding>
+                <Insets top="20.0" right="24.0" bottom="20.0" left="24.0" />
+            </padding>
+
+            <Label text="Configuración">
+                <font>
+                    <Font name="Roboto Medium" size="30.0" />
+                </font>
+            </Label>
+
+            <Label text="Gestione estudiantes y catálogos del sistema (motivos de préstamo/plataforma)." textFill="#4b5563" wrapText="true" />
+
+            <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                <tabs>
+                    <Tab text="Estudiantes">
+                        <content>
+                            <VBox spacing="12.0">
+                                <padding>
+                                    <Insets top="12.0" right="8.0" bottom="8.0" left="8.0" />
+                                </padding>
+
+                                <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                    <children>
+                                        <Button onAction="#clickCargarCsvEstudiantes" styleClass="btn-primary" text="Cargar CSV" />
+                                        <Button fx:id="btnDescartarCsv" disable="true" onAction="#clickDescartarCsv" styleClass="btn-secondary" text="Descartar vista previa CSV" />
+                                        <Label fx:id="lblResumenCsv" text="Estructura esperada CSV: identificacion, grado, apellido_1, apellido_2, nombre_1, nombre_2, genero" wrapText="true" />
+                                    </children>
+                                </HBox>
+
+                                <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                    <children>
+                                        <Label text="Grado:" />
+                                        <ComboBox fx:id="cbFiltroGrado" prefWidth="110.0" />
+                                        <Label text="Buscar estudiante:" />
+                                        <TextField fx:id="txtBuscarEstudiante" prefWidth="300.0" promptText="Nombre del estudiante" />
+                                    </children>
+                                </HBox>
+
+                                <TableView fx:id="tblEstudiantes" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                                    <columns>
+                                        <TableColumn fx:id="colEstIdentificacion" prefWidth="140.0" text="Identificación" />
+                                        <TableColumn fx:id="colEstGrado" prefWidth="80.0" text="Grado" />
+                                        <TableColumn fx:id="colEstApellido1" prefWidth="120.0" text="Apellido 1" />
+                                        <TableColumn fx:id="colEstApellido2" prefWidth="120.0" text="Apellido 2" />
+                                        <TableColumn fx:id="colEstNombre1" prefWidth="120.0" text="Nombre 1" />
+                                        <TableColumn fx:id="colEstNombre2" prefWidth="120.0" text="Nombre 2" />
+                                        <TableColumn fx:id="colEstGenero" prefWidth="90.0" text="Género" />
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                    </columnResizePolicy>
+                                </TableView>
+
+                                <GridPane hgap="10.0" vgap="8.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="14.0" />
+                                        <ColumnConstraints percentWidth="19.0" />
+                                        <ColumnConstraints percentWidth="14.0" />
+                                        <ColumnConstraints percentWidth="19.0" />
+                                        <ColumnConstraints percentWidth="14.0" />
+                                        <ColumnConstraints percentWidth="20.0" />
+                                    </columnConstraints>
+
+                                    <children>
+                                        <Label text="Identificación" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                        <TextField fx:id="txtIdentificacion" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+                                        <Label text="Grado" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                                        <TextField fx:id="txtGrado" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+
+                                        <Label text="Género" GridPane.rowIndex="0" GridPane.columnIndex="4" />
+                                        <TextField fx:id="txtGenero" GridPane.rowIndex="0" GridPane.columnIndex="5" />
+
+                                        <Label text="Apellido 1" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                        <TextField fx:id="txtApellido1" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+                                        <Label text="Apellido 2" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+                                        <TextField fx:id="txtApellido2" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+
+                                        <Label text="Nombre 1" GridPane.rowIndex="1" GridPane.columnIndex="4" />
+                                        <TextField fx:id="txtNombre1" GridPane.rowIndex="1" GridPane.columnIndex="5" />
+
+                                        <Label text="Nombre 2" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                                        <TextField fx:id="txtNombre2" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                                    </children>
+                                </GridPane>
+
+                                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                                    <children>
+                                        <Button fx:id="btnGuardarCambiosEstudiante" onAction="#clickGuardarCambiosEstudiante" styleClass="btn-success" text="Guardar cambios" />
+                                    </children>
+                                </HBox>
+                            </VBox>
+                        </content>
+                    </Tab>
+
+                    <Tab text="Motivos">
+                        <content>
+                            <HBox spacing="16.0">
+                                <padding>
+                                    <Insets top="12.0" right="8.0" bottom="8.0" left="8.0" />
+                                </padding>
+                                <children>
+                                    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                        <Label styleClass="subtitulo-seccion" text="Motivos de préstamo" />
+                                        <TableView fx:id="tblMotivosPrestamo" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                                            <columns>
+                                                <TableColumn fx:id="colPrestamoNombre" prefWidth="220.0" text="Motivo" />
+                                                <TableColumn fx:id="colPrestamoEstado" prefWidth="100.0" text="Estado" />
+                                            </columns>
+                                            <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                            </columnResizePolicy>
+                                        </TableView>
+
+                                        <HBox spacing="8.0">
+                                            <children>
+                                                <TextField fx:id="txtNuevoMotivoPrestamo" HBox.hgrow="ALWAYS" promptText="Nuevo motivo de préstamo" />
+                                                <Button onAction="#clickAgregarMotivoPrestamo" styleClass="btn-primary" text="Agregar" />
+                                                <Button onAction="#clickAlternarEstadoMotivoPrestamo" styleClass="btn-secondary" text="Activar/Inactivar" />
+                                            </children>
+                                        </HBox>
+                                    </VBox>
+
+                                    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                        <Label styleClass="subtitulo-seccion" text="Motivos de plataforma" />
+                                        <TableView fx:id="tblMotivosPlataforma" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                                            <columns>
+                                                <TableColumn fx:id="colPlataformaNombre" prefWidth="220.0" text="Motivo" />
+                                                <TableColumn fx:id="colPlataformaEstado" prefWidth="100.0" text="Estado" />
+                                            </columns>
+                                            <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                            </columnResizePolicy>
+                                        </TableView>
+
+                                        <HBox spacing="8.0">
+                                            <children>
+                                                <TextField fx:id="txtNuevoMotivoPlataforma" HBox.hgrow="ALWAYS" promptText="Nuevo motivo de plataforma" />
+                                                <Button onAction="#clickAgregarMotivoPlataforma" styleClass="btn-primary" text="Agregar" />
+                                                <Button onAction="#clickAlternarEstadoMotivoPlataforma" styleClass="btn-secondary" text="Activar/Inactivar" />
+                                            </children>
+                                        </HBox>
+                                    </VBox>
+                                </children>
+                            </HBox>
+                        </content>
+                    </Tab>
+                </tabs>
+            </TabPane>
+        </VBox>
+    </children>
+</AnchorPane>
+
+
+
+
+
+
+

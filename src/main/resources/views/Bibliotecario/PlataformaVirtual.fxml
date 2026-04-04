@@ -15,19 +15,19 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="870.0" prefWidth="1180.0" stylesheets="@../../styles/Rectoria/EstadisticasStyle.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Bibliotecario.BibliotecaVirtualController">
+<AnchorPane prefHeight="870.0" prefWidth="1180.0" stylesheets="@../../styles/Rectoria/EstadisticasStyle.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Bibliotecario.PlataformaVirtualController">
    <children>
       <VBox prefWidth="1180.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0.0">
          <padding>
             <Insets left="40.0" right="40.0" top="20.0" />
          </padding>
          <children>
-            <Label text="Biblioteca virtual">
+            <Label text="Plataforma virtual">
                <font>
                   <Font name="Roboto Medium" size="30" />
                </font>
             </Label>
-            <Label text="Bienvenido al panel de la biblioteca virtual" textFill="#4b5563" wrapText="true">
+            <Label text="Bienvenido al panel de la plataforma virtual" textFill="#4b5563" wrapText="true">
                <font>
                   <Font name="Roboto Regular" size="16.0" />
                </font>
@@ -47,11 +47,7 @@
                         </ContextMenu>
                      </contextMenu>
                   </TextField>
-                   <TextField fx:id="txtUso" maxWidth="350.0" prefHeight="70.0" prefWidth="350.0" promptText="Motivo de uso a la plataforma virtual">
-                      <font>
-                         <Font size="18.0" />
-                      </font>
-                   </TextField>
+                   <ComboBox fx:id="comboMotivoUso" maxWidth="350.0" prefHeight="44.0" prefWidth="350.0" promptText="Motivo de uso a la plataforma virtual" />
                   <ComboBox fx:id="comboGrados" prefHeight="44.0" prefWidth="202.0" promptText="Grado" />
                    <HBox spacing="20.0">
                       <children>

@@ -94,8 +94,15 @@ public class EstudianteReportGenerator extends BaseReportGenerator {
             // Agregar resumen
             agregarResumenEstudiante();
 
-            // Agregar tabla de préstamos
-            agregarTablaPrestamos();
+            // Agregar tabla de préstamos (opcional)
+            if (config.isIncluirTablas()) {
+                agregarTablaPrestamos();
+            } else {
+                pdfBuilder
+                        .agregarSeccion("Historial de Préstamos")
+                        .agregarParrafoIndentado("No se incluyó la tabla detallada por decisión del usuario.")
+                        .agregarEspacio(8);
+            }
 
             // Finalizar
             finalizarReporte();
@@ -169,15 +176,19 @@ public class EstudianteReportGenerator extends BaseReportGenerator {
 
         pdfBuilder.agregarSeccion("Historial de Préstamos");
 
-        // Crear tabla con 7 columnas
-        String[] encabezados = {"Libro", "Docente", "Fecha Préstamo", "Fecha Límite", "Estado", "Regresado tarde", "Días de tardanza"};
-        Table tabla = pdfBuilder.crearTabla(7, encabezados);
+        // Crear tabla con 8 columnas
+        String[] encabezados = {"Libro", "Docente", "Motivo", "Fecha Préstamo", "Fecha Límite", "Estado", "Regresado tarde", "Días de tardanza"};
+        float[] anchos = {2.3f, 1.8f, 1.4f, 1.2f, 1.2f, 1.0f, 1.1f, 1.0f};
+        Table tabla = pdfBuilder.crearTabla(anchos, encabezados);
 
         // Agregar filas
         for (Prestamo prestamo : prestamos) {
             String estado = obtenerNombreEstado(prestamo.getEstado());
             String docente = prestamo.getDocente() != null
                     ? prestamo.getDocente().getNombreCompleto()
+                    : "N/A";
+            String motivo = prestamo.getMotivoPrestamo() != null
+                    ? prestamo.getMotivoPrestamo().getNombre()
                     : "N/A";
             String regresadoTarde = prestamo.getEstado() == ReportConfig.ESTADO_DEVUELTO
                     ? (prestamo.getDevuelto_tarde() == 1 ? "Sí" : "No")
@@ -189,6 +200,7 @@ public class EstudianteReportGenerator extends BaseReportGenerator {
             String[] valores = {
                     prestamo.getTituloLibro(),
                     docente,
+                    motivo,
                     prestamo.getFecha_prestamo(),
                     prestamo.getFecha_limite(),
                     estado,

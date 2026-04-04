@@ -1,23 +1,27 @@
 package model;
 
-public class MotivoPrestamo {
-    private int id;
-    private String nombre;
+public class MotivoPlataforma {
+    private final int id;
+    private final String nombre;
     private int estado;
 
-    public MotivoPrestamo(int id, String nombre) {
+    public MotivoPlataforma(int id, String nombre) {
         this(id, nombre, 1);
     }
 
-    public MotivoPrestamo(int id, String nombre, int estado) {
+    public MotivoPlataforma(int id, String nombre, int estado) {
         this.id = id;
         this.nombre = nombre;
         this.estado = estado;
     }
 
-    public int getId() { return id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getNombre() { return nombre; }
+    public String getNombre() {
+        return nombre;
+    }
 
     public int getEstado() {
         return estado;
@@ -32,3 +36,4 @@ public class MotivoPrestamo {
         return nombre;
     }
 }
+

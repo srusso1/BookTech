@@ -33,6 +33,7 @@ public class ReportConfig {
     private String tipoReporte;
     private int idEstudiante;
     private int grado;
+    private boolean incluirTablas = true;
 
     // Constructor vacío
     public ReportConfig() {
@@ -83,6 +84,14 @@ public class ReportConfig {
 
     public void setGrado(int grado) {
         this.grado = grado;
+    }
+
+    public boolean isIncluirTablas() {
+        return incluirTablas;
+    }
+
+    public void setIncluirTablas(boolean incluirTablas) {
+        this.incluirTablas = incluirTablas;
     }
 
     /**

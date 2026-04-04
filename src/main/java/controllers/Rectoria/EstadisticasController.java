@@ -256,7 +256,7 @@ public class EstadisticasController {
 
         gfBarraDocentes.setAnimated(true);
         gfBarraDocentes.setLegendVisible(false);
-        gfBarraDocentes.setTitle("Top 5 docentes con más préstamos");
+        gfBarraDocentes.setTitle("Top 5 docentes que envian más estudiantes a la biblioteca");
 
         Map<String, Integer> datos = (fechaFiltroInicio != null && fechaFiltroFin != null) ?
                 prestamosDAO.obtenerPrestamosPorDocenteTop(5, fechaFiltroInicio, fechaFiltroFin) :

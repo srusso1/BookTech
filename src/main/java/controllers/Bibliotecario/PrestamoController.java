@@ -71,8 +71,11 @@ public class PrestamoController {
 
         configurarBusquedaEstudiantes();
 
-        motivosPrestamos = motivosPrestamoDAO.obtenerMotivosPrestamo();
+        motivosPrestamos = motivosPrestamoDAO.obtenerMotivosPrestamoActivos();
         comboMotivosPrestamos.getItems().addAll(motivosPrestamos);
+        if (motivosPrestamos.isEmpty()) {
+            Alertas.mostrarError("No hay motivos de préstamo activos. Solicite activarlos en Configuración.");
+        }
 
         listaDocentes = docentesDAO.obtenerDocentes();
 

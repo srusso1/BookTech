@@ -1,6 +1,7 @@
 package reports.utils;
 
 import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
@@ -161,17 +162,62 @@ public class PDFBuilder {
      * @param encabezados Array de encabezados
      */
     public Table crearTabla(int numColumnas, String[] encabezados) {
+        return crearTabla(numColumnas, encabezados, ColorConstants.LIGHT_GRAY);
+    }
+
+    /**
+     * Crea una tabla con anchos relativos personalizados por columna
+     */
+    public Table crearTabla(float[] anchosRelativos, String[] encabezados) {
+        return crearTabla(anchosRelativos, encabezados, ColorConstants.LIGHT_GRAY);
+    }
+
+    /**
+     * Crea una tabla con anchos relativos personalizados y color de encabezado
+     */
+    public Table crearTabla(float[] anchosRelativos, String[] encabezados, Color colorEncabezado) {
+        Table tabla = new Table(UnitValue.createPercentArray(anchosRelativos))
+                .useAllAvailableWidth()
+                .setFixedLayout();
+
+        int numColumnas = anchosRelativos.length;
+        float fontEncabezado = numColumnas >= 8 ? 9 : (numColumnas >= 7 ? 10 : 11);
+        float paddingEncabezado = numColumnas >= 8 ? 5 : (numColumnas >= 7 ? 6 : 8);
+
+        for (String encabezado : encabezados) {
+            Cell cell = new Cell()
+                    .add(new Paragraph(encabezado)
+                            .setFont(fontBold)
+                            .setFontSize(fontEncabezado)
+                            .setMultipliedLeading(1.0f))
+                    .setBackgroundColor(colorEncabezado)
+                    .setPadding(paddingEncabezado);
+            tabla.addCell(cell);
+        }
+
+        return tabla;
+    }
+
+    /**
+     * Crea una tabla con encabezados y color de fondo configurable
+     */
+    public Table crearTabla(int numColumnas, String[] encabezados, Color colorEncabezado) {
         Table tabla = new Table(UnitValue.createPercentArray(numColumnas))
-                .useAllAvailableWidth();
+                .useAllAvailableWidth()
+                .setFixedLayout();
+
+        float fontEncabezado = numColumnas >= 8 ? 9 : (numColumnas >= 7 ? 10 : 11);
+        float paddingEncabezado = numColumnas >= 8 ? 5 : (numColumnas >= 7 ? 6 : 8);
 
         // Agregar encabezados
         for (String encabezado : encabezados) {
             Cell cell = new Cell()
                     .add(new Paragraph(encabezado)
                             .setFont(fontBold)
-                            .setFontSize(11))
-                    .setBackgroundColor(ColorConstants.LIGHT_GRAY)
-                    .setPadding(8);
+                            .setFontSize(fontEncabezado)
+                            .setMultipliedLeading(1.0f))
+                    .setBackgroundColor(colorEncabezado)
+                    .setPadding(paddingEncabezado);
             tabla.addCell(cell);
         }
 
@@ -182,12 +228,17 @@ public class PDFBuilder {
      * Agrega una fila a la tabla
      */
     public void agregarFilaTabla(Table tabla, String[] valores) {
+        int numColumnas = valores.length;
+        float fontContenido = numColumnas >= 8 ? 8 : (numColumnas >= 7 ? 9 : 10);
+        float paddingContenido = numColumnas >= 8 ? 4 : (numColumnas >= 7 ? 5 : 6);
+
         for (String valor : valores) {
             Cell cell = new Cell()
                     .add(new Paragraph(valor != null ? valor : "")
                             .setFont(fontNormal)
-                            .setFontSize(10))
-                    .setPadding(6);
+                            .setFontSize(fontContenido)
+                            .setMultipliedLeading(1.0f))
+                    .setPadding(paddingContenido);
             tabla.addCell(cell);
         }
     }

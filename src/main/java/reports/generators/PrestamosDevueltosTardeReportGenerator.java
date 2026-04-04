@@ -39,7 +39,14 @@ public class PrestamosDevueltosTardeReportGenerator extends BaseReportGenerator 
         try {
             agregarEncabezadoEstandar("Reporte Préstamos Devueltos Tarde");
             agregarDescripcion();
-            agregarTabla();
+            if (config.isIncluirTablas()) {
+                agregarTabla();
+            } else {
+                pdfBuilder
+                        .agregarSeccion("Detalle de préstamos devueltos tarde")
+                        .agregarParrafoIndentado("No se incluyó la tabla detallada por decisión del usuario.")
+                        .agregarEspacio(8);
+            }
             finalizarReporte();
             Alertas.mostrarExito("Reporte generado correctamente en:\n" + rutaArchivo);
         } catch (Exception e) {
@@ -95,7 +102,8 @@ public class PrestamosDevueltosTardeReportGenerator extends BaseReportGenerator 
         String[] encabezados = {
                 "Libro", "Estudiante", "Grado", "Docente", "Fecha Préstamo", "Fecha Límite", "Fecha Devolución", "Días de tardanza"
         };
-        Table tabla = pdfBuilder.crearTabla(8, encabezados);
+        float[] anchos = {2.3f, 2.0f, 0.9f, 1.8f, 1.2f, 1.2f, 1.3f, 1.0f};
+        Table tabla = pdfBuilder.crearTabla(anchos, encabezados);
 
         for (Prestamo p : datos) {
             String docente = p.getDocente() != null ? p.getDocente().getNombreCompleto() : "N/A";

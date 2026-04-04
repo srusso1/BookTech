@@ -1,0 +1,500 @@
+package controllers.Rectoria;
+
+import database.EstudiantesDAO;
+import database.MotivosPlataformaDAO;
+import database.MotivosPrestamoDAO;
+import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.stage.FileChooser;
+import model.Estudiante;
+import model.MotivoPlataforma;
+import model.MotivoPrestamo;
+import utils.Alertas;
+
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ConfiguracionController {
+
+    private static final List<String> ESTRUCTURA_CSV = List.of(
+            "identificacion", "grado", "apellido_1", "apellido_2", "nombre_1", "nombre_2", "genero"
+    );
+
+    @FXML private TableView<Estudiante> tblEstudiantes;
+    @FXML private TableColumn<Estudiante, String> colEstIdentificacion;
+    @FXML private TableColumn<Estudiante, String> colEstGrado;
+    @FXML private TableColumn<Estudiante, String> colEstApellido1;
+    @FXML private TableColumn<Estudiante, String> colEstApellido2;
+    @FXML private TableColumn<Estudiante, String> colEstNombre1;
+    @FXML private TableColumn<Estudiante, String> colEstNombre2;
+    @FXML private TableColumn<Estudiante, String> colEstGenero;
+
+    @FXML private ComboBox<String> cbFiltroGrado;
+    @FXML private TextField txtBuscarEstudiante;
+
+    @FXML private TextField txtIdentificacion;
+    @FXML private TextField txtGrado;
+    @FXML private TextField txtApellido1;
+    @FXML private TextField txtApellido2;
+    @FXML private TextField txtNombre1;
+    @FXML private TextField txtNombre2;
+    @FXML private TextField txtGenero;
+    @FXML private Label lblResumenCsv;
+    @FXML private Button btnGuardarCambiosEstudiante;
+    @FXML private Button btnDescartarCsv;
+
+    @FXML private TableView<MotivoPrestamo> tblMotivosPrestamo;
+    @FXML private TableColumn<MotivoPrestamo, String> colPrestamoNombre;
+    @FXML private TableColumn<MotivoPrestamo, String> colPrestamoEstado;
+    @FXML private TextField txtNuevoMotivoPrestamo;
+
+    @FXML private TableView<MotivoPlataforma> tblMotivosPlataforma;
+    @FXML private TableColumn<MotivoPlataforma, String> colPlataformaNombre;
+    @FXML private TableColumn<MotivoPlataforma, String> colPlataformaEstado;
+    @FXML private TextField txtNuevoMotivoPlataforma;
+
+    private final EstudiantesDAO estudiantesDAO = new EstudiantesDAO();
+    private final MotivosPrestamoDAO motivosPrestamoDAO = new MotivosPrestamoDAO();
+    private final MotivosPlataformaDAO motivosPlataformaDAO = new MotivosPlataformaDAO();
+
+    private final ArrayList<Estudiante> estudiantesPendientesCsv = new ArrayList<>();
+    private final ArrayList<Estudiante> estudiantesBaseTabla = new ArrayList<>();
+
+    private Estudiante estudianteSeleccionado;
+    private MotivoPrestamo motivoPrestamoSeleccionado;
+    private MotivoPlataforma motivoPlataformaSeleccionado;
+    private boolean hayCsvPendiente = false;
+
+    @FXML
+    void initialize() {
+        configurarTablaEstudiantes();
+        configurarFiltrosEstudiantes();
+        configurarTablaMotivos();
+        cargarEstudiantes();
+        cargarMotivosPrestamo();
+        cargarMotivosPlataforma();
+        actualizarEstadoBotonGuardado();
+    }
+
+    private void configurarTablaEstudiantes() {
+        colEstIdentificacion.setCellValueFactory(cd -> Bindings.createStringBinding(() -> String.valueOf(cd.getValue().getIdentificacion())));
+        colEstGrado.setCellValueFactory(cd -> Bindings.createStringBinding(() -> String.valueOf(cd.getValue().getGrado())));
+        colEstApellido1.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getApellido_1));
+        colEstApellido2.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getApellido_2));
+        colEstNombre1.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getNombre_1));
+        colEstNombre2.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getNombre_2));
+        colEstGenero.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getGenero));
+
+        tblEstudiantes.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, nuevo) -> {
+            estudianteSeleccionado = nuevo;
+            if (nuevo == null) {
+                limpiarFormularioEstudiante();
+                return;
+            }
+            txtIdentificacion.setText(String.valueOf(nuevo.getIdentificacion()));
+            txtGrado.setText(String.valueOf(nuevo.getGrado()));
+            txtApellido1.setText(valorSeguro(nuevo.getApellido_1()));
+            txtApellido2.setText(valorSeguro(nuevo.getApellido_2()));
+            txtNombre1.setText(valorSeguro(nuevo.getNombre_1()));
+            txtNombre2.setText(valorSeguro(nuevo.getNombre_2()));
+            txtGenero.setText(valorSeguro(nuevo.getGenero()));
+        });
+    }
+
+    private void configurarFiltrosEstudiantes() {
+        cbFiltroGrado.valueProperty().addListener((obs, oldValue, newValue) -> aplicarFiltrosTablaEstudiantes());
+        txtBuscarEstudiante.textProperty().addListener((obs, oldText, newText) -> aplicarFiltrosTablaEstudiantes());
+    }
+
+    private void configurarTablaMotivos() {
+        colPrestamoNombre.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getNombre));
+        colPrestamoEstado.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getEstado() == 1 ? "Activo" : "Inactivo"));
+
+        colPlataformaNombre.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getNombre));
+        colPlataformaEstado.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getEstado() == 1 ? "Activo" : "Inactivo"));
+
+        tblMotivosPrestamo.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, nuevo) -> motivoPrestamoSeleccionado = nuevo);
+        tblMotivosPlataforma.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, nuevo) -> motivoPlataformaSeleccionado = nuevo);
+    }
+
+    private void cargarEstudiantes() {
+        actualizarBaseTablaEstudiantes(estudiantesDAO.obtenerEstudiantes());
+    }
+
+    private void actualizarBaseTablaEstudiantes(List<Estudiante> estudiantes) {
+        estudiantesBaseTabla.clear();
+        estudiantesBaseTabla.addAll(estudiantes);
+        actualizarOpcionesFiltroGrado();
+        aplicarFiltrosTablaEstudiantes();
+    }
+
+    private void actualizarOpcionesFiltroGrado() {
+        String actual = cbFiltroGrado.getValue();
+        ArrayList<String> grados = new ArrayList<>();
+        grados.add("Todos");
+        estudiantesBaseTabla.stream().map(Estudiante::getGrado).distinct().sorted().forEach(g -> grados.add(String.valueOf(g)));
+        cbFiltroGrado.setItems(FXCollections.observableArrayList(grados));
+        if (actual != null && grados.contains(actual)) {
+            cbFiltroGrado.setValue(actual);
+        } else {
+            cbFiltroGrado.setValue("Todos");
+        }
+    }
+
+    private void aplicarFiltrosTablaEstudiantes() {
+        String filtroNombre = txtBuscarEstudiante.getText() == null ? "" : txtBuscarEstudiante.getText().trim().toUpperCase();
+        String filtroGrado = cbFiltroGrado.getValue();
+
+        List<Estudiante> filtrados = estudiantesBaseTabla.stream()
+                .filter(est -> {
+                    if (filtroGrado == null || "Todos".equalsIgnoreCase(filtroGrado)) {
+                        return true;
+                    }
+                    try {
+                        return est.getGrado() == Integer.parseInt(filtroGrado);
+                    } catch (NumberFormatException e) {
+                        return true;
+                    }
+                })
+                .filter(est -> filtroNombre.isEmpty() || est.getNombreCompleto().toUpperCase().contains(filtroNombre))
+                .toList();
+
+        tblEstudiantes.setItems(FXCollections.observableArrayList(filtrados));
+    }
+
+    private void cargarMotivosPrestamo() {
+        tblMotivosPrestamo.setItems(FXCollections.observableArrayList(motivosPrestamoDAO.obtenerTodosMotivosPrestamo()));
+    }
+
+    private void cargarMotivosPlataforma() {
+        tblMotivosPlataforma.setItems(FXCollections.observableArrayList(motivosPlataformaDAO.obtenerTodosMotivosPlataforma()));
+    }
+
+    @FXML
+    void clickGuardarCambiosEstudiante() {
+        if (hayCsvPendiente) {
+            aplicarCambiosCsvPendientes();
+            return;
+        }
+
+        if (estudianteSeleccionado == null) {
+            Alertas.mostrarError("Debe seleccionar un estudiante de la tabla");
+            return;
+        }
+
+        try {
+            long identificacion = Long.parseLong(txtIdentificacion.getText().trim());
+            int grado = Integer.parseInt(txtGrado.getText().trim());
+            if (grado <= 0) {
+                Alertas.mostrarError("El grado debe ser mayor que 0");
+                return;
+            }
+
+            if (estudiantesDAO.existeIdentificacionEnOtroRegistro(identificacion, estudianteSeleccionado.getId())) {
+                Alertas.mostrarError("Ya existe otro estudiante con esa identificación");
+                return;
+            }
+
+            Estudiante actualizado = new Estudiante(
+                    estudianteSeleccionado.getId(),
+                    identificacion,
+                    grado,
+                    txtApellido1.getText(),
+                    txtApellido2.getText(),
+                    txtNombre1.getText(),
+                    txtNombre2.getText(),
+                    txtGenero.getText()
+            );
+
+            if (estudiantesDAO.actualizarEstudiante(actualizado)) {
+                Alertas.mostrarExito("Estudiante actualizado correctamente");
+                cargarEstudiantes();
+                lblResumenCsv.setText("Cambios manuales aplicados correctamente.");
+            }
+        } catch (NumberFormatException e) {
+            Alertas.mostrarError("Identificación y grado deben ser numéricos");
+        }
+    }
+
+    @FXML
+    void clickCargarCsvEstudiantes() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Seleccionar archivo CSV de estudiantes");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos CSV", "*.csv"));
+        File file = chooser.showOpenDialog(tblEstudiantes.getScene().getWindow());
+
+        if (file == null) {
+            return;
+        }
+
+        procesarCsvEstudiantes(file);
+    }
+
+    @FXML
+    void clickDescartarCsv() {
+        if (!hayCsvPendiente) {
+            Alertas.mostrarError("No hay una vista previa CSV cargada para descartar");
+            return;
+        }
+
+        hayCsvPendiente = false;
+        estudiantesPendientesCsv.clear();
+        actualizarEstadoBotonGuardado();
+        txtBuscarEstudiante.clear();
+        cbFiltroGrado.setValue("Todos");
+        cargarEstudiantes();
+        lblResumenCsv.setText("Vista previa CSV descartada. Mostrando datos actuales.");
+        Alertas.mostrarExito("Vista previa CSV descartada correctamente");
+    }
+
+    private void procesarCsvEstudiantes(File file) {
+        try {
+            List<String> lineas = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+            if (lineas.isEmpty()) {
+                Alertas.mostrarError("El archivo CSV está vacío");
+                return;
+            }
+
+            int indiceEncabezado = -1;
+            List<String> encabezado = List.of();
+            for (int i = 0; i < lineas.size(); i++) {
+                String linea = lineas.get(i).trim();
+                if (linea.isEmpty()) {
+                    continue;
+                }
+                encabezado = normalizarEncabezados(parseCsvLine(linea));
+                indiceEncabezado = i;
+                break;
+            }
+
+            if (indiceEncabezado < 0 || !estructuraValida(encabezado)) {
+                Alertas.mostrarError("Estructura CSV inválida. Debe ser exactamente:\n" + String.join(", ", ESTRUCTURA_CSV));
+                return;
+            }
+
+            estudiantesPendientesCsv.clear();
+            int errores = 0;
+
+            for (int i = indiceEncabezado + 1; i < lineas.size(); i++) {
+                String linea = lineas.get(i).trim();
+                if (linea.isEmpty()) {
+                    continue;
+                }
+
+                try {
+                    List<String> columnas = parseCsvLine(linea);
+                    if (columnas.size() != ESTRUCTURA_CSV.size()) {
+                        errores++;
+                        continue;
+                    }
+
+                    long identificacion = Long.parseLong(columnas.get(0).trim());
+                    int grado = Integer.parseInt(columnas.get(1).trim());
+                    String nombre2 = columnas.get(5) == null ? "" : columnas.get(5).trim(); // nombre_2 vacío es válido
+
+                    Estudiante estudiante = new Estudiante(
+                            identificacion,
+                            grado,
+                            columnas.get(2),
+                            columnas.get(3),
+                            columnas.get(4),
+                            nombre2,
+                            columnas.get(6)
+                    );
+
+                    estudiantesPendientesCsv.add(estudiante);
+                } catch (Exception ex) {
+                    errores++;
+                }
+            }
+
+            if (estudiantesPendientesCsv.isEmpty()) {
+                hayCsvPendiente = false;
+                actualizarEstadoBotonGuardado();
+                Alertas.mostrarError("No se encontraron filas válidas para vista previa.");
+                return;
+            }
+
+            hayCsvPendiente = true;
+            actualizarEstadoBotonGuardado();
+            txtBuscarEstudiante.clear();
+            cbFiltroGrado.setValue("Todos");
+            actualizarBaseTablaEstudiantes(estudiantesPendientesCsv);
+
+            String resumen = "Vista previa CSV cargada: " + estudiantesPendientesCsv.size()
+                    + " filas válidas, " + errores + " errores. Revise/filtre la tabla y pulse Guardar registro CSV.";
+            lblResumenCsv.setText(resumen);
+            Alertas.mostrarExito("Vista previa cargada. Confirme con Guardar registro CSV.");
+
+        } catch (Exception e) {
+            Alertas.mostrarError("Error al leer el CSV: " + e.getMessage());
+        }
+    }
+
+    private void aplicarCambiosCsvPendientes() {
+        int insertados = 0;
+        int actualizados = 0;
+        int sinCambios = 0;
+        int errores = 0;
+
+        for (Estudiante estudiante : estudiantesPendientesCsv) {
+            try {
+                int resultado = estudiantesDAO.guardarOModificarPorIdentificacion(estudiante);
+                if (resultado == EstudiantesDAO.RESULTADO_INSERTADO) {
+                    insertados++;
+                } else if (resultado == EstudiantesDAO.RESULTADO_ACTUALIZADO) {
+                    actualizados++;
+                } else {
+                    sinCambios++;
+                }
+            } catch (Exception e) {
+                errores++;
+            }
+        }
+
+        hayCsvPendiente = false;
+        estudiantesPendientesCsv.clear();
+        actualizarEstadoBotonGuardado();
+        txtBuscarEstudiante.clear();
+        cbFiltroGrado.setValue("Todos");
+        cargarEstudiantes();
+
+        String resumen = "CSV guardado. Insertados: " + insertados
+                + ", Actualizados: " + actualizados
+                + ", Sin cambios: " + sinCambios
+                + ", Errores: " + errores;
+        lblResumenCsv.setText(resumen);
+        Alertas.mostrarExito(resumen);
+    }
+
+    @FXML
+    void clickAgregarMotivoPrestamo() {
+        String nombre = txtNuevoMotivoPrestamo.getText();
+        if (nombre == null || nombre.trim().isEmpty()) {
+            Alertas.mostrarError("Debe ingresar el nombre del motivo de préstamo");
+            return;
+        }
+        if (motivosPrestamoDAO.agregarMotivoPrestamo(nombre)) {
+            txtNuevoMotivoPrestamo.clear();
+            cargarMotivosPrestamo();
+            Alertas.mostrarExito("Motivo de préstamo registrado");
+        }
+    }
+
+    @FXML
+    void clickAlternarEstadoMotivoPrestamo() {
+        if (motivoPrestamoSeleccionado == null) {
+            Alertas.mostrarError("Seleccione un motivo de préstamo");
+            return;
+        }
+
+        int nuevoEstado = motivoPrestamoSeleccionado.getEstado() == 1 ? 0 : 1;
+        if (motivosPrestamoDAO.actualizarEstadoMotivoPrestamo(motivoPrestamoSeleccionado.getId(), nuevoEstado)) {
+            cargarMotivosPrestamo();
+            Alertas.mostrarExito("Estado actualizado correctamente");
+        }
+    }
+
+    @FXML
+    void clickAgregarMotivoPlataforma() {
+        String nombre = txtNuevoMotivoPlataforma.getText();
+        if (nombre == null || nombre.trim().isEmpty()) {
+            Alertas.mostrarError("Debe ingresar el nombre del motivo de plataforma");
+            return;
+        }
+        if (motivosPlataformaDAO.agregarMotivoPlataforma(nombre)) {
+            txtNuevoMotivoPlataforma.clear();
+            cargarMotivosPlataforma();
+            Alertas.mostrarExito("Motivo de plataforma registrado");
+        }
+    }
+
+    @FXML
+    void clickAlternarEstadoMotivoPlataforma() {
+        if (motivoPlataformaSeleccionado == null) {
+            Alertas.mostrarError("Seleccione un motivo de plataforma");
+            return;
+        }
+
+        int nuevoEstado = motivoPlataformaSeleccionado.getEstado() == 1 ? 0 : 1;
+        if (motivosPlataformaDAO.actualizarEstadoMotivoPlataforma(motivoPlataformaSeleccionado.getId(), nuevoEstado)) {
+            cargarMotivosPlataforma();
+            Alertas.mostrarExito("Estado actualizado correctamente");
+        }
+    }
+
+    private List<String> normalizarEncabezados(List<String> encabezados) {
+        List<String> salida = new ArrayList<>();
+        for (int i = 0; i < encabezados.size(); i++) {
+            String valor = encabezados.get(i);
+            if (i == 0) {
+                valor = valor.replace("\uFEFF", "");
+            }
+            salida.add(valor.trim().toLowerCase());
+        }
+        return salida;
+    }
+
+    private boolean estructuraValida(List<String> encabezados) {
+        if (encabezados.size() != ESTRUCTURA_CSV.size()) {
+            return false;
+        }
+        for (int i = 0; i < ESTRUCTURA_CSV.size(); i++) {
+            if (!ESTRUCTURA_CSV.get(i).equals(encabezados.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private List<String> parseCsvLine(String line) {
+        List<String> result = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        boolean inQuotes = false;
+
+        for (int i = 0; i < line.length(); i++) {
+            char c = line.charAt(i);
+            if (c == '"') {
+                inQuotes = !inQuotes;
+                continue;
+            }
+            if (c == ',' && !inQuotes) {
+                result.add(current.toString());
+                current.setLength(0);
+            } else {
+                current.append(c);
+            }
+        }
+        result.add(current.toString());
+        return result;
+    }
+
+    private void limpiarFormularioEstudiante() {
+        txtIdentificacion.clear();
+        txtGrado.clear();
+        txtApellido1.clear();
+        txtApellido2.clear();
+        txtNombre1.clear();
+        txtNombre2.clear();
+        txtGenero.clear();
+    }
+
+    private String valorSeguro(String valor) {
+        return valor == null ? "" : valor;
+    }
+
+    private void actualizarEstadoBotonGuardado() {
+        if (btnGuardarCambiosEstudiante != null) {
+            btnGuardarCambiosEstudiante.setText(hayCsvPendiente ? "Guardar registro CSV" : "Guardar cambios");
+        }
+        if (btnDescartarCsv != null) {
+            btnDescartarCsv.setDisable(!hayCsvPendiente);
+        }
+    }
+}
+

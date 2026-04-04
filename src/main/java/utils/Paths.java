@@ -15,7 +15,7 @@ public class Paths {
     public static final String PRESTAMO_BIBLIOTECARIO = "/views/Bibliotecario/Prestamo.fxml";
     public static final String DEVOLUCION_BIBLIOTECARIO = "/views/Bibliotecario/Devolucion.fxml";
     public static final String PRESTAMOS_ACTIVOS = "/views/Bibliotecario/PrestamosActivos.fxml";
-    public static final String BIBLIOTECA_VIRTUAL = "/views/Bibliotecario/BibliotecaVirtual.fxml";
+    public static final String BIBLIOTECA_VIRTUAL = "/views/Bibliotecario/PlataformaVirtual.fxml";
 
     // RECTORIA
     public static final String INICIO_RECTORIA = "/views/Rectoria/Inicio.fxml";
@@ -24,5 +24,6 @@ public class Paths {
     public static final String REGISTRAR_LIBRO_RECTORIA = "/views/Rectoria/RegistrarLibro.fxml";
     public static final String ESTADISTICAS_RECTORIA = "/views/Rectoria/Estadisticas.fxml";
     public static final String INFORMES_RECTORIA = "/views/Rectoria/Informes.fxml";
+    public static final String CONFIGURACION_RECTORIA = "/views/Rectoria/Configuracion.fxml";
 
 }

@@ -12,6 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.12.1</junit.version>
+        <itext.version>8.0.3</itext.version>
     </properties>
 
     <dependencies>
@@ -95,17 +96,21 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.50.3.0</version>
         </dependency>
-        <!-- iText 7 para generación de PDFs -->
+        <!-- iText para generación de PDFs -->
         <dependency>
             <groupId>com.itextpdf</groupId>
-            <artifactId>itext-core</artifactId>
-            <version>8.0.3</version>
-            <type>pom</type>
+            <artifactId>kernel</artifactId>
+            <version>${itext.version}</version>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>
-            <artifactId>itext-layout</artifactId>
-            <version>8.0.3</version>
+            <artifactId>layout</artifactId>
+            <version>${itext.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>io</artifactId>
+            <version>${itext.version}</version>
         </dependency>
     </dependencies>
 

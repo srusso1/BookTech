@@ -3,12 +3,12 @@ package model;
 public class RegistroPlataforma {
     private int id;
     private int id_docente;
-    private String motivo_uso;
+    private int id_motivo_uso;
 
-    public RegistroPlataforma(int id, int id_docente, String motivo_uso) {
+    public RegistroPlataforma(int id, int id_docente, int id_motivo_uso) {
         this.id = id;
         this.id_docente = id_docente;
-        this.motivo_uso = motivo_uso;
+        this.id_motivo_uso = id_motivo_uso;
     }
 
     public int getId() {
@@ -27,11 +27,11 @@ public class RegistroPlataforma {
         this.id_docente = id_docente;
     }
 
-    public String getMotivo_uso() {
-        return motivo_uso;
+    public int getId_motivo_uso() {
+        return id_motivo_uso;
     }
 
-    public void setMotivo_uso(String motivo_uso) {
-        this.motivo_uso = motivo_uso;
+    public void setId_motivo_uso(int id_motivo_uso) {
+        this.id_motivo_uso = id_motivo_uso;
     }
 }

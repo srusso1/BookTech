@@ -7,17 +7,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class RegistroPlataformaDAO {
-    public boolean registrarUso(int id_docente, String motivo_uso) {
-        String query = "INSERT INTO registro_plataforma (id_docente, motivo_uso, total_minutos, fecha) VALUES (?, ?, ?, ?)";
+    public boolean registrarUso(int id_docente, int id_motivo_uso) {
+        String query = "INSERT INTO registro_plataforma (id_docente, id_motivo_uso, total_minutos, fecha) VALUES (?, ?, ?, ?)";
         try{
             Connection conexion = ConexionSQLite.conectar();
             PreparedStatement ps = conexion.prepareStatement(query);
             ps.setInt(1, id_docente);
-            ps.setString(2, motivo_uso);
+            ps.setInt(2, id_motivo_uso);
             ps.setInt(3, 0);
             ps.setString(4, Fechas.fechaActualISO());
             return ps.executeUpdate() > 0;
@@ -29,13 +31,13 @@ public class RegistroPlataformaDAO {
         return false;
     }
 
-    public boolean registrarUsoConHoras(int id_docente, String motivo_uso, String hora_inicio, String hora_fin, int total_minutos) {
-        String query = "INSERT INTO registro_plataforma (id_docente, motivo_uso, hora_inicio, hora_fin, total_minutos, grado, fecha) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public boolean registrarUsoConHoras(int id_docente, int id_motivo_uso, String hora_inicio, String hora_fin, int total_minutos) {
+        String query = "INSERT INTO registro_plataforma (id_docente, id_motivo_uso, hora_inicio, hora_fin, total_minutos, grado, fecha) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try{
             Connection conexion = ConexionSQLite.conectar();
             PreparedStatement ps = conexion.prepareStatement(query);
             ps.setInt(1, id_docente);
-            ps.setString(2, motivo_uso);
+            ps.setInt(2, id_motivo_uso);
             ps.setString(3, hora_inicio);
             ps.setString(4, hora_fin);
             ps.setInt(5, total_minutos);
@@ -50,13 +52,13 @@ public class RegistroPlataformaDAO {
         return false;
     }
 
-    public boolean registrarUsoConHorasYGrado(int id_docente, String motivo_uso, String hora_inicio, String hora_fin, int total_minutos, int grado) {
-        String query = "INSERT INTO registro_plataforma (id_docente, motivo_uso, hora_inicio, hora_fin, total_minutos, grado, fecha) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public boolean registrarUsoConHorasYGrado(int id_docente, int id_motivo_uso, String hora_inicio, String hora_fin, int total_minutos, int grado) {
+        String query = "INSERT INTO registro_plataforma (id_docente, id_motivo_uso, hora_inicio, hora_fin, total_minutos, grado, fecha) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try{
             Connection conexion = ConexionSQLite.conectar();
             PreparedStatement ps = conexion.prepareStatement(query);
             ps.setInt(1, id_docente);
-            ps.setString(2, motivo_uso);
+            ps.setInt(2, id_motivo_uso);
             ps.setString(3, hora_inicio);
             ps.setString(4, hora_fin);
             ps.setInt(5, total_minutos);
@@ -219,6 +221,154 @@ public class RegistroPlataformaDAO {
             }
         } catch (SQLException e) {
             Alertas.mostrarError("Error al obtener el top de grados por uso de plataforma: " + e.getMessage());
+        } finally {
+            ConexionSQLite.cerrarConexion();
+        }
+
+        return datos;
+    }
+
+    public Map<String, Integer> obtenerTopMotivosUsoPlataforma(int limite) {
+        String query = """
+                SELECT COALESCE(mp.nombre_motivo, 'Sin motivo') AS motivo,
+                       COUNT(*) AS total
+                FROM registro_plataforma r
+                LEFT JOIN motivos_plataforma mp ON mp.id = r.id_motivo_uso
+                GROUP BY r.id_motivo_uso, mp.nombre_motivo
+                HAVING COUNT(*) > 0
+                ORDER BY total DESC
+                LIMIT ?
+                """;
+
+        Map<String, Integer> datos = new LinkedHashMap<>();
+
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
+
+            ps.setInt(1, limite);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    datos.put(rs.getString("motivo"), rs.getInt("total"));
+                }
+            }
+        } catch (SQLException e) {
+            Alertas.mostrarError("Error al obtener el top de motivos de plataforma: " + e.getMessage());
+        } finally {
+            ConexionSQLite.cerrarConexion();
+        }
+
+        return datos;
+    }
+
+    public Map<String, Integer> obtenerTopMotivosUsoPlataforma(String fechaInicio, String fechaFin, int limite) {
+        String query = """
+                SELECT COALESCE(mp.nombre_motivo, 'Sin motivo') AS motivo,
+                       COUNT(*) AS total
+                FROM registro_plataforma r
+                LEFT JOIN motivos_plataforma mp ON mp.id = r.id_motivo_uso
+                WHERE r.fecha >= ? AND r.fecha <= ?
+                GROUP BY r.id_motivo_uso, mp.nombre_motivo
+                HAVING COUNT(*) > 0
+                ORDER BY total DESC
+                LIMIT ?
+                """;
+
+        Map<String, Integer> datos = new LinkedHashMap<>();
+
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
+
+            ps.setString(1, fechaInicio);
+            ps.setString(2, fechaFin);
+            ps.setInt(3, limite);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    datos.put(rs.getString("motivo"), rs.getInt("total"));
+                }
+            }
+        } catch (SQLException e) {
+            Alertas.mostrarError("Error al obtener el top de motivos de plataforma: " + e.getMessage());
+        } finally {
+            ConexionSQLite.cerrarConexion();
+        }
+
+        return datos;
+    }
+
+    public List<Map<String, Object>> obtenerTopMotivosUsoPlataformaConTiempo(int limite) {
+        String query = """
+                SELECT COALESCE(mp.nombre_motivo, 'Sin motivo') AS motivo,
+                       COUNT(*) AS total,
+                       COALESCE(SUM(r.total_minutos), 0) AS minutos
+                FROM registro_plataforma r
+                LEFT JOIN motivos_plataforma mp ON mp.id = r.id_motivo_uso
+                GROUP BY r.id_motivo_uso, mp.nombre_motivo
+                HAVING COUNT(*) > 0
+                ORDER BY total DESC
+                LIMIT ?
+                """;
+
+        List<Map<String, Object>> datos = new ArrayList<>();
+
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
+
+            ps.setInt(1, limite);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> fila = new LinkedHashMap<>();
+                    fila.put("motivo", rs.getString("motivo"));
+                    fila.put("total", rs.getInt("total"));
+                    fila.put("minutos", rs.getInt("minutos"));
+                    datos.add(fila);
+                }
+            }
+        } catch (SQLException e) {
+            Alertas.mostrarError("Error al obtener el top de motivos de plataforma: " + e.getMessage());
+        } finally {
+            ConexionSQLite.cerrarConexion();
+        }
+
+        return datos;
+    }
+
+    public List<Map<String, Object>> obtenerTopMotivosUsoPlataformaConTiempo(String fechaInicio, String fechaFin, int limite) {
+        String query = """
+                SELECT COALESCE(mp.nombre_motivo, 'Sin motivo') AS motivo,
+                       COUNT(*) AS total,
+                       COALESCE(SUM(r.total_minutos), 0) AS minutos
+                FROM registro_plataforma r
+                LEFT JOIN motivos_plataforma mp ON mp.id = r.id_motivo_uso
+                WHERE r.fecha >= ? AND r.fecha <= ?
+                GROUP BY r.id_motivo_uso, mp.nombre_motivo
+                HAVING COUNT(*) > 0
+                ORDER BY total DESC
+                LIMIT ?
+                """;
+
+        List<Map<String, Object>> datos = new ArrayList<>();
+
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
+
+            ps.setString(1, fechaInicio);
+            ps.setString(2, fechaFin);
+            ps.setInt(3, limite);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> fila = new LinkedHashMap<>();
+                    fila.put("motivo", rs.getString("motivo"));
+                    fila.put("total", rs.getInt("total"));
+                    fila.put("minutos", rs.getInt("minutos"));
+                    datos.add(fila);
+                }
+            }
+        } catch (SQLException e) {
+            Alertas.mostrarError("Error al obtener el top de motivos de plataforma: " + e.getMessage());
         } finally {
             ConexionSQLite.cerrarConexion();
         }
