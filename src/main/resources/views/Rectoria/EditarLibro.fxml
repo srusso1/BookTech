@@ -14,7 +14,7 @@
       <Insets bottom="20" left="20" right="20" top="20" />
    </padding>
    <children>
-      <Label fx:id="lblLibro" style="-fx-font-weight: bold" text="Nombre Libro">
+      <Label fx:id="lblLibro" styleClass="subtitulo-seccion" text="Nombre Libro">
          <font>
             <Font size="16.0" />
          </font></Label>
@@ -88,16 +88,16 @@
             </Label>
          </children>
       </HBox>
-      <ComboBox fx:id="comboBoxModificar" prefHeight="41.0" prefWidth="202.0" promptText="¿Qué desea modificar?" />
-      <TextField fx:id="txtEditar" prefHeight="36.0" prefWidth="202.0">
+      <ComboBox fx:id="comboBoxModificar" prefHeight="41.0" prefWidth="202.0" promptText="¿Qué desea modificar?" styleClass="combo-filtro" />
+      <TextField fx:id="txtEditar" prefHeight="36.0" prefWidth="202.0" styleClass="combo-filtro">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <ComboBox fx:id="comboCategorias" prefHeight="42.0" prefWidth="202.0" promptText="Elige una categoria válida" />
+      <ComboBox fx:id="comboCategorias" prefHeight="42.0" prefWidth="202.0" promptText="Elige una categoria válida" styleClass="combo-filtro" />
       <HBox alignment="CENTER_RIGHT" spacing="10">
          <children>
-            <Button onAction="#clickRegistrar" prefHeight="36.0" prefWidth="89.0" text="Guardar">
+             <Button onAction="#clickRegistrar" prefHeight="36.0" prefWidth="89.0" styleClass="btn-primary" text="Guardar">
                <font>
                   <Font size="16.0" />
                </font>

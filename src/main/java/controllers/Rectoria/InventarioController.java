@@ -12,10 +12,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import model.Libro;
+import org.kordamp.bootstrapfx.BootstrapFX;
 import utils.Alertas;
 import utils.Paths;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class InventarioController {
 
@@ -72,6 +74,7 @@ public class InventarioController {
             Dialog<Void> dialog = new Dialog<>();
             dialog.setTitle("Editar libro");
             dialog.getDialogPane().setContent(root);
+            aplicarEstilosDialogo(dialog);
 
             // 🔹 Botón cerrar (el formulario maneja registrar/cancelar)
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
@@ -102,6 +105,7 @@ public class InventarioController {
             Dialog<Void> dialog = new Dialog<>();
             dialog.setTitle("Libro nuevo");
             dialog.getDialogPane().setContent(root);
+            aplicarEstilosDialogo(dialog);
 
             // 🔹 Botón cerrar (el formulario maneja registrar/cancelar)
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
@@ -192,6 +196,13 @@ public class InventarioController {
     private void cargarLibros(){
         inventarioLibros = librosDAO.inventarioLibros();
         tabla.getItems().setAll(inventarioLibros);
+    }
+
+    private void aplicarEstilosDialogo(Dialog<?> dialog) {
+        dialog.getDialogPane().getStylesheets().addAll(
+                BootstrapFX.bootstrapFXStylesheet(),
+                Objects.requireNonNull(getClass().getResource("/styles/style.css")).toExternalForm()
+        );
     }
 
 }

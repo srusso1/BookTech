@@ -24,24 +24,24 @@
                       <Insets bottom="25.0" left="40.0" right="40.0" top="25.0" />
                   </padding>
                   <children>
-                      <Label text="Estadisticas">
+                      <Label styleClass="titulo-seccion" text="Estadisticas">
                           <font>
                               <Font name="Roboto Medium" size="30" />
                           </font>
                       </Label>
-                      <Label text="Bienvenido al panel de estadisticas" textFill="#4b5563" wrapText="true">
+                      <Label styleClass="descripcion-seccion" text="Bienvenido al panel de estadisticas" wrapText="true">
                           <font>
                               <Font name="Roboto Regular" size="16.0" />
                           </font>
                       </Label>
                        <HBox spacing="15.0" alignment="CENTER_LEFT">
                            <children>
-                               <Label text="Desde:" />
-                               <DatePicker fx:id="dpFechaInicio" prefWidth="150.0" />
-                               <Label text="Hasta:" />
-                               <DatePicker fx:id="dpFechaFin" prefWidth="150.0" />
-                               <Button fx:id="btnFiltrar" text="Filtrar" prefWidth="100.0" onAction="#clickFiltrar" />
-                               <Button fx:id="btnLimpiarFiltro" text="Limpiar filtro" prefWidth="120.0" onAction="#clickLimpiarFiltro" />
+                               <Label styleClass="label-filtro" text="Desde:" />
+                               <DatePicker fx:id="dpFechaInicio" prefWidth="150.0" styleClass="date-picker-filtro" />
+                               <Label styleClass="label-filtro" text="Hasta:" />
+                               <DatePicker fx:id="dpFechaFin" prefWidth="150.0" styleClass="date-picker-filtro" />
+                               <Button fx:id="btnFiltrar" onAction="#clickFiltrar" prefWidth="100.0" styleClass="btn-primary" text="Filtrar" />
+                               <Button fx:id="btnLimpiarFiltro" onAction="#clickLimpiarFiltro" prefWidth="120.0" styleClass="btn-secondary" text="Limpiar filtro" />
                            </children>
                            <padding>
                                <Insets top="10.0" bottom="10.0" />

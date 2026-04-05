@@ -82,7 +82,7 @@ public class PlataformaVirtualController {
         );
         factoryInicio.setValue("06:00");
         spinnerInicio.setValueFactory(factoryInicio);
-        spinnerInicio.setEditable(true);
+        spinnerInicio.setEditable(false);
 
         // Configurar Spinner de fin (por defecto 8:00)
         SpinnerValueFactory<String> factoryFin = new SpinnerValueFactory.ListSpinnerValueFactory<>(
@@ -90,12 +90,20 @@ public class PlataformaVirtualController {
         );
         factoryFin.setValue("08:00");
         spinnerFin.setValueFactory(factoryFin);
-        spinnerFin.setEditable(true);
+        spinnerFin.setEditable(false);
 
         // Listeners para calcular diferencia automáticamente
-        spinnerInicio.valueProperty().addListener((obs, oldVal, newVal) -> actualizarDiferencia());
+        spinnerInicio.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (obs != null && newVal != null && !newVal.equals(oldVal)) {
+                actualizarDiferencia();
+            }
+        });
 
-        spinnerFin.valueProperty().addListener((obs, oldVal, newVal) -> actualizarDiferencia());
+        spinnerFin.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (obs != null && newVal != null && !newVal.equals(oldVal)) {
+                actualizarDiferencia();
+            }
+        });
 
         // Calcular inicial
         actualizarDiferencia();

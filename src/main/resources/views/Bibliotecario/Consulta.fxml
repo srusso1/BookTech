@@ -20,12 +20,12 @@
             <Insets left="40" right="40" top="20" />
          </padding>
          <children>
-            <Label text="Consulta">
+            <Label styleClass="titulo-seccion" text="Consulta">
                <font>
                   <Font name="Roboto Medium" size="30" />
                </font>
             </Label>
-            <Label text="Consulta libros, revisa su disponibilidad, gestiona préstamos y devoluciones desde un solo lugar." textFill="#4b5563" wrapText="true">
+            <Label styleClass="descripcion-seccion" text="Consulta libros, revisa su disponibilidad, gestiona préstamos y devoluciones desde un solo lugar." wrapText="true">
                <font>
                   <Font name="Roboto Regular" size="16.0" />
                </font>
@@ -135,6 +135,7 @@
                      </font>
                      <styleClass>
                         <String fx:value="btn" />
+                        <String fx:value="btn-primary" />
                         <String fx:value="btn-lg" />
                      </styleClass>
                   </Button>
@@ -144,6 +145,7 @@
                      </font>
                      <styleClass>
                         <String fx:value="btn" />
+                        <String fx:value="btn-success" />
                         <String fx:value="btn-lg" />
                      </styleClass>
                   </Button>
