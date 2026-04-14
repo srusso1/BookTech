@@ -16,12 +16,12 @@
             <Insets left="40.0" right="40.0" top="20.0" />
          </padding>
          <children>
-            <Label text="Inicio">
+            <Label styleClass="titulo-seccion" text="Inicio">
                <font>
                   <Font name="Roboto Medium" size="30" />
                </font>
             </Label>
-            <Label text="Bienvenido al panel de inicio. Aquí encontrarás un resumen general de la actividad de la biblioteca, incluyendo registros, préstamos y consultas recientes." textFill="#4b5563" wrapText="true">
+            <Label styleClass="descripcion-seccion" text="Bienvenido al panel de inicio. Aquí encontrarás un resumen general de la actividad de la biblioteca, incluyendo registros, préstamos y consultas recientes." wrapText="true">
                <font>
                   <Font name="Roboto Regular" size="16.0" />
                </font>
@@ -89,12 +89,12 @@
             </HBox>
             <VBox maxWidth="1400.0" VBox.vgrow="ALWAYS">
                <children>
-                  <Label text="Módulo Inventario">
+                  <Label styleClass="subtitulo-seccion" text="Módulo Inventario">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
                   </Label>
-                  <Label text="Administra y consulta fácilmente el catálogo completo de la biblioteca. Desde aquí podrás visualizar todos los libros registrados, filtrarlos por título para encontrarlos rápidamente, actualizar su información (como nombre, ubicación o cantidad disponible) y registrar nuevos libros para mantener el inventario siempre organizado y actualizado." textFill="#4b5563" wrapText="true">
+                  <Label styleClass="descripcion-seccion" text="Administra y consulta fácilmente el catálogo completo de la biblioteca. Desde aquí podrás visualizar todos los libros registrados, filtrarlos por título para encontrarlos rápidamente, actualizar su información (como nombre, ubicación o cantidad disponible) y registrar nuevos libros para mantener el inventario siempre organizado y actualizado." wrapText="true">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -103,7 +103,7 @@
                      </font>
                   </Label>
                   <Region prefHeight="35.0" prefWidth="1100.0" />
-                  <Label text="Módulo Estadisticas">
+                  <Label styleClass="subtitulo-seccion" text="Módulo Estadisticas">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
@@ -111,7 +111,7 @@
                         <Insets />
                      </VBox.margin>
                   </Label>
-                  <Label text="Accede a un resumen visual del uso de la biblioteca. Este módulo te permitirá analizar datos relevantes como la cantidad de préstamos realizados, las categorías más solicitadas y el comportamiento general de los usuarios, facilitando la toma de decisiones basada en información real." textFill="#4b5563" wrapText="true">
+                  <Label styleClass="descripcion-seccion" text="Accede a un resumen visual del uso de la biblioteca. Este módulo te permitirá analizar datos relevantes como la cantidad de préstamos realizados, las categorías más solicitadas y el comportamiento general de los usuarios, facilitando la toma de decisiones basada en información real." wrapText="true">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -120,7 +120,7 @@
                      </font>
                   </Label>
                   <Region prefHeight="35.0" prefWidth="1100.0" />
-                  <Label text="Módulo Informes">
+                  <Label styleClass="subtitulo-seccion" text="Módulo Informes">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
@@ -128,7 +128,7 @@
                         <Insets />
                      </VBox.margin>
                   </Label>
-                  <Label text="Genera reportes detallados sobre la actividad del sistema. Aquí podrás obtener información organizada sobre préstamos, inventario y movimientos registrados, ideal para llevar un control administrativo y realizar seguimientos periódicos." textFill="#4b5563" wrapText="true">
+                  <Label styleClass="descripcion-seccion" text="Genera reportes detallados sobre la actividad del sistema. Aquí podrás obtener información organizada sobre préstamos, inventario y movimientos registrados, ideal para llevar un control administrativo y realizar seguimientos periódicos." wrapText="true">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -137,7 +137,7 @@
                      </VBox.margin>
                   </Label>
                   <Region prefHeight="35.0" prefWidth="1100.0" />
-                  <Label text="Módulo Configuración">
+                  <Label styleClass="subtitulo-seccion" text="Módulo Configuración">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
@@ -145,7 +145,7 @@
                         <Insets />
                      </VBox.margin>
                   </Label>
-                  <Label text="Personaliza y ajusta el funcionamiento del sistema según las necesidades de la institución. Desde este apartado podrás gestionar opciones generales, parámetros del sistema y futuras configuraciones administrativas." textFill="#4b5563" wrapText="true">
+                  <Label styleClass="descripcion-seccion" text="Personaliza y ajusta el funcionamiento del sistema según las necesidades de la institución. Desde este apartado podrás gestionar opciones generales, parámetros del sistema y futuras configuraciones administrativas." wrapText="true">
                      <font>
                         <Font size="16.0" />
                      </font>

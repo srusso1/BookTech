@@ -20,23 +20,23 @@
                 <Insets left="40.0" right="40.0" top="20.0" />
             </padding>
             <children>
-                <Label text="Inventario">
+                <Label styleClass="titulo-seccion" text="Inventario">
                     <font>
                         <Font name="Roboto Medium" size="30" />
                     </font>
                 </Label>
-                <Label text="Bienvenido al panel inventario" textFill="#4b5563" wrapText="true">
+                <Label styleClass="descripcion-seccion" text="Bienvenido al panel inventario" wrapText="true">
                     <font>
                         <Font name="Roboto Regular" size="16.0" />
                     </font>
                 </Label>
                 <Separator prefHeight="20.0" prefWidth="1100.0" />
-            <TextField fx:id="txtBuscarLibro" maxWidth="450.0" prefHeight="45.0" prefWidth="1100.0" promptText="Título del libro">
+            <TextField fx:id="txtBuscarLibro" maxWidth="450.0" prefHeight="45.0" prefWidth="1100.0" promptText="Título del libro" styleClass="combo-filtro">
                <font>
                   <Font size="16.0" />
                </font>
             </TextField>
-            <TableView fx:id="tabla" prefHeight="443.0" prefWidth="1100.0">
+            <TableView fx:id="tabla" prefHeight="443.0" prefWidth="1100.0" styleClass="tabla-datos">
               <columns>
                 <TableColumn fx:id="tbTitulo" prefWidth="75.0" text="Titulo" />
                 <TableColumn fx:id="tbUbicacion" prefWidth="75.0" text="Ubicacion" />
@@ -51,21 +51,24 @@
             </TableView>
             <HBox spacing="20.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#clickEditar" text="Modificar">
+                   <Button mnemonicParsing="false" onAction="#clickEditar" text="Modificar">
                      <styleClass>
                         <String fx:value="btn" />
+                         <String fx:value="btn-primary" />
                         <String fx:value="btn-lg" />
                      </styleClass>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#clickNuevoLibro" text="Registrar nuevo libro">
+                   <Button mnemonicParsing="false" onAction="#clickNuevoLibro" text="Registrar nuevo libro">
                      <styleClass>
                         <String fx:value="btn" />
+                         <String fx:value="btn-success" />
                         <String fx:value="btn-lg" />
                      </styleClass>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#clickEliminarLibro" text="Eliminar libro">
+                   <Button mnemonicParsing="false" onAction="#clickEliminarLibro" text="Eliminar libro">
                      <styleClass>
                         <String fx:value="btn" />
+                         <String fx:value="btn-secondary" />
                         <String fx:value="btn-lg" />
                      </styleClass>
                   </Button>

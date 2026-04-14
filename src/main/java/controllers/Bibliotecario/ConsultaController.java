@@ -13,6 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Libro;
 import model.Prestamo;
+import org.kordamp.bootstrapfx.BootstrapFX;
 import utils.Alertas;
 import utils.Paths;
 import utils.Validaciones;
@@ -20,6 +21,7 @@ import utils.Validaciones;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class ConsultaController {
 
@@ -88,6 +90,7 @@ public class ConsultaController {
             Dialog<Void> dialog = new Dialog<>();
             dialog.setTitle("Registrar préstamo");
             dialog.getDialogPane().setContent(root);
+            aplicarEstilosDialogo(dialog);
 
             // 🔹 Botón cerrar (el formulario maneja registrar/cancelar)
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
@@ -131,6 +134,7 @@ public class ConsultaController {
             Dialog<Void> dialog = new Dialog<>();
             dialog.setTitle("Registrar devolución");
             dialog.getDialogPane().setContent(root);
+            aplicarEstilosDialogo(dialog);
 
             // 🔹 Botón cerrar (el formulario maneja registrar/cancelar)
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
@@ -238,6 +242,13 @@ public class ConsultaController {
 
         btnRegistrarDevolucion.setVisible(true);
         btnRegistrarDevolucion.setManaged(true);
+    }
+
+    private void aplicarEstilosDialogo(Dialog<?> dialog) {
+        dialog.getDialogPane().getStylesheets().addAll(
+                BootstrapFX.bootstrapFXStylesheet(),
+                Objects.requireNonNull(getClass().getResource("/styles/style.css")).toExternalForm()
+        );
     }
 
 

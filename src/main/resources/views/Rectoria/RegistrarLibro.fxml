@@ -14,45 +14,45 @@
       <Insets bottom="20" left="20" right="20" top="20" />
    </padding>
    <children>
-      <Label fx:id="lblLibro" style="-fx-font-weight: bold" text="Registrar nuevo libro">
+      <Label fx:id="lblLibro" styleClass="subtitulo-seccion" text="Registrar nuevo libro">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="txtTitulo" prefHeight="50.0" prefWidth="202.0" promptText="Titulo">
+      <TextField fx:id="txtTitulo" prefHeight="50.0" prefWidth="202.0" promptText="Titulo" styleClass="combo-filtro">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="txtUbicacion" prefHeight="50.0" prefWidth="202.0" promptText="Ubicación">
+      <TextField fx:id="txtUbicacion" prefHeight="50.0" prefWidth="202.0" promptText="Ubicación" styleClass="combo-filtro">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <ComboBox fx:id="comboBoxCategoria" prefHeight="54.0" prefWidth="235.0" promptText="Elige una categoría" />
-      <TextField fx:id="txtEditorial" prefHeight="50.0" prefWidth="202.0" promptText="Editorial">
+      <ComboBox fx:id="comboBoxCategoria" prefHeight="54.0" prefWidth="235.0" promptText="Elige una categoría" styleClass="combo-filtro" />
+      <TextField fx:id="txtEditorial" prefHeight="50.0" prefWidth="202.0" promptText="Editorial" styleClass="combo-filtro">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="txtAutor" prefHeight="50.0" prefWidth="202.0" promptText="Autor">
+      <TextField fx:id="txtAutor" prefHeight="50.0" prefWidth="202.0" promptText="Autor" styleClass="combo-filtro">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="txtUnidades" prefHeight="50.0" prefWidth="202.0" promptText="Unidades">
+      <TextField fx:id="txtUnidades" prefHeight="50.0" prefWidth="202.0" promptText="Unidades" styleClass="combo-filtro">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <Label style="-fx-text-fill: #666;" text="Ingrese los campos requeridos para registrar un nuevo libro">
+      <Label styleClass="descripcion-seccion" text="Ingrese los campos requeridos para registrar un nuevo libro">
          <font>
             <Font name="System Bold Italic" size="13.0" />
          </font>
       </Label>
       <HBox alignment="CENTER_RIGHT" spacing="10">
          <children>
-            <Button onAction="#clickRegistrar" prefHeight="36.0" prefWidth="89.0" text="Registrar">
+            <Button onAction="#clickRegistrar" prefHeight="36.0" prefWidth="89.0" styleClass="btn-primary" text="Registrar">
                <font>
                   <Font size="16.0" />
                </font>

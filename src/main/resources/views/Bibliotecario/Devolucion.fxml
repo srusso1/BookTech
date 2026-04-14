@@ -14,13 +14,13 @@
       <Insets bottom="20" left="20" right="20" top="20" />
    </padding>
    <children>
-      <Label fx:id="lblLibro" style="-fx-font-weight: bold" />
-      <Label fx:id="lbUnidadesPrestadas" text="Unidades prestadas: 5">
+      <Label fx:id="lblLibro" styleClass="subtitulo-seccion" />
+      <Label fx:id="lbUnidadesPrestadas" styleClass="descripcion-seccion" text="Unidades prestadas: 5">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <TableView fx:id="tabla" prefHeight="240.0" prefWidth="805.0">
+      <TableView fx:id="tabla" prefHeight="240.0" prefWidth="805.0" styleClass="tabla-datos">
         <columns>
           <TableColumn fx:id="tbEstudiante" prefWidth="127.0" text="ESTUDIANTE" />
           <TableColumn fx:id="tbGrado" prefWidth="85.0" text="GRADO" />
@@ -36,7 +36,7 @@
       </TableView>
       <HBox alignment="CENTER_RIGHT" spacing="10">
          <children>
-            <Button onAction="#clickDevolucion" prefHeight="36.0" prefWidth="119.0" text="Devolucion">
+            <Button onAction="#clickDevolucion" prefHeight="36.0" prefWidth="119.0" styleClass="btn-success" text="Devolucion">
                <font>
                   <Font size="16.0" />
                </font>

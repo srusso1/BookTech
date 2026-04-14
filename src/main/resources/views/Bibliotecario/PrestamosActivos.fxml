@@ -16,18 +16,18 @@
             <Insets bottom="20.0" left="40.0" right="40.0" top="20.0" />
          </padding>
          <children>
-            <Label text="Prestamos activos">
+            <Label styleClass="titulo-seccion" text="Prestamos activos">
                <font>
                   <Font name="Roboto Medium" size="30" />
                </font>
             </Label>
-            <Label text="En este módulo podrás visualizar todos los préstamos que se encuentran actualmente activos, permitiéndote monitorear su estado, verificar las fechas de préstamo y de devolución, y detectar fácilmente aquellos libros que aún no han sido regresados dentro del plazo establecido." textFill="#4b5563" wrapText="true">
+            <Label styleClass="descripcion-seccion" text="En este módulo podrás visualizar todos los préstamos que se encuentran actualmente activos, permitiéndote monitorear su estado, verificar las fechas de préstamo y de devolución, y detectar fácilmente aquellos libros que aún no han sido regresados dentro del plazo establecido." wrapText="true">
                <font>
                   <Font name="Roboto Regular" size="16.0" />
                </font>
             </Label>
             <Separator prefHeight="20.0" prefWidth="1100.0" />
-            <TableView fx:id="tabla" prefHeight="333.0" prefWidth="1100.0">
+            <TableView fx:id="tabla" prefHeight="333.0" prefWidth="1100.0" styleClass="tabla-datos">
               <columns>
                 <TableColumn fx:id="tbTituloLibro" prefWidth="75.0" text="Titulo" />
                 <TableColumn fx:id="tbEstudiante" prefWidth="75.0" text="Estudiante" />
@@ -44,12 +44,12 @@
             </TableView>
             <VBox>
                <children>
-                  <Label text="Estado: Prestado">
+                  <Label styleClass="subtitulo-seccion" text="Estado: Prestado">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
                   </Label>
-                  <Label text="Este préstamo se encuentra dentro del plazo de devolución establecido, por lo que el estudiante aún tiene tiempo disponible para regresar el libro sin inconvenientes" textFill="#4b5563" wrapText="true">
+                  <Label styleClass="descripcion-seccion" text="Este préstamo se encuentra dentro del plazo de devolución establecido, por lo que el estudiante aún tiene tiempo disponible para regresar el libro sin inconvenientes" wrapText="true">
                      <VBox.margin>
                         <Insets top="5.0" />
                      </VBox.margin>
@@ -58,12 +58,12 @@
                      </font>
                   </Label>
                   <AnchorPane maxHeight="50.0" prefHeight="200.0" prefWidth="200.0" />
-                  <Label text="Estado: Pendiente">
+                  <Label styleClass="subtitulo-seccion" text="Estado: Pendiente">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
                   </Label>
-                  <Label text="Este préstamo ha superado la fecha límite de devolución y el estudiante aún no ha realizado la entrega del libro, por lo que se considera como un préstamo vencido" textFill="#4b5563" wrapText="true">
+                  <Label styleClass="descripcion-seccion" text="Este préstamo ha superado la fecha límite de devolución y el estudiante aún no ha realizado la entrega del libro, por lo que se considera como un préstamo vencido" wrapText="true">
                      <VBox.margin>
                         <Insets top="5.0" />
                      </VBox.margin>
