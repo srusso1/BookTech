@@ -45,7 +45,6 @@ public class InventarioReportGenerator extends BaseReportGenerator {
             }
 
             finalizarReporte();
-            Alertas.mostrarExito("Reporte generado correctamente en:\n" + rutaArchivo);
         } catch (Exception e) {
             Alertas.mostrarError("Error al generar reporte de inventario: " + e.getMessage());
         }

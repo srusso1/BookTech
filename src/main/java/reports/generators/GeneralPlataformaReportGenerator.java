@@ -51,7 +51,6 @@ public class GeneralPlataformaReportGenerator extends BaseReportGenerator {
             }
 
             finalizarReporte();
-            Alertas.mostrarExito("Reporte generado correctamente en:\n" + rutaArchivo);
         } catch (Exception e) {
             Alertas.mostrarError("Error al generar reporte: " + e.getMessage());
         }

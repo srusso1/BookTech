@@ -48,7 +48,6 @@ public class PrestamosDevueltosTardeReportGenerator extends BaseReportGenerator 
                         .agregarEspacio(8);
             }
             finalizarReporte();
-            Alertas.mostrarExito("Reporte generado correctamente en:\n" + rutaArchivo);
         } catch (Exception e) {
             Alertas.mostrarError("Error al generar reporte: " + e.getMessage());
         }
