@@ -107,7 +107,7 @@ public class EstudianteReportGenerator extends BaseReportGenerator {
             // Finalizar
             finalizarReporte();
 
-            Alertas.mostrarExito("Reporte generado correctamente en:\n" + rutaArchivo);
+
 
         } catch (Exception e) {
             Alertas.mostrarError("Error al generar reporte: " + e.getMessage());

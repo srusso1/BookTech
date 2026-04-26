@@ -5,11 +5,11 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -24,27 +24,27 @@
                       <Insets bottom="25.0" left="40.0" right="40.0" top="25.0" />
                   </padding>
                   <children>
-                      <Label styleClass="titulo-seccion" text="Estadisticas">
+                      <Label text="Estadisticas">
                           <font>
                               <Font name="Roboto Medium" size="30" />
                           </font>
                       </Label>
-                      <Label styleClass="descripcion-seccion" text="Bienvenido al panel de estadisticas" wrapText="true">
+                      <Label text="Bienvenido al panel de estadisticas" textFill="#4b5563" wrapText="true">
                           <font>
                               <Font name="Roboto Regular" size="16.0" />
                           </font>
                       </Label>
-                       <HBox spacing="15.0" alignment="CENTER_LEFT">
+                       <HBox alignment="CENTER_LEFT" spacing="15.0">
                            <children>
-                               <Label styleClass="label-filtro" text="Desde:" />
-                               <DatePicker fx:id="dpFechaInicio" prefWidth="150.0" styleClass="date-picker-filtro" />
-                               <Label styleClass="label-filtro" text="Hasta:" />
-                               <DatePicker fx:id="dpFechaFin" prefWidth="150.0" styleClass="date-picker-filtro" />
-                               <Button fx:id="btnFiltrar" onAction="#clickFiltrar" prefWidth="100.0" styleClass="btn-primary" text="Filtrar" />
-                               <Button fx:id="btnLimpiarFiltro" onAction="#clickLimpiarFiltro" prefWidth="120.0" styleClass="btn-secondary" text="Limpiar filtro" />
+                               <Label text="Desde:" />
+                               <DatePicker fx:id="dpFechaInicio" prefWidth="150.0" />
+                               <Label text="Hasta:" />
+                               <DatePicker fx:id="dpFechaFin" prefWidth="150.0" />
+                               <Button fx:id="btnFiltrar" onAction="#clickFiltrar" prefWidth="100.0" text="Filtrar" />
+                               <Button fx:id="btnLimpiarFiltro" onAction="#clickLimpiarFiltro" prefWidth="120.0" text="Limpiar filtro" />
                            </children>
                            <padding>
-                               <Insets top="10.0" bottom="10.0" />
+                               <Insets bottom="10.0" top="10.0" />
                            </padding>
                        </HBox>
                       <Separator prefHeight="20.0" prefWidth="1100.0" />
