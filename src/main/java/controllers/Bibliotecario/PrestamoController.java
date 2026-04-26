@@ -115,10 +115,17 @@ public class PrestamoController {
         String fechaDevolucion = Fechas.convertirAISO(dpFechaDevolucion.getValue());
         String fechaHoy = Fechas.fechaActualISO();
 
-        if(!Fechas.esDespues(fechaDevolucion, fechaHoy)){
-            Alertas.mostrarError("Fecha no válida, asegurate de elegir una fecha posterior a la actual");
+        int comparacionFechas = Fechas.compararFechas(fechaDevolucion, fechaHoy);
+
+        if(comparacionFechas < 0){
+            Alertas.mostrarError("Fecha no valida, asegurate de elegir la fecha actual o una posterior");
             return;
         }
+
+        if(comparacionFechas == 0){
+            Alertas.mostrarInfo("La devolucion quedo para hoy. Recuerda indicarle al estudiante que debe regresar el libro el mismo dia");
+        }
+
         int idLibro = libro.getId();
         int id_estudiante = estudianteSeleccionado.getId();
         MotivoPrestamo motivoPrestamo = comboMotivosPrestamos.getSelectionModel().getSelectedItem();

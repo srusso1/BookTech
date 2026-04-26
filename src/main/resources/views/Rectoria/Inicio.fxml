@@ -59,20 +59,6 @@
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="140" prefWidth="260" spacing="15" styleClass="containerInfo">
                      <children>
-                        <Label text="Informes generados">
-                           <font>
-                              <Font name="System Bold" size="16.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="informesGenerados" text="N">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="140" prefWidth="260" spacing="15" styleClass="containerInfo">
-                     <children>
                         <Label text="Categoría más solicitada">
                            <font>
                               <Font name="System Bold" size="16.0" />
