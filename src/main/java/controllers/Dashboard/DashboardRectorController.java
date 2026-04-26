@@ -15,6 +15,9 @@ public class DashboardRectorController {
     private Button btnConfig;
 
     @FXML
+    private Button btnAyuda;
+
+    @FXML
     private Button btnConsulta;
 
     @FXML
@@ -35,6 +38,11 @@ public class DashboardRectorController {
     @FXML
     void clickConfig(ActionEvent event) {
         ManagerView.cargarCentro(contenedor, Paths.CONFIGURACION_RECTORIA);
+    }
+
+    @FXML
+    void clickAyuda(ActionEvent event) {
+        ManagerView.cargarCentro(contenedor, Paths.AYUDA_RECTORIA);
     }
 
     @FXML

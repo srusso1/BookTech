@@ -9,7 +9,7 @@ DefaultDirName={code:GetInstallDir}
 DefaultGroupName=BookTech
 DisableProgramGroupPage=yes
 OutputDir=..\..\..\dist\installer
-OutputBaseFilename=BookTech-Setup
+OutputBaseFilename=BookTech-Setup-{#AppVersion}
 Compression=lzma
 SolidCompression=yes
 ArchitecturesInstallIn64BitMode=x64compatible
@@ -24,7 +24,11 @@ Name: "desktopicon"; Description: "Crear acceso directo en escritorio"; GroupDes
 
 [Files]
 Source: "..\..\..\dist\app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\..\dist\app\database\BookTechDB.db"; DestDir: "{localappdata}\BookTech"; Flags: ignoreversion onlyifdoesntexist
+Source: "..\..\..\dist\app\database\BookTechDB.db"; DestDir: "{localappdata}\BookTech\data"; Flags: ignoreversion onlyifdoesntexist uninsneveruninstall
+
+[Dirs]
+Name: "{app}\updates"
+Name: "{app}\updates\win-x64\stable"
 
 [Icons]
 Name: "{autoprograms}\BookTech"; Filename: "{app}\BookTech.exe"
@@ -38,7 +42,6 @@ function GetInstallDir(Param: String): String;
 begin
   Result := ExpandConstant('{sd}\BookTech');
 end;
-
 
 
 

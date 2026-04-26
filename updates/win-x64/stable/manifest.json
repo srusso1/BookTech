@@ -1,0 +1,9 @@
+{
+    "channel":  "stable",
+    "publishedAt":  "2026-04-26T11:13:46-05:00",
+    "latestVersion":  "1.0.1",
+    "minSupportedVersion":  "1.0.0",
+    "artifactPath":  "C:\\BookTech\\updates\\BookTech-Setup.exe",
+    "sha256":  "647209f5b685f10bea007225d6b335027eed52c8d701aa609a579611bf481d5d",
+    "notes":  "Ruta de updates en C:\\BookTech"
+}

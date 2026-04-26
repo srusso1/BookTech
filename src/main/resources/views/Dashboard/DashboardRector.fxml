@@ -171,6 +171,23 @@
                               </Button>
                            </children>
                         </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                           <children>
+                              <ImageView fitHeight="40.0" fitWidth="40.0">
+                                 <image>
+                                    <Image url="@../../images/helpIcon.png" />
+                                 </image>
+                              </ImageView>
+                              <Button fx:id="btnAyuda" onAction="#clickAyuda" styleClass="sidebar-button" text="Ayuda">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </HBox>
                      </children>
                      <VBox.margin>
                         <Insets />

@@ -15,10 +15,10 @@ Este flujo genera:
 
 ## 2) Cambios de base de datos (ya aplicados)
 
-La app usa `%LOCALAPPDATA%\\BookTech\\BookTechDB.db`.
+La app usa `%LOCALAPPDATA%\\BookTech\\data\\BookTechDB.db`.
 
 - Si la DB no existe, se copia desde recursos (`/database/BookTechDB.db`).
-- El instalador tambien intenta dejar una copia inicial en `%LOCALAPPDATA%\\BookTech`.
+- El instalador tambien intenta dejar una copia inicial en `%LOCALAPPDATA%\\BookTech\\data`.
 
 ## 3) Build del paquete
 
@@ -42,4 +42,18 @@ Si Launch4j o Inno Setup no estan en la ruta por defecto, indica ambas rutas:
 - El instalador usa por defecto `C:\BookTech`.
 - Para personalizar version, nombre o ruta del setup, edita `scripts/packaging/inno/BookTech.iss`.
 - Para agregar icono `.ico` al exe, agrega la propiedad `<icon>` en `scripts/packaging/launch4j/booktech.xml`.
+- Al terminar, `build-win.ps1` copia el setup a `C:\BookTech\updates\BookTech-Setup.exe` y actualiza `C:\BookTech\updates\win-x64\stable\manifest.json` con hash SHA-256.
 
+## 5) Parametros opcionales para updates
+
+Tambien puedes controlar los metadatos de actualización desde el mismo build:
+
+```powershell
+.\scripts\packaging\build-win.ps1 `
+  -RuntimePath "C:\runtimes\jdk-21-jre" `
+  -Version "1.0.1" `
+  -Notes "Correcciones menores y mejoras de estabilidad." `
+  -Channel "stable" `
+  -MinSupportedVersion "1.0.0" `
+  -PublishUpdatesDir "C:\BookTech\updates"
+```

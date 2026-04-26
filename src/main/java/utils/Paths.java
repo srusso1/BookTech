@@ -25,5 +25,6 @@ public class Paths {
     public static final String ESTADISTICAS_RECTORIA = "/views/Rectoria/Estadisticas.fxml";
     public static final String INFORMES_RECTORIA = "/views/Rectoria/Informes.fxml";
     public static final String CONFIGURACION_RECTORIA = "/views/Rectoria/Configuracion.fxml";
+    public static final String AYUDA_RECTORIA = "/views/Rectoria/Ayuda.fxml";
 
 }
