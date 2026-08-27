@@ -1,24 +1,27 @@
 package application;
 
+import atlantafx.base.theme.PrimerLight;
 import javafx.application.Application;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import org.kordamp.bootstrapfx.BootstrapFX;
 import utils.Paths;
 import utils.updates.UpdateService;
 
+import javax.imageio.ImageIO;
 import java.awt.Taskbar;
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
 public class App extends Application {
 
-
     @Override
     public void start(Stage stage) throws Exception {
+
+        // Configuración global del tema moderno AtlantaFX PrimerLight
+        Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
 
         // Iniciamos la búsqueda de actualizaciones una vez que el toolkit de JavaFX está listo.
         new Thread(() -> {
@@ -38,12 +41,9 @@ public class App extends Application {
         Parent root = loader.load();
         Scene scene = new Scene(root);
 
-        // 1️⃣ BootstrapFX (base)
-        scene.getStylesheets().addAll(
-                BootstrapFX.bootstrapFXStylesheet(),
+        scene.getStylesheets().add(
                 getClass().getResource("/styles/style.css").toExternalForm()
         );
-
 
         stage.setTitle("BookTech");
         stage.setScene(scene);
@@ -74,10 +74,24 @@ public class App extends Application {
             if (Taskbar.isTaskbarSupported()) {
                 Taskbar taskbar = Taskbar.getTaskbar();
                 if (taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
-                    taskbar.setIconImage(SwingFXUtils.fromFXImage(icono, null));
+                    BufferedImage awtImage = cargarIconoAwt("/images/iconApp.png");
+                    if (awtImage != null) {
+                        taskbar.setIconImage(awtImage);
+                    }
                 }
             }
         } catch (UnsupportedOperationException | SecurityException ignored) {
+        }
+    }
+
+    private BufferedImage cargarIconoAwt(String resourcePath) {
+        try (InputStream iconStream = getClass().getResourceAsStream(resourcePath)) {
+            if (iconStream == null) {
+                return null;
+            }
+            return ImageIO.read(iconStream);
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -91,6 +105,4 @@ public class App extends Application {
             return null;
         }
     }
-
-
 }

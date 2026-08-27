@@ -22,41 +22,68 @@ import java.util.List;
 public class ConfiguracionController {
 
     private static final List<String> ESTRUCTURA_CSV = List.of(
-            "identificacion", "grado", "apellido_1", "apellido_2", "nombre_1", "nombre_2", "genero"
-    );
+            "identificacion", "grado", "apellido_1", "apellido_2", "nombre_1", "nombre_2", "genero");
 
-    @FXML private TableView<Estudiante> tblEstudiantes;
-    @FXML private TableColumn<Estudiante, String> colEstIdentificacion;
-    @FXML private TableColumn<Estudiante, String> colEstGrado;
-    @FXML private TableColumn<Estudiante, String> colEstApellido1;
-    @FXML private TableColumn<Estudiante, String> colEstApellido2;
-    @FXML private TableColumn<Estudiante, String> colEstNombre1;
-    @FXML private TableColumn<Estudiante, String> colEstNombre2;
-    @FXML private TableColumn<Estudiante, String> colEstGenero;
+    @FXML
+    private TableView<Estudiante> tblEstudiantes;
+    @FXML
+    private TableColumn<Estudiante, String> colEstIdentificacion;
+    @FXML
+    private TableColumn<Estudiante, String> colEstGrado;
+    @FXML
+    private TableColumn<Estudiante, String> colEstApellido1;
+    @FXML
+    private TableColumn<Estudiante, String> colEstApellido2;
+    @FXML
+    private TableColumn<Estudiante, String> colEstNombre1;
+    @FXML
+    private TableColumn<Estudiante, String> colEstNombre2;
+    @FXML
+    private TableColumn<Estudiante, String> colEstGenero;
 
-    @FXML private ComboBox<String> cbFiltroGrado;
-    @FXML private TextField txtBuscarEstudiante;
+    @FXML
+    private ComboBox<String> cbFiltroGrado;
+    @FXML
+    private TextField txtBuscarEstudiante;
 
-    @FXML private TextField txtIdentificacion;
-    @FXML private TextField txtGrado;
-    @FXML private TextField txtApellido1;
-    @FXML private TextField txtApellido2;
-    @FXML private TextField txtNombre1;
-    @FXML private TextField txtNombre2;
-    @FXML private TextField txtGenero;
-    @FXML private Label lblResumenCsv;
-    @FXML private Button btnGuardarCambiosEstudiante;
-    @FXML private Button btnDescartarCsv;
+    @FXML
+    private TextField txtIdentificacion;
+    @FXML
+    private TextField txtGrado;
+    @FXML
+    private TextField txtApellido1;
+    @FXML
+    private TextField txtApellido2;
+    @FXML
+    private TextField txtNombre1;
+    @FXML
+    private TextField txtNombre2;
+    @FXML
+    private TextField txtGenero;
+    @FXML
+    private Label lblResumenCsv;
+    @FXML
+    private Button btnGuardarCambiosEstudiante;
+    @FXML
+    private Button btnDescartarCsv;
 
-    @FXML private TableView<MotivoPrestamo> tblMotivosPrestamo;
-    @FXML private TableColumn<MotivoPrestamo, String> colPrestamoNombre;
-    @FXML private TableColumn<MotivoPrestamo, String> colPrestamoEstado;
-    @FXML private TextField txtNuevoMotivoPrestamo;
+    @FXML
+    private TableView<MotivoPrestamo> tblMotivosPrestamo;
+    @FXML
+    private TableColumn<MotivoPrestamo, String> colPrestamoNombre;
+    @FXML
+    private TableColumn<MotivoPrestamo, String> colPrestamoEstado;
+    @FXML
+    private TextField txtNuevoMotivoPrestamo;
 
-    @FXML private TableView<MotivoPlataforma> tblMotivosPlataforma;
-    @FXML private TableColumn<MotivoPlataforma, String> colPlataformaNombre;
-    @FXML private TableColumn<MotivoPlataforma, String> colPlataformaEstado;
-    @FXML private TextField txtNuevoMotivoPlataforma;
+    @FXML
+    private TableView<MotivoPlataforma> tblMotivosPlataforma;
+    @FXML
+    private TableColumn<MotivoPlataforma, String> colPlataformaNombre;
+    @FXML
+    private TableColumn<MotivoPlataforma, String> colPlataformaEstado;
+    @FXML
+    private TextField txtNuevoMotivoPlataforma;
 
     private final EstudiantesDAO estudiantesDAO = new EstudiantesDAO();
     private final MotivosPrestamoDAO motivosPrestamoDAO = new MotivosPrestamoDAO();
@@ -82,8 +109,10 @@ public class ConfiguracionController {
     }
 
     private void configurarTablaEstudiantes() {
-        colEstIdentificacion.setCellValueFactory(cd -> Bindings.createStringBinding(() -> String.valueOf(cd.getValue().getIdentificacion())));
-        colEstGrado.setCellValueFactory(cd -> Bindings.createStringBinding(() -> String.valueOf(cd.getValue().getGrado())));
+        colEstIdentificacion.setCellValueFactory(
+                cd -> Bindings.createStringBinding(() -> String.valueOf(cd.getValue().getIdentificacion())));
+        colEstGrado.setCellValueFactory(
+                cd -> Bindings.createStringBinding(() -> String.valueOf(cd.getValue().getGrado())));
         colEstApellido1.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getApellido_1));
         colEstApellido2.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getApellido_2));
         colEstNombre1.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getNombre_1));
@@ -113,13 +142,17 @@ public class ConfiguracionController {
 
     private void configurarTablaMotivos() {
         colPrestamoNombre.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getNombre));
-        colPrestamoEstado.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getEstado() == 1 ? "Activo" : "Inactivo"));
+        colPrestamoEstado.setCellValueFactory(
+                cd -> Bindings.createStringBinding(() -> cd.getValue().getEstado() == 1 ? "Activo" : "Inactivo"));
 
         colPlataformaNombre.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getNombre));
-        colPlataformaEstado.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getEstado() == 1 ? "Activo" : "Inactivo"));
+        colPlataformaEstado.setCellValueFactory(
+                cd -> Bindings.createStringBinding(() -> cd.getValue().getEstado() == 1 ? "Activo" : "Inactivo"));
 
-        tblMotivosPrestamo.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, nuevo) -> motivoPrestamoSeleccionado = nuevo);
-        tblMotivosPlataforma.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, nuevo) -> motivoPlataformaSeleccionado = nuevo);
+        tblMotivosPrestamo.getSelectionModel().selectedItemProperty()
+                .addListener((obs, oldValue, nuevo) -> motivoPrestamoSeleccionado = nuevo);
+        tblMotivosPlataforma.getSelectionModel().selectedItemProperty()
+                .addListener((obs, oldValue, nuevo) -> motivoPlataformaSeleccionado = nuevo);
     }
 
     private void cargarEstudiantes() {
@@ -137,7 +170,8 @@ public class ConfiguracionController {
         String actual = cbFiltroGrado.getValue();
         ArrayList<String> grados = new ArrayList<>();
         grados.add("Todos");
-        estudiantesBaseTabla.stream().map(Estudiante::getGrado).distinct().sorted().forEach(g -> grados.add(String.valueOf(g)));
+        estudiantesBaseTabla.stream().map(Estudiante::getGrado).distinct().sorted()
+                .forEach(g -> grados.add(String.valueOf(g)));
         cbFiltroGrado.setItems(FXCollections.observableArrayList(grados));
         if (actual != null && grados.contains(actual)) {
             cbFiltroGrado.setValue(actual);
@@ -147,7 +181,8 @@ public class ConfiguracionController {
     }
 
     private void aplicarFiltrosTablaEstudiantes() {
-        String filtroNombre = txtBuscarEstudiante.getText() == null ? "" : txtBuscarEstudiante.getText().trim().toUpperCase();
+        String filtroNombre = txtBuscarEstudiante.getText() == null ? ""
+                : txtBuscarEstudiante.getText().trim().toUpperCase();
         String filtroGrado = cbFiltroGrado.getValue();
 
         List<Estudiante> filtrados = estudiantesBaseTabla.stream()
@@ -168,11 +203,13 @@ public class ConfiguracionController {
     }
 
     private void cargarMotivosPrestamo() {
-        tblMotivosPrestamo.setItems(FXCollections.observableArrayList(motivosPrestamoDAO.obtenerTodosMotivosPrestamo()));
+        tblMotivosPrestamo
+                .setItems(FXCollections.observableArrayList(motivosPrestamoDAO.obtenerTodosMotivosPrestamo()));
     }
 
     private void cargarMotivosPlataforma() {
-        tblMotivosPlataforma.setItems(FXCollections.observableArrayList(motivosPlataformaDAO.obtenerTodosMotivosPlataforma()));
+        tblMotivosPlataforma
+                .setItems(FXCollections.observableArrayList(motivosPlataformaDAO.obtenerTodosMotivosPlataforma()));
     }
 
     @FXML
@@ -208,8 +245,7 @@ public class ConfiguracionController {
                     txtApellido2.getText(),
                     txtNombre1.getText(),
                     txtNombre2.getText(),
-                    txtGenero.getText()
-            );
+                    txtGenero.getText());
 
             if (estudiantesDAO.actualizarEstudiante(actualizado)) {
                 Alertas.mostrarExito("Estudiante actualizado correctamente");
@@ -273,7 +309,8 @@ public class ConfiguracionController {
             }
 
             if (indiceEncabezado < 0 || !estructuraValida(encabezado)) {
-                Alertas.mostrarError("Estructura CSV inválida. Debe ser exactamente:\n" + String.join(", ", ESTRUCTURA_CSV));
+                Alertas.mostrarError(
+                        "Estructura CSV inválida. Debe ser exactamente:\n" + String.join(", ", ESTRUCTURA_CSV));
                 return;
             }
 
@@ -304,8 +341,7 @@ public class ConfiguracionController {
                             columnas.get(3),
                             columnas.get(4),
                             nombre2,
-                            columnas.get(6)
-                    );
+                            columnas.get(6));
 
                     estudiantesPendientesCsv.add(estudiante);
                 } catch (Exception ex) {
@@ -497,4 +533,3 @@ public class ConfiguracionController {
         }
     }
 }
-

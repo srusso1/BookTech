@@ -10,7 +10,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import model.Libro;
 import model.Prestamo;
-import org.kordamp.bootstrapfx.BootstrapFX;
 import utils.Alertas;
 import utils.Paths;
 import utils.Validaciones;
@@ -242,8 +241,7 @@ public class ConsultaController {
     }
 
     private void aplicarEstilosDialogo(Dialog<?> dialog) {
-        dialog.getDialogPane().getStylesheets().addAll(
-                BootstrapFX.bootstrapFXStylesheet(),
+        dialog.getDialogPane().getStylesheets().add(
                 Objects.requireNonNull(getClass().getResource("/styles/style.css")).toExternalForm()
         );
     }

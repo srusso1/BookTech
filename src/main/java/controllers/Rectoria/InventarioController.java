@@ -9,7 +9,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import model.Libro;
-import org.kordamp.bootstrapfx.BootstrapFX;
 import utils.Alertas;
 import utils.Paths;
 
@@ -193,8 +192,7 @@ public class InventarioController {
     }
 
     private void aplicarEstilosDialogo(Dialog<?> dialog) {
-        dialog.getDialogPane().getStylesheets().addAll(
-                BootstrapFX.bootstrapFXStylesheet(),
+        dialog.getDialogPane().getStylesheets().add(
                 Objects.requireNonNull(getClass().getResource("/styles/style.css")).toExternalForm()
         );
     }
