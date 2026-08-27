@@ -1,5 +1,6 @@
 package database;
 
+import model.AlertaPrestamo;
 import model.Docente;
 import model.MotivoPrestamo;
 import model.Prestamo;
@@ -14,6 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -205,6 +207,60 @@ public class PrestamosDAO {
             LOGGER.log(Level.SEVERE, "Error al actualizar el estado: " + e.getMessage(), e);
         }
         return false;
+    }
+
+    /**
+     * Obtiene alertas automáticas de préstamos vencidos, que vencen hoy o próximos a vencer en 2 días.
+     */
+    public List<AlertaPrestamo> obtenerAlertasVencimiento() {
+        String query = """
+        SELECT 
+            p.id,
+            l.titulo,
+            e.apellido_1 || ' ' || e.apellido_2 || ' ' || e.nombre_1 || ' ' || e.nombre_2 AS estudiante,
+            e.grado,
+            p.fecha_limite,
+            p.estado
+        FROM prestamos p
+        JOIN libros l ON l.id = p.id_libro
+        JOIN estudiantes e ON e.id = p.id_estudiante
+        WHERE p.estado != 1
+        ORDER BY p.fecha_limite ASC
+        """;
+
+        List<AlertaPrestamo> alertas = new ArrayList<>();
+        LocalDate hoy = LocalDate.now();
+
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String titulo = rs.getString("titulo");
+                String estudiante = rs.getString("estudiante");
+                int grado = rs.getInt("grado");
+                String fechaLimiteStr = rs.getString("fecha_limite");
+
+                try {
+                    LocalDate fechaLimite = LocalDate.parse(fechaLimiteStr);
+                    long dias = ChronoUnit.DAYS.between(hoy, fechaLimite);
+
+                    if (dias < 0) {
+                        alertas.add(new AlertaPrestamo(id, titulo, estudiante, grado, fechaLimiteStr, AlertaPrestamo.TipoAlerta.VENCIDO, (int) dias));
+                    } else if (dias == 0) {
+                        alertas.add(new AlertaPrestamo(id, titulo, estudiante, grado, fechaLimiteStr, AlertaPrestamo.TipoAlerta.POR_VENCER_HOY, 0));
+                    } else if (dias <= 2) {
+                        alertas.add(new AlertaPrestamo(id, titulo, estudiante, grado, fechaLimiteStr, AlertaPrestamo.TipoAlerta.PROXIMO_A_VENCER, (int) dias));
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al obtener alertas de vencimiento: " + e.getMessage(), e);
+        }
+
+        return alertas;
     }
 
     public boolean registrarDevolucion(Prestamo prestamo) {

@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="contenedorPrincipal" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Dashboard.DashboardBibliotecarioController">
@@ -22,9 +23,9 @@
           <top>
               <HBox alignment="CENTER_LEFT" minHeight="70.0" prefHeight="70.0" spacing="15.0" styleClass="header">
                   <children>
-                      <Button focusTraversable="false" mnemonicParsing="false" onAction="#clickSalir" style="-fx-background-color: transparent;">
+                      <Button focusTraversable="false" mnemonicParsing="false" onAction="#clickSalir" styleClass="btn-header-action" text="Cerrar sesión">
                          <graphic>
-                            <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true" styleClass="btnSalir">
+                            <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                <image>
                                   <Image url="@../../images/exit.png" />
                                </image>
@@ -58,7 +59,23 @@
                          </children>
                       </HBox>
                       <Region HBox.hgrow="ALWAYS" />
-                      <Region prefWidth="50.0" />
+                      <Button fx:id="btnNotificaciones" focusTraversable="false" mnemonicParsing="false" onAction="#clickNotificaciones" styleClass="notification-chip">
+                         <graphic>
+                            <HBox alignment="CENTER" spacing="8.0">
+                               <children>
+                                  <SVGPath content="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z" fill="#475569" scaleX="0.8" scaleY="0.8" />
+                                  <Label styleClass="notification-chip-text" text="Alertas" />
+                                  <Label fx:id="lblBadgeAlertas" styleClass="notification-chip-badge" text="0" />
+                               </children>
+                            </HBox>
+                         </graphic>
+                         <cursor>
+                            <Cursor fx:constant="HAND" />
+                         </cursor>
+                         <HBox.margin>
+                            <Insets right="10.0" />
+                         </HBox.margin>
+                      </Button>
                   </children>
                   <padding>
                       <Insets left="10.0" right="20.0" />

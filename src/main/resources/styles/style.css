@@ -246,5 +246,70 @@
 
 /* Quitar fondo azul de selección (por si acaso) */
 
+/* ================= NOTIFICATION CHIP ================= */
+.notification-chip {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+    -fx-padding: 6px 14px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 4, 0, 0, 1);
+}
 
+.notification-chip:hover {
+    -fx-background-color: #F1F5F9;
+    -fx-border-color: #CBD5E1;
+}
 
+.notification-chip.has-alerts {
+    -fx-background-color: #FEF2F2;
+    -fx-border-color: #FECACA;
+}
+
+.notification-chip.has-alerts:hover {
+    -fx-background-color: #FEE2E2;
+    -fx-border-color: #FCA5A5;
+}
+
+.notification-chip-text {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #334155;
+}
+
+.notification-chip-badge {
+    -fx-background-color: #94A3B8;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-background-radius: 12px;
+    -fx-padding: 2px 8px;
+    -fx-min-width: 20px;
+    -fx-alignment: center;
+}
+
+.notification-chip-badge.active {
+    -fx-background-color: #EF4444;
+}
+
+/* ================= HEADER ACTION BUTTON ================= */
+.btn-header-action {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-text-fill: #64748B;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-padding: 6px 12px;
+    -fx-cursor: hand;
+}
+
+.btn-header-action:hover {
+    -fx-background-color: #FEE2E2;
+    -fx-border-color: #FECACA;
+    -fx-text-fill: #DC2626;
+}
