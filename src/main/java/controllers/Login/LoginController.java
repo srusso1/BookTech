@@ -70,7 +70,10 @@ public class LoginController {
         Alertas.mostrarExito("Bienvenido " + user.getClass().getSimpleName().toUpperCase() + " " + user.getNombreCompleto());
         if(user.getRol() == 0){
             ManagerView.cargarVista(contenedor, Paths.DASHBOARD_BIBLIOTECARIO);
-            prestamosDAO.actualizarPrestamosTarde();
+            int vencidos = prestamosDAO.actualizarPrestamosTarde();
+            if(vencidos > 0) {
+                Alertas.mostrarInfo("Se actualizaron " + vencidos + " préstamos vencidos. Consulte el módulo 'Préstamos activos'.");
+            }
         }else if(user.getRol() == 1){
             ManagerView.cargarVista(contenedor, Paths.DASHBOARD_RECTORIA);
         }

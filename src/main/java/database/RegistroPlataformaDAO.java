@@ -1,6 +1,5 @@
 package database;
 
-import utils.Alertas;
 import utils.Fechas;
 
 import java.sql.Connection;
@@ -8,34 +7,35 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RegistroPlataformaDAO {
+
+    private static final Logger LOGGER = Logger.getLogger(RegistroPlataformaDAO.class.getName());
+
     public boolean registrarUso(int id_docente, int id_motivo_uso) {
         String query = "INSERT INTO registro_plataforma (id_docente, id_motivo_uso, total_minutos, fecha) VALUES (?, ?, ?, ?)";
-        try{
-            Connection conexion = ConexionSQLite.conectar();
-            PreparedStatement ps = conexion.prepareStatement(query);
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
             ps.setInt(1, id_docente);
             ps.setInt(2, id_motivo_uso);
             ps.setInt(3, 0);
             ps.setString(4, Fechas.fechaActualISO());
             return ps.executeUpdate() > 0;
-        }catch(SQLException e){
-            Alertas.mostrarError("Error al registrar el uso de la plataforma: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al registrar el uso de la plataforma: " + e.getMessage(), e);
         }
         return false;
     }
 
     public boolean registrarUsoConHoras(int id_docente, int id_motivo_uso, String hora_inicio, String hora_fin, int total_minutos) {
         String query = "INSERT INTO registro_plataforma (id_docente, id_motivo_uso, hora_inicio, hora_fin, total_minutos, grado, fecha) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try{
-            Connection conexion = ConexionSQLite.conectar();
-            PreparedStatement ps = conexion.prepareStatement(query);
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
             ps.setInt(1, id_docente);
             ps.setInt(2, id_motivo_uso);
             ps.setString(3, hora_inicio);
@@ -44,19 +44,16 @@ public class RegistroPlataformaDAO {
             ps.setInt(6, 0);
             ps.setString(7, Fechas.fechaActualISO());
             return ps.executeUpdate() > 0;
-        }catch(SQLException e){
-            Alertas.mostrarError("Error al registrar el uso de la plataforma: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al registrar el uso de la plataforma con horas: " + e.getMessage(), e);
         }
         return false;
     }
 
     public boolean registrarUsoConHorasYGrado(int id_docente, int id_motivo_uso, String hora_inicio, String hora_fin, int total_minutos, int grado) {
         String query = "INSERT INTO registro_plataforma (id_docente, id_motivo_uso, hora_inicio, hora_fin, total_minutos, grado, fecha) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try{
-            Connection conexion = ConexionSQLite.conectar();
-            PreparedStatement ps = conexion.prepareStatement(query);
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
             ps.setInt(1, id_docente);
             ps.setInt(2, id_motivo_uso);
             ps.setString(3, hora_inicio);
@@ -65,10 +62,8 @@ public class RegistroPlataformaDAO {
             ps.setInt(6, grado);
             ps.setString(7, Fechas.fechaActualISO());
             return ps.executeUpdate() > 0;
-        }catch(SQLException e){
-            Alertas.mostrarError("Error al registrar el uso de la plataforma: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al registrar el uso de la plataforma con horas y grado: " + e.getMessage(), e);
         }
         return false;
     }
@@ -104,9 +99,7 @@ public class RegistroPlataformaDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener el top de docentes por uso de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al obtener el top de docentes por uso de plataforma: " + e.getMessage(), e);
         }
 
         return datos;
@@ -140,9 +133,7 @@ public class RegistroPlataformaDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener el top de grados por uso de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al obtener el top de grados por uso de plataforma: " + e.getMessage(), e);
         }
 
         return datos;
@@ -182,9 +173,7 @@ public class RegistroPlataformaDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener el top de docentes por uso de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al obtener el top de docentes por uso de plataforma: " + e.getMessage(), e);
         }
 
         return datos;
@@ -220,9 +209,7 @@ public class RegistroPlataformaDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener el top de grados por uso de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al obtener el top de grados por uso de plataforma: " + e.getMessage(), e);
         }
 
         return datos;
@@ -253,9 +240,7 @@ public class RegistroPlataformaDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener el top de motivos de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al obtener el top de motivos de plataforma: " + e.getMessage(), e);
         }
 
         return datos;
@@ -289,9 +274,7 @@ public class RegistroPlataformaDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener el top de motivos de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al obtener el top de motivos de plataforma: " + e.getMessage(), e);
         }
 
         return datos;
@@ -327,9 +310,7 @@ public class RegistroPlataformaDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener el top de motivos de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al obtener el top de motivos de plataforma con tiempo: " + e.getMessage(), e);
         }
 
         return datos;
@@ -368,9 +349,7 @@ public class RegistroPlataformaDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener el top de motivos de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al obtener el top de motivos de plataforma con tiempo: " + e.getMessage(), e);
         }
 
         return datos;

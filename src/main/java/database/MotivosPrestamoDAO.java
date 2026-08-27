@@ -1,22 +1,25 @@
 package database;
 
 import model.MotivoPrestamo;
-import utils.Alertas;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class MotivosPrestamoDAO {
+
+    private static final Logger LOGGER = Logger.getLogger(MotivosPrestamoDAO.class.getName());
+
     public ArrayList<MotivoPrestamo> obtenerMotivosPrestamo() {
         return obtenerMotivosPrestamoActivos();
     }
 
     public ArrayList<MotivoPrestamo> obtenerMotivosPrestamoActivos() {
-
         ArrayList<MotivoPrestamo> motivos = new ArrayList<>();
-
         String query = "SELECT id, nombre_motivo, estado FROM motivos_prestamo WHERE estado = 1 ORDER BY nombre_motivo";
 
         try (Connection conexion = ConexionSQLite.conectar();
@@ -24,20 +27,15 @@ public class MotivosPrestamoDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-
-                MotivoPrestamo motivo = new MotivoPrestamo(
+                motivos.add(new MotivoPrestamo(
                         rs.getInt("id"),
                         rs.getString("nombre_motivo"),
                         rs.getInt("estado")
-                );
-
-                motivos.add(motivo);
+                ));
             }
 
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener motivos: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al obtener motivos de préstamo activos: " + e.getMessage(), e);
         }
 
         return motivos;
@@ -60,9 +58,7 @@ public class MotivosPrestamoDAO {
             }
 
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener motivos: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al obtener todos los motivos de préstamo: " + e.getMessage(), e);
         }
 
         return motivos;
@@ -76,9 +72,7 @@ public class MotivosPrestamoDAO {
             ps.setString(1, nombreMotivo.trim().toUpperCase());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al registrar motivo de préstamo: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al registrar motivo de préstamo: " + e.getMessage(), e);
         }
         return false;
     }
@@ -92,9 +86,7 @@ public class MotivosPrestamoDAO {
             ps.setInt(2, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al actualizar motivo de préstamo: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al actualizar motivo de préstamo: " + e.getMessage(), e);
         }
         return false;
     }
@@ -108,9 +100,7 @@ public class MotivosPrestamoDAO {
             ps.setInt(2, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al actualizar estado del motivo de préstamo: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al actualizar estado del motivo de préstamo: " + e.getMessage(), e);
         }
         return false;
     }

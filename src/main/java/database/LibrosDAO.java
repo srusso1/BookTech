@@ -1,7 +1,6 @@
 package database;
 
 import model.Libro;
-import utils.Alertas;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,72 +8,67 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LibrosDAO {
 
+    private static final Logger LOGGER = Logger.getLogger(LibrosDAO.class.getName());
+
     public List<Libro> buscarSimilares(String texto) {
-
         List<Libro> lista = new ArrayList<>();
-
         String sql = """
-        SELECT l.id, l.titulo, l.ubicacion, l.id_categoria, l.editorial, l.autor, l.unidades,
-               c.nombre_categoria
-        FROM libros l
-        JOIN categorias c ON c.id = l.id_categoria
-        WHERE UPPER(l.titulo) LIKE ?
-        ORDER BY l.titulo
-        LIMIT 5
-    """;
+            SELECT l.id, l.titulo, l.ubicacion, l.id_categoria, l.editorial, l.autor, l.unidades,
+                   c.nombre_categoria
+            FROM libros l
+            JOIN categorias c ON c.id = l.id_categoria
+            WHERE UPPER(l.titulo) LIKE ?
+            ORDER BY l.titulo
+            LIMIT 5
+        """;
 
         try (Connection conn = ConexionSQLite.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, "%" + texto.toUpperCase() + "%");
 
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                lista.add(mapLibroConCategoria(rs));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(mapLibroConCategoria(rs));
+                }
             }
-
         } catch (SQLException e) {
-            Alertas.mostrarError("Error SQL al buscar similitud de libros: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error SQL al buscar similitud de libros: " + e.getMessage(), e);
         }
 
         return lista;
     }
 
-    public boolean disminuirUnidadLibro(int idLibro){
+    public boolean disminuirUnidadLibro(int idLibro) {
         String sql = "UPDATE libros SET unidades = unidades - 1 WHERE id = ?";
         try (Connection conn = ConexionSQLite.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, idLibro);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            Alertas.mostrarError("Error SQL al disminuir unidad de libro: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error SQL al disminuir unidad de libro: " + e.getMessage(), e);
         }
         return false;
     }
 
-    public boolean aumentarUnidadLibro(int idLibro){
+    public boolean aumentarUnidadLibro(int idLibro) {
         String sql = "UPDATE libros SET unidades = unidades + 1 WHERE id = ?";
         try (Connection conn = ConexionSQLite.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, idLibro);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            Alertas.mostrarError("Error SQL al aumentar unidad de libro: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error SQL al aumentar unidad de libro: " + e.getMessage(), e);
         }
         return false;
     }
 
-    public ArrayList<Integer> infoDashboardBibliotecario(){
+    public ArrayList<Integer> infoDashboardBibliotecario() {
         ArrayList<Integer> info = new ArrayList<>();
         String query = """
             SELECT
@@ -85,47 +79,42 @@ public class LibrosDAO {
         """;
         try (Connection con = ConexionSQLite.conectar();
              PreparedStatement ps = con.prepareStatement(query);
-             ResultSet rs = ps.executeQuery()){
+             ResultSet rs = ps.executeQuery()) {
 
             if (rs.next()) {
                 info.add(rs.getInt("libros_registrados"));
                 info.add(rs.getInt("unidades_registradas"));
                 info.add(rs.getInt("prestamos_activos"));
                 info.add(rs.getInt("prestamos_realizados"));
-
             }
-        }catch (SQLException e){
-            Alertas.mostrarError("Error al obtener datos del dashboard: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al obtener datos del dashboard bibliotecario: " + e.getMessage(), e);
         }
         return info;
     }
 
-    public ArrayList<String> infoDashboardRectoria(){
+    public ArrayList<String> infoDashboardRectoria() {
         ArrayList<String> info = new ArrayList<>();
         String query = "SELECT (SELECT COUNT(*) FROM libros) AS libros_registrados, " +
                 "(SELECT SUM(unidades) FROM libros) AS unidades_registradas, " +
                 "(SELECT c.nombre_categoria FROM prestamos p JOIN libros l ON p.id_libro = l.id JOIN categorias c ON c.id = l.id_categoria GROUP BY c.nombre_categoria ORDER BY COUNT(p.id) DESC LIMIT 1) AS categoria_mas_prestada;";
 
-        try(Connection con = ConexionSQLite.conectar();
-            PreparedStatement ps = con.prepareStatement(query);
-            ResultSet rs = ps.executeQuery()){
-            if(rs.next()){
+        try (Connection con = ConexionSQLite.conectar();
+             PreparedStatement ps = con.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
                 info.add(rs.getString("libros_registrados"));
                 info.add(rs.getString("unidades_registradas"));
                 String categoria = rs.getString("categoria_mas_prestada");
                 info.add(categoria != null ? categoria : "SIN DATOS");
             }
-        }catch (SQLException e){
-            Alertas.mostrarError("Error al obtener datos del dashboard: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al obtener datos del dashboard rectoria: " + e.getMessage(), e);
         }
         return info;
     }
 
-    public ArrayList<Libro> inventarioLibros(){
+    public ArrayList<Libro> inventarioLibros() {
         ArrayList<Libro> libros = new ArrayList<>();
         String query = """
                 SELECT l.id, l.titulo, l.ubicacion, l.id_categoria, l.editorial, l.autor, l.unidades,
@@ -133,18 +122,14 @@ public class LibrosDAO {
                 FROM libros l
                 JOIN categorias c ON c.id = l.id_categoria
                 """;
-        try{
-            Connection conexion = ConexionSQLite.conectar();
-            PreparedStatement ps = conexion.prepareStatement(query);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
                 libros.add(mapLibroConCategoria(rs));
             }
-            return libros;
-        }catch (SQLException e){
-            Alertas.mostrarError("Error al obtener datos del inventario: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al obtener datos del inventario: " + e.getMessage(), e);
         }
         return libros;
     }
@@ -163,7 +148,7 @@ public class LibrosDAO {
                 columna = "id_categoria";
                 break;
             default:
-                Alertas.mostrarError("Campo no valido para edicion: " + campo);
+                LOGGER.warning("Campo no valido para edicion: " + campo);
                 return false;
         }
 
@@ -177,12 +162,12 @@ public class LibrosDAO {
                 try {
                     idCategoria = Integer.parseInt(nuevoValor);
                 } catch (NumberFormatException e) {
-                    Alertas.mostrarError("Para editar categoria debes enviar el ID numerico de la categoria");
+                    LOGGER.warning("Para editar categoria debes enviar el ID numerico de la categoria");
                     return false;
                 }
 
                 if (!existeCategoria(conexion, idCategoria)) {
-                    Alertas.mostrarError("La categoria seleccionada no existe en la base de datos");
+                    LOGGER.warning("La categoria seleccionada no existe en la base de datos");
                     return false;
                 }
 
@@ -192,12 +177,12 @@ public class LibrosDAO {
                 try {
                     unidades = Integer.parseInt(nuevoValor);
                 } catch (NumberFormatException e) {
-                    Alertas.mostrarError("Unidades debe ser un valor numerico");
+                    LOGGER.warning("Unidades debe ser un valor numerico");
                     return false;
                 }
 
                 if (unidades < 0) {
-                    Alertas.mostrarError("Unidades no puede ser un valor negativo");
+                    LOGGER.warning("Unidades no puede ser un valor negativo");
                     return false;
                 }
 
@@ -210,9 +195,7 @@ public class LibrosDAO {
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al editar el libro: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al editar el libro: " + e.getMessage(), e);
         }
 
         return false;
@@ -243,9 +226,8 @@ public class LibrosDAO {
 
     public boolean registrarLibro(Libro libro) {
         String query = "INSERT INTO libros (titulo, ubicacion, id_categoria, editorial, autor, unidades) VALUES (?, ?, ?, ?, ?, ?)";
-        try{
-            Connection conexion = ConexionSQLite.conectar();
-            PreparedStatement ps = conexion.prepareStatement(query);
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
             ps.setString(1, libro.getTitulo());
             ps.setString(2, libro.getUbicacion());
             ps.setInt(3, libro.getId_categoria());
@@ -254,27 +236,21 @@ public class LibrosDAO {
             ps.setInt(6, libro.getUnidades());
 
             return ps.executeUpdate() > 0;
-        }catch (SQLException e){
-            Alertas.mostrarError("Error al registrar el libro: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al registrar el libro: " + e.getMessage(), e);
         }
         return false;
     }
 
-    public boolean eliminarLibro(int idLibro){
+    public boolean eliminarLibro(int idLibro) {
         String query = "DELETE FROM libros WHERE id = ?";
-        try{
-            Connection conexion = ConexionSQLite.conectar();
-            PreparedStatement ps = conexion.prepareStatement(query);
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
             ps.setInt(1, idLibro);
             return ps.executeUpdate() > 0;
-        }catch (SQLException e){
-            Alertas.mostrarError("Error al eliminar el libro: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al eliminar el libro: " + e.getMessage(), e);
         }
         return false;
     }
-
 }

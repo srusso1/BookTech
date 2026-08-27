@@ -1,21 +1,25 @@
 package database;
 
 import model.Estudiante;
-import utils.Alertas;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EstudiantesDAO {
+
+    private static final Logger LOGGER = Logger.getLogger(EstudiantesDAO.class.getName());
+
     public static final int RESULTADO_INSERTADO = 1;
     public static final int RESULTADO_ACTUALIZADO = 2;
     public static final int RESULTADO_SIN_CAMBIOS = 3;
 
     public ArrayList<Estudiante> obtenerEstudiantes() {
         ArrayList<Estudiante> lista = new ArrayList<>();
-
         String sql = "SELECT * FROM estudiantes ORDER BY apellido_1, nombre_1";
 
         try (Connection conn = ConexionSQLite.conectar();
@@ -25,7 +29,7 @@ public class EstudiantesDAO {
             while (rs.next()) {
                 lista.add(new Estudiante(
                         rs.getInt("id"),
-                        rs.getInt("identificacion"), // 👈 aquí está como int en DB
+                        rs.getInt("identificacion"),
                         rs.getInt("grado"),
                         rs.getString("apellido_1"),
                         rs.getString("apellido_2"),
@@ -35,10 +39,8 @@ public class EstudiantesDAO {
                 ));
             }
 
-        } catch (Exception e) {
-            Alertas.mostrarError("Error al obtener los estudiantes: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al obtener los estudiantes: " + e.getMessage(), e);
         }
 
         return lista;
@@ -51,31 +53,29 @@ public class EstudiantesDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return new Estudiante(
-                        rs.getInt("id"),
-                        rs.getInt("identificacion"),
-                        rs.getInt("grado"),
-                        rs.getString("apellido_1"),
-                        rs.getString("apellido_2"),
-                        rs.getString("nombre_1"),
-                        rs.getString("nombre_2"),
-                        rs.getString("genero")
-                );
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Estudiante(
+                            rs.getInt("id"),
+                            rs.getInt("identificacion"),
+                            rs.getInt("grado"),
+                            rs.getString("apellido_1"),
+                            rs.getString("apellido_2"),
+                            rs.getString("nombre_1"),
+                            rs.getString("nombre_2"),
+                            rs.getString("genero")
+                    );
+                }
             }
 
-        } catch (Exception e) {
-            Alertas.mostrarError("Error al obtener el estudiante: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al obtener el estudiante: " + e.getMessage(), e);
         }
 
         return null;
     }
 
-    public ArrayList<Integer> obtenerGrados(){
+    public ArrayList<Integer> obtenerGrados() {
         ArrayList<Integer> grados = new ArrayList<>();
         String sql = "SELECT DISTINCT grado FROM estudiantes ORDER BY grado";
         try (Connection conn = ConexionSQLite.conectar();
@@ -84,10 +84,8 @@ public class EstudiantesDAO {
             while (rs.next()) {
                 grados.add(rs.getInt("grado"));
             }
-        } catch (Exception e) {
-            Alertas.mostrarError("Error al obtener los grados: " + e.getMessage());
-        }finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al obtener los grados: " + e.getMessage(), e);
         }
         return grados;
     }
@@ -111,10 +109,8 @@ public class EstudiantesDAO {
                     );
                 }
             }
-        } catch (Exception e) {
-            Alertas.mostrarError("Error al obtener estudiante por identificación: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al obtener estudiante por identificación: " + e.getMessage(), e);
         }
         return null;
     }
@@ -128,10 +124,8 @@ public class EstudiantesDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next() && rs.getInt("total") > 0;
             }
-        } catch (Exception e) {
-            Alertas.mostrarError("Error al validar identificación: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al validar identificación: " + e.getMessage(), e);
         }
         return false;
     }
@@ -153,10 +147,8 @@ public class EstudiantesDAO {
             ps.setString(7, normalizarTexto(estudiante.getGenero()));
             ps.setInt(8, estudiante.getId());
             return ps.executeUpdate() > 0;
-        } catch (Exception e) {
-            Alertas.mostrarError("Error al actualizar estudiante: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al actualizar estudiante: " + e.getMessage(), e);
         }
         return false;
     }
@@ -176,10 +168,8 @@ public class EstudiantesDAO {
             ps.setString(6, normalizarTexto(estudiante.getNombre_2()));
             ps.setString(7, normalizarTexto(estudiante.getGenero()));
             return ps.executeUpdate() > 0;
-        } catch (Exception e) {
-            Alertas.mostrarError("Error al insertar estudiante: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al insertar estudiante: " + e.getMessage(), e);
         }
         return false;
     }

@@ -1,14 +1,19 @@
 package database;
 
 import model.Docente;
-import utils.Alertas;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DocentesDAO {
+
+    private static final Logger LOGGER = Logger.getLogger(DocentesDAO.class.getName());
+
     public ArrayList<Docente> obtenerDocentes() {
         ArrayList<Docente> lista = new ArrayList<>();
         String sql = "SELECT * FROM docentes ORDER BY apellido_1, nombre_1";
@@ -27,10 +32,8 @@ public class DocentesDAO {
                 ));
             }
 
-        } catch (Exception e) {
-            Alertas.mostrarError("Error al obtener los docentes: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al obtener los docentes: " + e.getMessage(), e);
         }
 
         return lista;

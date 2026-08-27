@@ -1,15 +1,18 @@
 package database;
 
 import model.MotivoPlataforma;
-import utils.Alertas;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MotivosPlataformaDAO {
+
+    private static final Logger LOGGER = Logger.getLogger(MotivosPlataformaDAO.class.getName());
 
     public ArrayList<MotivoPlataforma> obtenerMotivosPlataforma() {
         return obtenerMotivosPlataformaActivos();
@@ -32,9 +35,7 @@ public class MotivosPlataformaDAO {
             }
 
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener motivos de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al obtener motivos de plataforma activos: " + e.getMessage(), e);
         }
 
         return motivos;
@@ -57,9 +58,7 @@ public class MotivosPlataformaDAO {
             }
 
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener motivos de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al obtener todos los motivos de plataforma: " + e.getMessage(), e);
         }
 
         return motivos;
@@ -73,9 +72,7 @@ public class MotivosPlataformaDAO {
             ps.setString(1, nombreMotivo.trim().toUpperCase());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al registrar motivo de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al registrar motivo de plataforma: " + e.getMessage(), e);
         }
         return false;
     }
@@ -89,9 +86,7 @@ public class MotivosPlataformaDAO {
             ps.setInt(2, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al actualizar motivo de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al actualizar motivo de plataforma: " + e.getMessage(), e);
         }
         return false;
     }
@@ -105,11 +100,8 @@ public class MotivosPlataformaDAO {
             ps.setInt(2, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al actualizar estado del motivo de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
+            LOGGER.log(Level.SEVERE, "Error al actualizar estado del motivo de plataforma: " + e.getMessage(), e);
         }
         return false;
     }
 }
-

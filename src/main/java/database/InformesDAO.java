@@ -3,7 +3,8 @@ package database;
 import model.Prestamo;
 import model.InventarioLibroDetalle;
 import model.RegistroPlataformaDetalle;
-import utils.Alertas;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import java.sql.*;
 import java.util.*;
@@ -13,6 +14,8 @@ import java.util.*;
  * Contiene consultas específicas para la generación de informes
  */
 public class InformesDAO {
+
+    private static final Logger LOGGER = Logger.getLogger(InformesDAO.class.getName());
 
     /**
      * Obtiene el historial de préstamos de un estudiante
@@ -56,10 +59,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener historial del estudiante: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener historial del estudiante: " + e.getMessage(), e);
+        } 
 
         return prestamos;
     }
@@ -109,10 +110,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener historial del estudiante: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener historial del estudiante: " + e.getMessage(), e);
+        } 
 
         return prestamos;
     }
@@ -157,10 +156,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener todos los préstamos: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener todos los préstamos: " + e.getMessage(), e);
+        } 
 
         return prestamos;
     }
@@ -209,10 +206,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener todos los préstamos: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener todos los préstamos: " + e.getMessage(), e);
+        } 
 
         return prestamos;
     }
@@ -233,10 +228,8 @@ public class InformesDAO {
             }
 
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener IDs de estudiantes: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener IDs de estudiantes: " + e.getMessage(), e);
+        } 
 
         return estudiantes;
     }
@@ -292,10 +285,8 @@ public class InformesDAO {
             }
 
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener estadísticas del grado: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener estadísticas del grado: " + e.getMessage(), e);
+        } 
 
         return estadisticas;
     }
@@ -328,10 +319,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener estudiantes del grado: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener estudiantes del grado: " + e.getMessage(), e);
+        } 
 
         return estudiantes;
     }
@@ -389,10 +378,8 @@ public class InformesDAO {
             }
 
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener estadísticas generales: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener estadísticas generales: " + e.getMessage(), e);
+        } 
 
         return estadisticas;
     }
@@ -569,10 +556,8 @@ public class InformesDAO {
             }
             resumen.put("top5Libros", topLibros);
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener resumen general: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener resumen general: " + e.getMessage(), e);
+        } 
 
         return resumen;
     }
@@ -649,10 +634,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener préstamos devueltos tarde: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener préstamos devueltos tarde: " + e.getMessage(), e);
+        } 
 
         return prestamos;
     }
@@ -686,10 +669,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener grado con más devoluciones tardías: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener grado con más devoluciones tardías: " + e.getMessage(), e);
+        } 
 
         return null;
     }
@@ -737,10 +718,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener top de estudiantes: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener top de estudiantes: " + e.getMessage(), e);
+        } 
         return filas;
     }
 
@@ -787,10 +766,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener top de docentes: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener top de docentes: " + e.getMessage(), e);
+        } 
         return filas;
     }
 
@@ -837,10 +814,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener top de libros: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener top de libros: " + e.getMessage(), e);
+        } 
         return filas;
     }
 
@@ -889,10 +864,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener registros de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener registros de plataforma: " + e.getMessage(), e);
+        } 
 
         return registros;
     }
@@ -945,10 +918,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener registros de plataforma por docente: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener registros de plataforma por docente: " + e.getMessage(), e);
+        } 
 
         return registros;
     }
@@ -1037,10 +1008,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener resumen de plataforma: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener resumen de plataforma: " + e.getMessage(), e);
+        } 
 
         return resumen;
     }
@@ -1107,10 +1076,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener resumen de plataforma por docente: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener resumen de plataforma por docente: " + e.getMessage(), e);
+        } 
 
         return resumen;
     }
@@ -1171,10 +1138,8 @@ public class InformesDAO {
                 ));
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener inventario para compra: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener inventario para compra: " + e.getMessage(), e);
+        } 
 
         inventario.sort((a, b) -> {
             int porRecomendadas = Integer.compare(b.getRecomendadasComprar(), a.getRecomendadasComprar());
@@ -1270,10 +1235,8 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener docente: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener docente: " + e.getMessage(), e);
+        } 
         return null;
     }
 
@@ -1292,13 +1255,12 @@ public class InformesDAO {
                 }
             }
         } catch (SQLException e) {
-            Alertas.mostrarError("Error al obtener motivo: " + e.getMessage());
-        } finally {
-            ConexionSQLite.cerrarConexion();
-        }
+            LOGGER.log(Level.SEVERE, "Error al obtener motivo: " + e.getMessage(), e);
+        } 
         return null;
     }
 }
+
 
 
 
