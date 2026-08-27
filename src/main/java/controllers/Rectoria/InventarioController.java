@@ -1,10 +1,7 @@
 package controllers.Rectoria;
 
 
-import com.dlsc.formsfx.view.controls.SimpleIntegerControl;
-import controllers.Bibliotecario.PrestamoController;
 import database.LibrosDAO;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -97,9 +94,6 @@ public class InventarioController {
 
             // 🔹 El root ES un VBox
             VBox root = loader.load();
-
-            // 🔹 Controller del préstamo
-            RegistrarLibroController controller = loader.getController();
 
             // 🔹 Diálogo
             Dialog<Void> dialog = new Dialog<>();

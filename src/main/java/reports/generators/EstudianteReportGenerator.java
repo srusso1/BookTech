@@ -6,7 +6,6 @@ import com.itextpdf.layout.element.Table;
 import model.Estudiante;
 import model.Prestamo;
 import reports.models.ReportConfig;
-import utils.Alertas;
 
 import java.text.Normalizer;
 import java.util.List;
@@ -72,46 +71,39 @@ public class EstudianteReportGenerator extends BaseReportGenerator {
      * Genera el reporte del estudiante
      */
     @Override
-    public void generar() {
+    public void generar() throws Exception {
         if (!puedeGenerar()) {
             return;
         }
-        try {
-            // Obtener datos del estudiante
-            Estudiante estudiante = estudiantesDAO.obtenerEstudiante(idEstudiante);
 
-            if (estudiante == null) {
-                Alertas.mostrarError("Estudiante no encontrado con ID: " + idEstudiante);
-                return;
-            }
+        // Obtener datos del estudiante
+        Estudiante estudiante = estudiantesDAO.obtenerEstudiante(idEstudiante);
 
-            // Agregar encabezado
-            agregarEncabezadoEstandar("Informe de Préstamos del Estudiante");
-
-            // Agregar datos del estudiante
-            agregarDatosEstudiante(estudiante);
-
-            // Agregar resumen
-            agregarResumenEstudiante();
-
-            // Agregar tabla de préstamos (opcional)
-            if (config.isIncluirTablas()) {
-                agregarTablaPrestamos();
-            } else {
-                pdfBuilder
-                        .agregarSeccion("Historial de Préstamos")
-                        .agregarParrafoIndentado("No se incluyó la tabla detallada por decisión del usuario.")
-                        .agregarEspacio(8);
-            }
-
-            // Finalizar
-            finalizarReporte();
-
-
-
-        } catch (Exception e) {
-            Alertas.mostrarError("Error al generar reporte: " + e.getMessage());
+        if (estudiante == null) {
+            throw new IllegalArgumentException("Estudiante no encontrado con ID: " + idEstudiante);
         }
+
+        // Agregar encabezado
+        agregarEncabezadoEstandar("Informe de Préstamos del Estudiante");
+
+        // Agregar datos del estudiante
+        agregarDatosEstudiante(estudiante);
+
+        // Agregar resumen
+        agregarResumenEstudiante();
+
+        // Agregar tabla de préstamos (opcional)
+        if (config.isIncluirTablas()) {
+            agregarTablaPrestamos();
+        } else {
+            pdfBuilder
+                    .agregarSeccion("Historial de Préstamos")
+                    .agregarParrafoIndentado("No se incluyó la tabla detallada por decisión del usuario.")
+                    .agregarEspacio(8);
+        }
+
+        // Finalizar
+        finalizarReporte();
     }
 
     /**
@@ -226,6 +218,3 @@ public class EstudianteReportGenerator extends BaseReportGenerator {
         };
     }
 }
-
-
-

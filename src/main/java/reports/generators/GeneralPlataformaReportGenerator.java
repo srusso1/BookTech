@@ -6,7 +6,6 @@ import database.InformesDAO;
 import database.RegistroPlataformaDAO;
 import model.RegistroPlataformaDetalle;
 import reports.models.ReportConfig;
-import utils.Alertas;
 import utils.Fechas;
 
 import java.util.List;
@@ -28,32 +27,28 @@ public class GeneralPlataformaReportGenerator extends BaseReportGenerator {
     }
 
     @Override
-    public void generar() {
+    public void generar() throws Exception {
         if (!puedeGenerar()) {
             return;
         }
 
-        try {
-            agregarEncabezadoEstandar("Informe General de Uso de Plataforma Virtual");
-            agregarDescripcionResumen();
+        agregarEncabezadoEstandar("Informe General de Uso de Plataforma Virtual");
+        agregarDescripcionResumen();
 
-            agregarTopDocentes();
-            agregarTopGrados();
-            agregarTopMotivos();
+        agregarTopDocentes();
+        agregarTopGrados();
+        agregarTopMotivos();
 
-            if (config.isIncluirTablas()) {
-                agregarTablaDetalle();
-            } else {
-                pdfBuilder
-                        .agregarSeccion("Detalle de uso de plataforma")
-                        .agregarParrafoIndentado("No se incluyó la tabla detallada por decisión del usuario.")
-                        .agregarEspacio(8);
-            }
-
-            finalizarReporte();
-        } catch (Exception e) {
-            Alertas.mostrarError("Error al generar reporte: " + e.getMessage());
+        if (config.isIncluirTablas()) {
+            agregarTablaDetalle();
+        } else {
+            pdfBuilder
+                    .agregarSeccion("Detalle de uso de plataforma")
+                    .agregarParrafoIndentado("No se incluyó la tabla detallada por decisión del usuario.")
+                    .agregarEspacio(8);
         }
+
+        finalizarReporte();
     }
 
     private void agregarDescripcionResumen() {
@@ -66,129 +61,141 @@ public class GeneralPlataformaReportGenerator extends BaseReportGenerator {
 
         pdfBuilder
                 .agregarSeccion("Descripción del Informe")
-                .agregarParrafoIndentado("Este informe presenta el uso general de la plataforma virtual registrado por los docentes.")
+                .agregarParrafoIndentado("Este informe presenta el consolidado general de uso de la plataforma virtual.")
                 .agregarLineaDetalle("Filtro de fecha aplicado", filtroTexto)
-                .agregarSeccion("Indicadores Principales")
-                .agregarLineaDetalle("Total de registros", String.valueOf(resumen.getOrDefault("totalRegistros", 0)))
-                .agregarLineaDetalle("Tiempo acumulado", formatearMinutos(totalMinutos))
-                .agregarEspacio(12);
+                .agregarSeccion("Resumen General")
+                .agregarLineaDetalle("Total de registros de uso", String.valueOf(resumen.getOrDefault("totalRegistros", 0)))
+                .agregarLineaDetalle("Docentes distintos con registro", String.valueOf(resumen.getOrDefault("docentesDistintos", 0)))
+                .agregarLineaDetalle("Tiempo total acumulado", formatearMinutos(totalMinutos))
+                .agregarLineaDetalle("Motivo más frecuente", String.valueOf(resumen.getOrDefault("motivoMasFrecuente", "Sin datos")))
+                .agregarLineaDetalle("Grado más atendido", String.valueOf(resumen.getOrDefault("gradoMasFrecuente", "Sin datos")))
+                .agregarEspacio(10);
     }
 
     private void agregarTopDocentes() {
         String fechaInicio = config.getFechaInicio() != null ? Fechas.convertirAISO(config.getFechaInicio()) : null;
         String fechaFin = config.getFechaFin() != null ? Fechas.convertirAISO(config.getFechaFin()) : null;
-        Map<String, Integer> datos = (fechaInicio != null && fechaFin != null)
+
+        Map<String, Integer> topDocentes = (fechaInicio != null && fechaFin != null)
                 ? registroPlataformaDAO.obtenerTopDocentesUsoPlataforma(fechaInicio, fechaFin, 5)
                 : registroPlataformaDAO.obtenerTopDocentesUsoPlataforma(5);
 
-        pdfBuilder.agregarSeccion("Top 5 docentes que más uso hacen de la plataforma");
+        pdfBuilder.agregarSeccion("Top 5 Docentes por Tiempo de Uso");
 
-        if (datos.isEmpty()) {
-            pdfBuilder.agregarParrafoIndentado("Sin datos").agregarEspacio(8);
+        if (topDocentes.isEmpty()) {
+            pdfBuilder.agregarParrafoIndentado("No hay datos para este ranking.");
             return;
         }
 
-        String[] headers = {"Docente", "Tiempo acumulado"};
-        float[] anchos = {3.8f, 1.4f};
-        Table tabla = pdfBuilder.crearTabla(anchos, headers, COLOR_TOP_DOCENTES);
-
-        for (Map.Entry<String, Integer> entry : datos.entrySet()) {
-            String[] fila = {
-                    valorSeguro(entry.getKey()),
+        Table tabla = pdfBuilder.crearTabla(new float[]{1.0f, 6.0f, 2.5f}, new String[]{"#", "Docente", "Tiempo total"}, COLOR_TOP_DOCENTES);
+        int pos = 1;
+        for (Map.Entry<String, Integer> entry : topDocentes.entrySet()) {
+            String[] valores = {
+                    String.valueOf(pos++),
+                    entry.getKey(),
                     formatearMinutos(entry.getValue())
             };
-            pdfBuilder.agregarFilaTabla(tabla, fila);
+            pdfBuilder.agregarFilaTabla(tabla, valores);
         }
 
-        pdfBuilder.agregarTabla(tabla).agregarEspacio(8);
+        pdfBuilder.agregarTabla(tabla);
+        pdfBuilder.agregarEspacio(8);
     }
 
     private void agregarTopGrados() {
         String fechaInicio = config.getFechaInicio() != null ? Fechas.convertirAISO(config.getFechaInicio()) : null;
         String fechaFin = config.getFechaFin() != null ? Fechas.convertirAISO(config.getFechaFin()) : null;
-        Map<String, Integer> datos = (fechaInicio != null && fechaFin != null)
+
+        Map<String, Integer> topGrados = (fechaInicio != null && fechaFin != null)
                 ? registroPlataformaDAO.obtenerTopGradosUsoPlataforma(fechaInicio, fechaFin, 5)
                 : registroPlataformaDAO.obtenerTopGradosUsoPlataforma(5);
 
-        pdfBuilder.agregarSeccion("Top 5 grados con más uso de la plataforma");
+        pdfBuilder.agregarSeccion("Top 5 Grados por Tiempo de Uso");
 
-        if (datos.isEmpty()) {
-            pdfBuilder.agregarParrafoIndentado("Sin datos").agregarEspacio(8);
+        if (topGrados.isEmpty()) {
+            pdfBuilder.agregarParrafoIndentado("No hay datos para este ranking.");
             return;
         }
 
-        String[] headers = {"Grado", "Tiempo acumulado"};
-        float[] anchos = {1.5f, 1.8f};
-        Table tabla = pdfBuilder.crearTabla(anchos, headers, COLOR_TOP_GRADOS);
-
-        for (Map.Entry<String, Integer> entry : datos.entrySet()) {
-            String[] fila = {
-                    valorSeguro(entry.getKey()),
+        Table tabla = pdfBuilder.crearTabla(new float[]{1.0f, 6.0f, 2.5f}, new String[]{"#", "Grado", "Tiempo total"}, COLOR_TOP_GRADOS);
+        int pos = 1;
+        for (Map.Entry<String, Integer> entry : topGrados.entrySet()) {
+            String[] valores = {
+                    String.valueOf(pos++),
+                    entry.getKey(),
                     formatearMinutos(entry.getValue())
             };
-            pdfBuilder.agregarFilaTabla(tabla, fila);
+            pdfBuilder.agregarFilaTabla(tabla, valores);
         }
 
-        pdfBuilder.agregarTabla(tabla).agregarEspacio(8);
+        pdfBuilder.agregarTabla(tabla);
+        pdfBuilder.agregarEspacio(8);
     }
 
     private void agregarTopMotivos() {
         String fechaInicio = config.getFechaInicio() != null ? Fechas.convertirAISO(config.getFechaInicio()) : null;
         String fechaFin = config.getFechaFin() != null ? Fechas.convertirAISO(config.getFechaFin()) : null;
-        List<Map<String, Object>> datos = (fechaInicio != null && fechaFin != null)
+
+        List<Map<String, Object>> topMotivos = (fechaInicio != null && fechaFin != null)
                 ? registroPlataformaDAO.obtenerTopMotivosUsoPlataformaConTiempo(fechaInicio, fechaFin, 5)
                 : registroPlataformaDAO.obtenerTopMotivosUsoPlataformaConTiempo(5);
 
-        pdfBuilder.agregarSeccion("Top 5 motivos de uso más frecuentes");
+        pdfBuilder.agregarSeccion("Top 5 Motivos de Uso de Plataforma");
 
-        if (datos.isEmpty()) {
-            pdfBuilder.agregarParrafoIndentado("Sin datos").agregarEspacio(8);
+        if (topMotivos.isEmpty()) {
+            pdfBuilder.agregarParrafoIndentado("No hay datos para este ranking.");
             return;
         }
 
-        String[] headers = {"Motivo de uso", "Cantidad", "Tiempo acumulado"};
-        float[] anchos = {3.2f, 0.8f, 1.4f};
-        Table tabla = pdfBuilder.crearTabla(anchos, headers, COLOR_TOP_MOTIVOS);
-
-        for (Map<String, Object> filaDato : datos) {
-            String[] fila = {
-                    valorSeguro(String.valueOf(filaDato.get("motivo"))),
-                    String.valueOf(filaDato.get("total")),
-                    formatearMinutos(((Number) filaDato.getOrDefault("minutos", 0)).intValue())
+        Table tabla = pdfBuilder.crearTabla(new float[]{1.0f, 4.5f, 2.0f, 2.5f}, new String[]{"#", "Motivo", "Registros", "Tiempo total"}, COLOR_TOP_MOTIVOS);
+        int pos = 1;
+        for (Map<String, Object> fila : topMotivos) {
+            int minutos = ((Number) fila.getOrDefault("minutos", 0)).intValue();
+            String[] valores = {
+                    String.valueOf(pos++),
+                    String.valueOf(fila.getOrDefault("motivo", "Sin motivo")),
+                    String.valueOf(fila.getOrDefault("total", 0)),
+                    formatearMinutos(minutos)
             };
-            pdfBuilder.agregarFilaTabla(tabla, fila);
+            pdfBuilder.agregarFilaTabla(tabla, valores);
         }
 
-        pdfBuilder.agregarTabla(tabla).agregarEspacio(8);
+        pdfBuilder.agregarTabla(tabla);
+        pdfBuilder.agregarEspacio(8);
     }
 
     private void agregarTablaDetalle() {
         String fechaInicio = config.getFechaInicio() != null ? Fechas.convertirAISO(config.getFechaInicio()) : null;
         String fechaFin = config.getFechaFin() != null ? Fechas.convertirAISO(config.getFechaFin()) : null;
 
-        List<RegistroPlataformaDetalle> datos = informesDAO.obtenerRegistrosPlataforma(fechaInicio, fechaFin);
-        pdfBuilder.agregarSeccion("Tabla general a detalle");
+        List<RegistroPlataformaDetalle> registros = informesDAO.obtenerRegistrosPlataforma(fechaInicio, fechaFin);
 
-        if (datos.isEmpty()) {
-            pdfBuilder.agregarParrafoIndentado("No se encontraron registros de uso de plataforma con los filtros aplicados.");
+        pdfBuilder.agregarSeccion("Detalle General de Uso de Plataforma");
+
+        if (registros.isEmpty()) {
+            pdfBuilder.agregarParrafoIndentado("No se encontraron registros de uso para el período seleccionado.");
             return;
         }
 
-        String[] encabezados = {"Docente", "Motivo de uso", "Fecha", "Hora inicio", "Hora fin", "Duración", "Grado"};
-        float[] anchos = {2.4f, 2.2f, 1.2f, 1.0f, 1.0f, 1.1f, 0.8f};
+        String[] encabezados = {"Docente", "Motivo", "Fecha", "Inicio", "Fin", "Duración", "Grado"};
+        float[] anchos = {2.2f, 2.6f, 1.2f, 1.0f, 1.0f, 1.2f, 0.8f};
         Table tabla = pdfBuilder.crearTabla(anchos, encabezados);
 
-        for (RegistroPlataformaDetalle registro : datos) {
-            String[] fila = {
-                    valorSeguro(registro.getDocente()),
-                    valorSeguro(registro.getMotivoUso()),
-                    valorSeguro(registro.getFecha()),
-                    valorSeguro(registro.getHoraInicio()),
-                    valorSeguro(registro.getHoraFin()),
-                    formatearMinutos(registro.getTotalMinutos()),
-                    registro.getGrado() > 0 ? String.valueOf(registro.getGrado()) : "--"
+        for (RegistroPlataformaDetalle r : registros) {
+            String duracion = formatearMinutos(r.getTotalMinutos());
+            String grado = r.getGrado() > 0 ? String.valueOf(r.getGrado()) : "--";
+
+            String[] valores = {
+                    valorSeguro(r.getDocente()),
+                    valorSeguro(r.getMotivoUso()),
+                    valorSeguro(r.getFecha()),
+                    valorSeguro(r.getHoraInicio()),
+                    valorSeguro(r.getHoraFin()),
+                    duracion,
+                    grado
             };
-            pdfBuilder.agregarFilaTabla(tabla, fila);
+
+            pdfBuilder.agregarFilaTabla(tabla, valores);
         }
 
         pdfBuilder.agregarTabla(tabla);
@@ -201,10 +208,6 @@ public class GeneralPlataformaReportGenerator extends BaseReportGenerator {
     }
 
     private String valorSeguro(String valor) {
-        if (valor == null || valor.trim().isEmpty()) {
-            return "--";
-        }
-        return valor;
+        return (valor == null || valor.isBlank()) ? "--" : valor;
     }
 }
-

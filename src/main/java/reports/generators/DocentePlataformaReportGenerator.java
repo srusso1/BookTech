@@ -4,7 +4,6 @@ import com.itextpdf.layout.element.Table;
 import database.InformesDAO;
 import model.RegistroPlataformaDetalle;
 import reports.models.ReportConfig;
-import utils.Alertas;
 import utils.Fechas;
 
 import java.text.Normalizer;
@@ -40,29 +39,24 @@ public class DocentePlataformaReportGenerator extends BaseReportGenerator {
     }
 
     @Override
-    public void generar() {
+    public void generar() throws Exception {
         if (!puedeGenerar()) {
             return;
         }
 
-        try {
-            agregarEncabezadoEstandar("Informe de Uso de Plataforma por Docente");
-            agregarDescripcionResumen();
+        agregarEncabezadoEstandar("Informe de Uso de Plataforma por Docente");
+        agregarDescripcionResumen();
 
-            if (config.isIncluirTablas()) {
-                agregarTablaDetalle();
-            } else {
-                pdfBuilder
-                        .agregarSeccion("Detalle de uso de plataforma")
-                        .agregarParrafoIndentado("No se incluyó la tabla detallada por decisión del usuario.")
-                        .agregarEspacio(8);
-            }
-
-            finalizarReporte();
-
-        } catch (Exception e) {
-            Alertas.mostrarError("Error al generar reporte: " + e.getMessage());
+        if (config.isIncluirTablas()) {
+            agregarTablaDetalle();
+        } else {
+            pdfBuilder
+                    .agregarSeccion("Detalle de uso de plataforma")
+                    .agregarParrafoIndentado("No se incluyó la tabla detallada por decisión del usuario.")
+                    .agregarEspacio(8);
         }
+
+        finalizarReporte();
     }
 
     private void agregarDescripcionResumen() {
@@ -78,40 +72,45 @@ public class DocentePlataformaReportGenerator extends BaseReportGenerator {
                 .agregarParrafoIndentado("Este informe presenta el uso de la plataforma virtual para el docente seleccionado.")
                 .agregarLineaDetalle("Docente", valorSeguro(nombreDocente))
                 .agregarLineaDetalle("Filtro de fecha aplicado", filtroTexto)
-                .agregarSeccion("Indicadores Principales")
+                .agregarSeccion("Resumen de Uso")
                 .agregarLineaDetalle("Total de registros", String.valueOf(resumen.getOrDefault("totalRegistros", 0)))
-                .agregarLineaDetalle("Tiempo acumulado", formatearMinutos(totalMinutos))
-                .agregarLineaDetalle("Motivo de uso más frecuente", String.valueOf(resumen.getOrDefault("motivoTop", "Sin datos")))
-                .agregarLineaDetalle("Grado más frecuente", String.valueOf(resumen.getOrDefault("gradoTop", "Sin datos")))
-                .agregarEspacio(12);
+                .agregarLineaDetalle("Tiempo total de uso", formatearMinutos(totalMinutos))
+                .agregarLineaDetalle("Motivo más frecuente", String.valueOf(resumen.getOrDefault("motivoMasFrecuente", "Sin datos")))
+                .agregarLineaDetalle("Grado más atendido", String.valueOf(resumen.getOrDefault("gradoMasFrecuente", "Sin datos")))
+                .agregarEspacio(10);
     }
 
     private void agregarTablaDetalle() {
         String fechaInicio = config.getFechaInicio() != null ? Fechas.convertirAISO(config.getFechaInicio()) : null;
         String fechaFin = config.getFechaFin() != null ? Fechas.convertirAISO(config.getFechaFin()) : null;
 
-        List<RegistroPlataformaDetalle> datos = informesDAO.obtenerRegistrosPlataformaPorDocente(idDocente, fechaInicio, fechaFin);
-        pdfBuilder.agregarSeccion("Tabla general a detalle");
+        List<RegistroPlataformaDetalle> registros = informesDAO.obtenerRegistrosPlataformaPorDocente(idDocente, fechaInicio, fechaFin);
 
-        if (datos.isEmpty()) {
-            pdfBuilder.agregarParrafoIndentado("No se encontraron registros de uso de plataforma para el docente con los filtros aplicados.");
+        pdfBuilder.agregarSeccion("Detalle cronológico de uso");
+
+        if (registros.isEmpty()) {
+            pdfBuilder.agregarParrafoIndentado("No se encontraron registros de uso para el docente en el período seleccionado.");
             return;
         }
 
-        String[] encabezados = {"Motivo de uso", "Fecha", "Hora inicio", "Hora fin", "Duración", "Grado"};
-        float[] anchos = {2.8f, 1.3f, 1.1f, 1.1f, 1.2f, 0.9f};
+        String[] encabezados = {"Fecha", "Motivo", "Inicio", "Fin", "Duración", "Grado"};
+        float[] anchos = {1.5f, 3.2f, 1.2f, 1.2f, 1.5f, 1.0f};
         Table tabla = pdfBuilder.crearTabla(anchos, encabezados);
 
-        for (RegistroPlataformaDetalle registro : datos) {
-            String[] fila = {
-                    valorSeguro(registro.getMotivoUso()),
-                    valorSeguro(registro.getFecha()),
-                    valorSeguro(registro.getHoraInicio()),
-                    valorSeguro(registro.getHoraFin()),
-                    formatearMinutos(registro.getTotalMinutos()),
-                    registro.getGrado() > 0 ? String.valueOf(registro.getGrado()) : "--"
+        for (RegistroPlataformaDetalle r : registros) {
+            String duracion = formatearMinutos(r.getTotalMinutos());
+            String grado = r.getGrado() > 0 ? String.valueOf(r.getGrado()) : "--";
+
+            String[] valores = {
+                    valorSeguro(r.getFecha()),
+                    valorSeguro(r.getMotivoUso()),
+                    valorSeguro(r.getHoraInicio()),
+                    valorSeguro(r.getHoraFin()),
+                    duracion,
+                    grado
             };
-            pdfBuilder.agregarFilaTabla(tabla, fila);
+
+            pdfBuilder.agregarFilaTabla(tabla, valores);
         }
 
         pdfBuilder.agregarTabla(tabla);
@@ -124,10 +123,6 @@ public class DocentePlataformaReportGenerator extends BaseReportGenerator {
     }
 
     private String valorSeguro(String valor) {
-        if (valor == null || valor.trim().isEmpty()) {
-            return "--";
-        }
-        return valor;
+        return (valor == null || valor.isBlank()) ? "--" : valor;
     }
 }
-

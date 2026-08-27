@@ -13,6 +13,7 @@ import model.Estudiante;
 import model.InventarioLibroDetalle;
 import model.Prestamo;
 import model.RegistroPlataformaDetalle;
+import reports.generators.BaseReportGenerator;
 import reports.generators.DocentePlataformaReportGenerator;
 import reports.generators.EstudianteReportGenerator;
 import reports.generators.GeneralPlataformaReportGenerator;
@@ -23,6 +24,7 @@ import reports.models.ReportConfig;
 import utils.Alertas;
 import utils.BusquedaSugerencias;
 import utils.Fechas;
+import javafx.concurrent.Task;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -484,53 +486,75 @@ public class InformesController {
 
     private void cargarDatos() {
         String tipoReporte = cbTipoReporte.getValue();
-        List<?> datos;
 
         if (REPORTE_ESTUDIANTE_PRESTAMOS.equals(tipoReporte)) {
             configurarTablaPrestamos();
-            if (estudianteSeleccionado != null) {
-                int idEstudiante = estudianteSeleccionado.getId();
-                datos = (fechaFiltroInicio != null && fechaFiltroFin != null)
-                        ? informesDAO.obtenerHistorialEstudiante(idEstudiante, fechaFiltroInicio, fechaFiltroFin)
-                        : informesDAO.obtenerHistorialEstudiante(idEstudiante);
-            } else {
-                datos = List.of();
-            }
         } else if (REPORTE_DEVUELTOS_TARDE.equals(tipoReporte)) {
             configurarTablaPrestamos();
-            Integer grado = obtenerGradoSeleccionado();
-            if (fechaFiltroInicio != null && fechaFiltroFin != null) {
-                datos = informesDAO.obtenerPrestamosDevueltosTarde(fechaFiltroInicio, fechaFiltroFin, grado);
-            } else if (grado != null) {
-                datos = informesDAO.obtenerPrestamosDevueltosTarde(grado);
-            } else {
-                datos = informesDAO.obtenerPrestamosDevueltosTarde();
-            }
         } else if (REPORTE_PLATAFORMA_GENERAL.equals(tipoReporte)) {
             configurarTablaPlataforma();
-            datos = informesDAO.obtenerRegistrosPlataforma(fechaFiltroInicio, fechaFiltroFin);
         } else if (REPORTE_PLATAFORMA_DOCENTE.equals(tipoReporte)) {
             configurarTablaPlataforma();
-            if (docenteSeleccionado == null) {
-                datos = List.of();
-            } else {
-                datos = informesDAO.obtenerRegistrosPlataformaPorDocente(
-                        docenteSeleccionado.getId(),
-                        fechaFiltroInicio,
-                        fechaFiltroFin
-                );
-            }
         } else if (REPORTE_INVENTARIO.equals(tipoReporte)) {
             configurarTablaInventario();
-            datos = informesDAO.obtenerInventarioParaCompra(UMBRAL_STOCK_BAJO);
         } else {
             configurarTablaPrestamos();
-            datos = (fechaFiltroInicio != null && fechaFiltroFin != null)
-                    ? informesDAO.obtenerTodosPrestamos(fechaFiltroInicio, fechaFiltroFin)
-                    : informesDAO.obtenerTodosPrestamos();
         }
 
-        tblPrestamos.setItems(FXCollections.observableArrayList(datos));
+        final Integer grado = obtenerGradoSeleccionado();
+        final Estudiante estudiante = this.estudianteSeleccionado;
+        final Docente docente = this.docenteSeleccionado;
+        final String fInicio = this.fechaFiltroInicio;
+        final String fFin = this.fechaFiltroFin;
+
+        Task<List<?>> dataTask = new Task<>() {
+            @Override
+            protected List<?> call() {
+                if (REPORTE_ESTUDIANTE_PRESTAMOS.equals(tipoReporte)) {
+                    if (estudiante != null) {
+                        return (fInicio != null && fFin != null)
+                                ? informesDAO.obtenerHistorialEstudiante(estudiante.getId(), fInicio, fFin)
+                                : informesDAO.obtenerHistorialEstudiante(estudiante.getId());
+                    } else {
+                        return List.of();
+                    }
+                } else if (REPORTE_DEVUELTOS_TARDE.equals(tipoReporte)) {
+                    if (fInicio != null && fFin != null) {
+                        return informesDAO.obtenerPrestamosDevueltosTarde(fInicio, fFin, grado);
+                    } else if (grado != null) {
+                        return informesDAO.obtenerPrestamosDevueltosTarde(grado);
+                    } else {
+                        return informesDAO.obtenerPrestamosDevueltosTarde();
+                    }
+                } else if (REPORTE_PLATAFORMA_GENERAL.equals(tipoReporte)) {
+                    return informesDAO.obtenerRegistrosPlataforma(fInicio, fFin);
+                } else if (REPORTE_PLATAFORMA_DOCENTE.equals(tipoReporte)) {
+                    if (docente == null) {
+                        return List.of();
+                    } else {
+                        return informesDAO.obtenerRegistrosPlataformaPorDocente(
+                                docente.getId(),
+                                fInicio,
+                                fFin
+                        );
+                    }
+                } else if (REPORTE_INVENTARIO.equals(tipoReporte)) {
+                    return informesDAO.obtenerInventarioParaCompra(UMBRAL_STOCK_BAJO);
+                } else {
+                    return (fInicio != null && fFin != null)
+                            ? informesDAO.obtenerTodosPrestamos(fInicio, fFin)
+                            : informesDAO.obtenerTodosPrestamos();
+                }
+            }
+        };
+
+        dataTask.setOnSucceeded(e -> {
+            tblPrestamos.setItems(FXCollections.observableArrayList(dataTask.getValue()));
+        });
+
+        Thread thread = new Thread(dataTask, "Informes-DataLoader-Thread");
+        thread.setDaemon(true);
+        thread.start();
     }
 
     @FXML
@@ -591,43 +615,79 @@ public class InformesController {
                 config.setFechaFin(dpFechaFin.getValue());
             }
 
+            final BaseReportGenerator generator;
+
             if (REPORTE_ESTUDIANTE_PRESTAMOS.equals(tipoReporte)) {
                 if (estudianteSeleccionado == null) {
                     Alertas.mostrarError("Debe seleccionar un estudiante");
                     return;
                 }
-                new EstudianteReportGenerator(config, estudianteSeleccionado.getId()).generar();
+                generator = new EstudianteReportGenerator(config, estudianteSeleccionado.getId());
 
             } else if (REPORTE_DEVUELTOS_TARDE.equals(tipoReporte)) {
                 Integer grado = obtenerGradoSeleccionado();
                 if (grado != null) {
                     config.setGrado(grado);
                 }
-                new PrestamosDevueltosTardeReportGenerator(config, grado).generar();
+                generator = new PrestamosDevueltosTardeReportGenerator(config, grado);
 
             } else if (REPORTE_PLATAFORMA_GENERAL.equals(tipoReporte)) {
-                new GeneralPlataformaReportGenerator(config).generar();
+                generator = new GeneralPlataformaReportGenerator(config);
 
             } else if (REPORTE_PLATAFORMA_DOCENTE.equals(tipoReporte)) {
                 if (docenteSeleccionado == null) {
                     Alertas.mostrarError("Debe seleccionar un docente");
                     return;
                 }
-                new DocentePlataformaReportGenerator(
+                generator = new DocentePlataformaReportGenerator(
                         config,
                         docenteSeleccionado.getId(),
                         docenteSeleccionado.getNombreCompleto()
-                ).generar();
+                );
 
             } else if (REPORTE_INVENTARIO.equals(tipoReporte)) {
-                new InventarioReportGenerator(config, UMBRAL_STOCK_BAJO).generar();
+                generator = new InventarioReportGenerator(config, UMBRAL_STOCK_BAJO);
 
             } else {
-                new GeneralReportGenerator(config).generar();
+                generator = new GeneralReportGenerator(config);
             }
 
+            if (generator.isCancelado()) {
+                return;
+            }
+
+            btnGenerarReporte.setDisable(true);
+            btnGenerarReporte.setText("Generando PDF...");
+
+            Task<Void> reportTask = new Task<>() {
+                @Override
+                protected Void call() throws Exception {
+                    generator.generar();
+                    return null;
+                }
+            };
+
+            reportTask.setOnSucceeded(e -> {
+                btnGenerarReporte.setDisable(false);
+                btnGenerarReporte.setText("Generar reporte");
+                Alertas.mostrarExito("Reporte PDF generado exitosamente en:\n" + generator.getRutaArchivo());
+            });
+
+            reportTask.setOnFailed(e -> {
+                btnGenerarReporte.setDisable(false);
+                btnGenerarReporte.setText("Generar reporte");
+                Throwable ex = reportTask.getException();
+                Alertas.mostrarError("Error al generar el reporte: " + (ex != null ? ex.getMessage() : "Error desconocido"));
+            });
+
+            Thread thread = new Thread(reportTask, "PDF-Generator-Thread");
+            thread.setDaemon(true);
+            thread.start();
+
         } catch (Exception e) {
-            Alertas.mostrarError("Error al generar el reporte: " + e.getMessage());
+            btnGenerarReporte.setDisable(false);
+            btnGenerarReporte.setText("Generar reporte");
+            Alertas.mostrarError("Error al iniciar el reporte: " + e.getMessage());
         }
     }
 

@@ -4,7 +4,6 @@ import com.itextpdf.layout.element.Table;
 import database.InformesDAO;
 import model.Prestamo;
 import reports.models.ReportConfig;
-import utils.Alertas;
 import utils.Fechas;
 
 import java.util.List;
@@ -31,26 +30,22 @@ public class PrestamosDevueltosTardeReportGenerator extends BaseReportGenerator 
     }
 
     @Override
-    public void generar() {
+    public void generar() throws Exception {
         if (!puedeGenerar()) {
             return;
         }
 
-        try {
-            agregarEncabezadoEstandar("Reporte Préstamos Devueltos Tarde");
-            agregarDescripcion();
-            if (config.isIncluirTablas()) {
-                agregarTabla();
-            } else {
-                pdfBuilder
-                        .agregarSeccion("Detalle de préstamos devueltos tarde")
-                        .agregarParrafoIndentado("No se incluyó la tabla detallada por decisión del usuario.")
-                        .agregarEspacio(8);
-            }
-            finalizarReporte();
-        } catch (Exception e) {
-            Alertas.mostrarError("Error al generar reporte: " + e.getMessage());
+        agregarEncabezadoEstandar("Reporte Préstamos Devueltos Tarde");
+        agregarDescripcion();
+        if (config.isIncluirTablas()) {
+            agregarTabla();
+        } else {
+            pdfBuilder
+                    .agregarSeccion("Detalle de préstamos devueltos tarde")
+                    .agregarParrafoIndentado("No se incluyó la tabla detallada por decisión del usuario.")
+                    .agregarEspacio(8);
         }
+        finalizarReporte();
     }
 
     private void agregarDescripcion() {
@@ -98,32 +93,31 @@ public class PrestamosDevueltosTardeReportGenerator extends BaseReportGenerator 
 
         pdfBuilder.agregarSeccion("Detalle de préstamos devueltos tarde");
 
-        String[] encabezados = {
-                "Libro", "Estudiante", "Grado", "Docente", "Fecha Préstamo", "Fecha Límite", "Fecha Devolución", "Días de tardanza"
-        };
-        float[] anchos = {2.3f, 2.0f, 0.9f, 1.8f, 1.2f, 1.2f, 1.3f, 1.0f};
+        String[] encabezados = {"Libro", "Estudiante", "Docente", "Grado", "Fecha Límite", "Fecha Devolución", "Días de tardanza"};
+        float[] anchos = {2.2f, 2.0f, 1.8f, 0.8f, 1.2f, 1.2f, 1.1f};
         Table tabla = pdfBuilder.crearTabla(anchos, encabezados);
 
-        for (Prestamo p : datos) {
-            String docente = p.getDocente() != null ? p.getDocente().getNombreCompleto() : "N/A";
+        for (Prestamo prestamo : datos) {
+            String docente = prestamo.getDocente() != null
+                    ? prestamo.getDocente().getNombreCompleto()
+                    : "N/A";
+            String devolucion = prestamo.getFecha_devolucion() != null
+                    ? prestamo.getFecha_devolucion()
+                    : "Pendiente";
 
-            String[] fila = {
-                    p.getTituloLibro(),
-                    p.getEstudiante(),
-                    String.valueOf(p.getGrado()),
+            String[] valores = {
+                    prestamo.getTituloLibro(),
+                    prestamo.getEstudiante(),
                     docente,
-                    p.getFecha_prestamo(),
-                    p.getFecha_limite(),
-                    p.getFecha_devolucion() != null ? p.getFecha_devolucion() : "--",
-                    String.valueOf(p.getDias_atraso())
+                    String.valueOf(prestamo.getGrado()),
+                    prestamo.getFecha_limite(),
+                    devolucion,
+                    String.valueOf(prestamo.getDias_atraso())
             };
 
-            pdfBuilder.agregarFilaTabla(tabla, fila);
+            pdfBuilder.agregarFilaTabla(tabla, valores);
         }
 
         pdfBuilder.agregarTabla(tabla);
     }
 }
-
-
-

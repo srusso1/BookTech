@@ -54,11 +54,11 @@ public class PDFBuilder {
             document = new Document(pdfDoc, PageSize.A4);
             document.setMargins(20, 20, 20, 20);
 
-            // Inicializar fuentes
-            fontTitulo = PdfFontFactory.createFont();
-            fontSubtitulo = PdfFontFactory.createFont();
-            fontNormal = PdfFontFactory.createFont();
-            fontBold = PdfFontFactory.createFont();
+            // Inicializar fuentes con constantes oficiales de iText
+            fontTitulo = PdfFontFactory.createFont(com.itextpdf.io.font.constants.StandardFonts.HELVETICA_BOLD);
+            fontSubtitulo = PdfFontFactory.createFont(com.itextpdf.io.font.constants.StandardFonts.HELVETICA);
+            fontNormal = PdfFontFactory.createFont(com.itextpdf.io.font.constants.StandardFonts.HELVETICA);
+            fontBold = PdfFontFactory.createFont(com.itextpdf.io.font.constants.StandardFonts.HELVETICA_BOLD);
 
         } catch (Exception e) {
             throw new RuntimeException("Error al crear el PDF: " + e.getMessage(), e);
@@ -317,7 +317,7 @@ public class PDFBuilder {
      * Agrega línea de ubicación y fecha, por ejemplo: Becerril, 14 de octubre del 2025
      */
     public PDFBuilder agregarLineaCiudadFecha(String ciudad) {
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("d 'de' MMMM 'del' yyyy", new Locale("es", "CO"));
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("d 'de' MMMM 'del' yyyy", Locale.of("es", "CO"));
         String texto = ciudad + ", " + LocalDate.now().format(formato);
         document.add(new Paragraph(texto)
                 .setFont(fontNormal)

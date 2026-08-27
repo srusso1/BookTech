@@ -4,7 +4,6 @@ import database.PrestamosDAO;
 import database.UsuariosDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -14,10 +13,6 @@ import utils.Alertas;
 import utils.ManagerView;
 import utils.Paths;
 import utils.Validaciones;
-
-import java.io.IOException;
-import java.sql.Connection;
-import java.util.Objects;
 
 public class LoginController {
 

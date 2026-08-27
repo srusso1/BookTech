@@ -3,21 +3,18 @@ package controllers.Bibliotecario;
 import database.LibrosDAO;
 import database.PrestamosDAO;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.stage.Stage;
-import model.Libro;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.stage.Stage;
+import model.Libro;
 import model.Prestamo;
 import utils.Alertas;
 import utils.Fechas;
-import java.util.ArrayList;
 
-import static utils.Fechas.esDespues;
-import static utils.Fechas.fechaActualISO;
+import java.util.ArrayList;
 
 public class DevolucionController {
 
@@ -96,7 +93,7 @@ public class DevolucionController {
 
         prestamoSeleccionado = tabla.getSelectionModel().getSelectedItem();
         if(prestamosDAO.registrarDevolucion(prestamoSeleccionado)){
-            if (esDespues(fechaActualISO(), prestamoSeleccionado.getFecha_limite())) {
+            if (Fechas.esDespues(Fechas.fechaActualISO(), prestamoSeleccionado.getFecha_limite())) {
                 String fechaLimiteUI = Fechas.convertirAUI(prestamoSeleccionado.getFecha_limite());
                 Alertas.mostrarInfo("Se registro la devolución correctamente. Sin embargo, fue devuelto fuera de tiempo, la fecha límite era hasta: " + (fechaLimiteUI != null ? fechaLimiteUI : prestamoSeleccionado.getFecha_limite()));
             }else{

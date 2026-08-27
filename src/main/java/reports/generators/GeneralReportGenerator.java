@@ -5,10 +5,8 @@ import database.InformesDAO;
 import com.itextpdf.layout.element.Table;
 import model.Prestamo;
 import reports.models.ReportConfig;
-import utils.Alertas;
 import utils.Fechas;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -37,33 +35,29 @@ public class GeneralReportGenerator extends BaseReportGenerator {
      * Genera el reporte general
      */
     @Override
-    public void generar() {
+    public void generar() throws Exception {
         if (!puedeGenerar()) {
             return;
         }
-        try {
-            // Agregar encabezado
-            agregarEncabezadoEstandar("Informe General de Préstamos");
 
-            // Agregar descripción
-            agregarDescripcionResumen();
+        // Agregar encabezado
+        agregarEncabezadoEstandar("Informe General de Préstamos");
 
-            // Agregar tabla de préstamos (opcional)
-            if (config.isIncluirTablas()) {
-                agregarTablaPrestamos();
-            } else {
-                pdfBuilder
-                        .agregarSeccion("Detalle de préstamos")
-                        .agregarParrafoIndentado("No se incluyó la tabla detallada por decisión del usuario.")
-                        .agregarEspacio(8);
-            }
+        // Agregar descripción
+        agregarDescripcionResumen();
 
-            // Finalizar
-            finalizarReporte();
-
-        } catch (Exception e) {
-            Alertas.mostrarError("Error al generar reporte: " + e.getMessage());
+        // Agregar tabla de préstamos (opcional)
+        if (config.isIncluirTablas()) {
+            agregarTablaPrestamos();
+        } else {
+            pdfBuilder
+                    .agregarSeccion("Detalle de préstamos")
+                    .agregarParrafoIndentado("No se incluyó la tabla detallada por decisión del usuario.")
+                    .agregarEspacio(8);
         }
+
+        // Finalizar
+        finalizarReporte();
     }
 
     /**
@@ -83,24 +77,22 @@ public class GeneralReportGenerator extends BaseReportGenerator {
         }
 
         if (prestamos.isEmpty()) {
-            pdfBuilder.agregarParrafo("No hay préstamos registrados en el sistema.");
+            pdfBuilder.agregarParrafoIndentado("No hay préstamos registrados en el sistema.");
             return;
         }
 
-        // Crear tabla con 9 columnas
-        String[] encabezados = {"Libro", "Estudiante", "Docente", "Fecha Préstamo", "Fecha Límite", "Fecha Devolución", "Estado", "Regresado tarde", "Días de tardanza"};
-        float[] anchos = {2.3f, 2.0f, 1.8f, 1.2f, 1.2f, 1.3f, 1.0f, 1.2f, 1.0f};
+        String[] encabezados = {"Libro", "Estudiante", "Docente", "Motivo", "Fecha Préstamo", "Fecha Límite", "Estado", "Regresado tarde", "Días tardanza"};
+        float[] anchos = {2.2f, 2.0f, 1.8f, 1.3f, 1.1f, 1.1f, 1.0f, 1.1f, 0.9f};
         Table tabla = pdfBuilder.crearTabla(anchos, encabezados);
 
-        // Agregar filas
         for (Prestamo prestamo : prestamos) {
             String estado = obtenerNombreEstado(prestamo.getEstado());
             String docente = prestamo.getDocente() != null
                     ? prestamo.getDocente().getNombreCompleto()
                     : "N/A";
-            String fechaDevolucion = prestamo.getFecha_devolucion() != null
-                    ? prestamo.getFecha_devolucion()
-                    : "Pendiente";
+            String motivo = prestamo.getMotivoPrestamo() != null
+                    ? prestamo.getMotivoPrestamo().getNombre()
+                    : "N/A";
             String regresadoTarde = prestamo.getEstado() == ReportConfig.ESTADO_DEVUELTO
                     ? (prestamo.getDevuelto_tarde() == 1 ? "Sí" : "No")
                     : "--";
@@ -112,9 +104,9 @@ public class GeneralReportGenerator extends BaseReportGenerator {
                     prestamo.getTituloLibro(),
                     prestamo.getEstudiante(),
                     docente,
+                    motivo,
                     prestamo.getFecha_prestamo(),
                     prestamo.getFecha_limite(),
-                    fechaDevolucion,
                     estado,
                     regresadoTarde,
                     diasTardia
@@ -126,105 +118,52 @@ public class GeneralReportGenerator extends BaseReportGenerator {
         pdfBuilder.agregarTabla(tabla);
     }
 
+    @SuppressWarnings("unchecked")
     private void agregarDescripcionResumen() {
         String fechaInicio = config.getFechaInicio() != null ? Fechas.convertirAISO(config.getFechaInicio()) : null;
         String fechaFin = config.getFechaFin() != null ? Fechas.convertirAISO(config.getFechaFin()) : null;
-        boolean hayFiltro = fechaInicio != null && fechaFin != null;
 
         Map<String, Object> resumen = informesDAO.obtenerResumenGeneral(fechaInicio, fechaFin);
-
-        String filtroTexto = hayFiltro
-                ? fechaInicio + " - " + fechaFin
-                : "No aplicado";
+        String filtroTexto = (fechaInicio != null && fechaFin != null) ? fechaInicio + " - " + fechaFin : "No aplicado";
 
         pdfBuilder
                 .agregarSeccion("Descripción del Informe")
-                .agregarParrafoIndentado("Este informe contiene el listado completo de los préstamos registrados en el sistema.")
-                .agregarLineaDetalle("Fecha de generación", String.valueOf(LocalDate.now()))
+                .agregarParrafoIndentado("Este informe presenta el consolidado general de los préstamos registrados en el sistema.")
                 .agregarLineaDetalle("Filtro de fecha aplicado", filtroTexto)
-                .agregarSeccion("Indicadores Principales")
-                .agregarLineaDetalle("Total de préstamos", String.valueOf(resumen.get("totalPrestamos")))
-                .agregarLineaDetalle("Total de préstamos regresados tarde", String.valueOf(resumen.get("totalPrestamosTarde")))
+                .agregarSeccion("Estadísticas Generales")
+                .agregarLineaDetalle("Total de préstamos registrados", String.valueOf(resumen.getOrDefault("totalPrestamos", 0)))
+                .agregarLineaDetalle("Préstamos devueltos tarde", String.valueOf(resumen.getOrDefault("totalPrestamosTarde", 0)))
+                .agregarLineaDetalle("Estudiante destacado", String.valueOf(resumen.getOrDefault("estudianteTop", "Sin datos")))
+                .agregarLineaDetalle("Docente con más estudiantes", String.valueOf(resumen.getOrDefault("docenteTop", "Sin datos")))
+                .agregarLineaDetalle("Libro más prestado", String.valueOf(resumen.getOrDefault("libroTop", "Sin datos")))
                 .agregarEspacio(8);
 
-        agregarTopEstudiantes(fechaInicio, fechaFin);
-        agregarTopDocentes(fechaInicio, fechaFin);
-        agregarTopLibros(fechaInicio, fechaFin);
-        pdfBuilder.agregarEspacio(15);
+        List<String> topEstudiantes = (List<String>) resumen.getOrDefault("top5Estudiantes", List.of());
+        agregarListaRanking("Top 5 Estudiantes con Más Préstamos", topEstudiantes, COLOR_TOP_ESTUDIANTES);
+
+        List<String> topDocentes = (List<String>) resumen.getOrDefault("top5Docentes", List.of());
+        agregarListaRanking("Top 5 Docentes con Más Préstamos Asociados", topDocentes, COLOR_TOP_DOCENTES);
+
+        List<String> topLibros = (List<String>) resumen.getOrDefault("top5Libros", List.of());
+        agregarListaRanking("Top 5 Libros Más Prestados", topLibros, COLOR_TOP_LIBROS);
     }
 
-    private void agregarTopEstudiantes(String fechaInicio, String fechaFin) {
-        pdfBuilder.agregarSeccion("Top 5 estudiantes que más prestaron libros");
-        List<Map<String, Object>> top = informesDAO.obtenerTopEstudiantesDetalle(fechaInicio, fechaFin, 5);
-
-        if (top.isEmpty()) {
-            pdfBuilder.agregarParrafoIndentado("Sin datos");
+    private void agregarListaRanking(String titulo, List<String> items, DeviceRgb colorEncabezado) {
+        pdfBuilder.agregarSeccion(titulo);
+        if (items == null || items.isEmpty() || (items.size() == 1 && "Sin datos".equals(items.get(0)))) {
+            pdfBuilder.agregarParrafoIndentado("No hay datos para este ranking.");
             return;
         }
 
-        String[] headers = {"Estudiante", "Préstamos", "Devueltos tarde", "Motivo frecuente"};
-        Table tabla = pdfBuilder.crearTabla(4, headers, COLOR_TOP_ESTUDIANTES);
-        for (Map<String, Object> fila : top) {
-            String[] valores = {
-                    String.valueOf(fila.get("estudiante")),
-                    String.valueOf(fila.get("total_prestamos")),
-                    String.valueOf(fila.get("devoluciones_tarde")),
-                    valorSeguro(fila.get("motivo_frecuente"))
-            };
-            pdfBuilder.agregarFilaTabla(tabla, valores);
+        Table tabla = pdfBuilder.crearTabla(new float[]{1.0f, 6.0f}, new String[]{"#", "Detalle"}, colorEncabezado);
+        int pos = 1;
+        for (String item : items) {
+            String texto = item.contains(". ") ? item.substring(item.indexOf(". ") + 2) : item;
+            tabla.addCell(String.valueOf(pos++));
+            tabla.addCell(texto);
         }
-        pdfBuilder.agregarTabla(tabla).agregarEspacio(8);
-    }
-
-    private void agregarTopDocentes(String fechaInicio, String fechaFin) {
-        pdfBuilder.agregarSeccion("Top 5 docentes que enviaron a más estudiantes");
-        List<Map<String, Object>> top = informesDAO.obtenerTopDocentesDetalle(fechaInicio, fechaFin, 5);
-
-        if (top.isEmpty()) {
-            pdfBuilder.agregarParrafoIndentado("Sin datos");
-            return;
-        }
-
-        String[] headers = {"Docente", "Estudiantes enviados", "Total solicitudes de préstamo", "Motivo frecuente"};
-        Table tabla = pdfBuilder.crearTabla(4, headers, COLOR_TOP_DOCENTES);
-        for (Map<String, Object> fila : top) {
-            String[] valores = {
-                    String.valueOf(fila.get("docente")),
-                    String.valueOf(fila.get("estudiantes_enviados")),
-                    String.valueOf(fila.get("total_solicitudes")),
-                    valorSeguro(fila.get("motivo_frecuente"))
-            };
-            pdfBuilder.agregarFilaTabla(tabla, valores);
-        }
-        pdfBuilder.agregarTabla(tabla).agregarEspacio(8);
-    }
-
-    private void agregarTopLibros(String fechaInicio, String fechaFin) {
-        pdfBuilder.agregarSeccion("Top 5 libros más solicitados");
-        List<Map<String, Object>> top = informesDAO.obtenerTopLibrosDetalle(fechaInicio, fechaFin, 5);
-
-        if (top.isEmpty()) {
-            pdfBuilder.agregarParrafoIndentado("Sin datos");
-            return;
-        }
-
-        String[] headers = {"Libro", "Solicitudes", "Estudiantes únicos", "Grado más solicitante"};
-        Table tabla = pdfBuilder.crearTabla(4, headers, COLOR_TOP_LIBROS);
-        for (Map<String, Object> fila : top) {
-            String[] valores = {
-                    String.valueOf(fila.get("libro")),
-                    String.valueOf(fila.get("total_solicitudes")),
-                    String.valueOf(fila.get("estudiantes_unicos")),
-                    valorSeguro(fila.get("grado_frecuente"))
-            };
-            pdfBuilder.agregarFilaTabla(tabla, valores);
-        }
-        pdfBuilder.agregarTabla(tabla).agregarEspacio(8);
-    }
-
-    private String valorSeguro(Object valor) {
-        String texto = valor == null ? "" : String.valueOf(valor).trim();
-        return texto.isEmpty() ? "Sin datos" : texto;
+        pdfBuilder.agregarTabla(tabla);
+        pdfBuilder.agregarEspacio(6);
     }
 
     /**
@@ -239,4 +178,3 @@ public class GeneralReportGenerator extends BaseReportGenerator {
         };
     }
 }
-

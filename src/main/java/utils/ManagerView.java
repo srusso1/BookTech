@@ -5,7 +5,6 @@ import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -15,9 +14,7 @@ public class ManagerView {
         try {
             Parent vista = FXMLLoader.load(
                     Objects.requireNonNull(
-                            ManagerView.class.getResource(fxml)
-                    )
-            );
+                            ManagerView.class.getResource(fxml)));
 
             contenedor.getChildren().clear();
             contenedor.getChildren().add(vista);
@@ -39,9 +36,7 @@ public class ManagerView {
         try {
             Parent vista = FXMLLoader.load(
                     Objects.requireNonNull(
-                            ManagerView.class.getResource(fxml)
-                    )
-            );
+                            ManagerView.class.getResource(fxml)));
 
             borderPane.setCenter(vista);
 
@@ -50,6 +45,5 @@ public class ManagerView {
             System.out.println(e.getMessage());
         }
     }
-
 
 }

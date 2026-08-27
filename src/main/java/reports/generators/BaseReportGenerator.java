@@ -7,12 +7,16 @@ import reports.utils.PDFBuilder;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Clase base abstracta para todos los generadores de reportes
  * Define estructura común y métodos que pueden reutilizar los subgeneradores
  */
 public abstract class BaseReportGenerator {
+
+    protected static final Logger LOGGER = Logger.getLogger(BaseReportGenerator.class.getName());
 
     protected ReportConfig config;
     protected String rutaArchivo;
@@ -60,15 +64,19 @@ public abstract class BaseReportGenerator {
         return ruta.toLowerCase().endsWith(".pdf") ? ruta : ruta + ".pdf";
     }
 
-    protected boolean puedeGenerar() {
+    public boolean puedeGenerar() {
         return pdfBuilder != null && rutaArchivo != null;
+    }
+
+    public boolean isCancelado() {
+        return rutaArchivo == null;
     }
 
     /**
      * Método abstracto que implementarán los subgeneradores
      * Define la estructura del reporte específico
      */
-    public abstract void generar();
+    public abstract void generar() throws Exception;
 
     /**
      * Método para agregar encabezado estándar a todos los reportes
@@ -111,7 +119,8 @@ public abstract class BaseReportGenerator {
             if (carpeta != null && carpeta.exists() && Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().open(carpeta);
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "No se pudo abrir la carpeta destino: " + e.getMessage(), e);
         }
     }
 
@@ -129,4 +138,3 @@ public abstract class BaseReportGenerator {
         return pdfBuilder;
     }
 }
-

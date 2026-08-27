@@ -1,6 +1,10 @@
 package controllers.Bibliotecario;
 
-import database.*;
+import database.DocentesDAO;
+import database.EstudiantesDAO;
+import database.LibrosDAO;
+import database.MotivosPrestamoDAO;
+import database.PrestamosDAO;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
