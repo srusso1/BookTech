@@ -3,153 +3,146 @@
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane stylesheets="@../../styles/Bibliotecario/ConsultaStyle.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Bibliotecario.ConsultaController">
    <children>
-      <VBox spacing="30" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+      <VBox spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <padding>
-            <Insets left="40" right="40" top="20" />
+            <Insets bottom="25.0" left="30.0" right="30.0" top="20.0" />
          </padding>
          <children>
-            <Label styleClass="titulo-seccion" text="Consulta">
+            <Label styleClass="titulo-seccion" text="Consulta de Libros">
                <font>
-                  <Font name="Roboto Medium" size="30" />
+                  <Font name="Roboto Medium" size="28.0" />
                </font>
             </Label>
-            <Label styleClass="descripcion-seccion" text="Consulta libros, revisa su disponibilidad, gestiona préstamos y devoluciones desde un solo lugar." wrapText="true">
+            <Label styleClass="descripcion-seccion" text="Consulta libros, revisa su disponibilidad y gestiona préstamos y devoluciones directamente." wrapText="true">
                <font>
-                  <Font name="Roboto Regular" size="16.0" />
+                  <Font name="Roboto Regular" size="15.0" />
                </font>
             </Label>
-            <Separator prefHeight="20.0" prefWidth="1100.0" />
-            <HBox spacing="40.0">
+            <Separator maxWidth="Infinity" />
+            <HBox alignment="CENTER_LEFT" spacing="20.0">
                <children>
-                  <TextField fx:id="txtBuscarLibro" maxWidth="400.0" prefHeight="60.0" prefWidth="1003.0" promptText="Titulo del libro">
+                  <TextField fx:id="txtBuscarLibro" maxWidth="500.0" prefHeight="44.0" promptText="Escribe el título del libro a consultar..." HBox.hgrow="ALWAYS">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="15.0" />
                      </font>
-                     <contextMenu>
-                        <ContextMenu>
-                          <items>
-                            <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                          </items>
-                        </ContextMenu>
-                     </contextMenu>
                   </TextField>
                </children>
             </HBox>
-            <VBox fx:id="contenedorInfoLibro" prefHeight="66.0" prefWidth="100.0" spacing="30.0" styleClass="containerInfo">
+            <VBox fx:id="contenedorInfoLibro" maxWidth="Infinity" spacing="15.0" styleClass="containerInfo">
                <children>
-                  <HBox spacing="20.0">
+                  <Label styleClass="subtitulo-seccion" text="Detalles del Libro Seleccionado">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <GridPane hgap="15.0" vgap="12.0">
+                     <columnConstraints>
+                        <ColumnConstraints minWidth="110.0" prefWidth="120.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="200.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="24.0" />
+                        <RowConstraints minHeight="24.0" />
+                        <RowConstraints minHeight="24.0" />
+                        <RowConstraints minHeight="24.0" />
+                        <RowConstraints minHeight="24.0" />
+                     </rowConstraints>
                      <children>
-                        <Label text="- Autor:">
+                        <Label text="Autor:" textFill="#4b5563" GridPane.rowIndex="0">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="txtAutor" text="Nombre ">
+                        <Label fx:id="txtAutor" text="-" textFill="#111827" GridPane.columnIndex="1" GridPane.rowIndex="0">
                            <font>
-                              <Font size="18.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets left="35.0" />
-                           </HBox.margin>
-                        </Label>
-                     </children>
-                  </HBox>
-                  <HBox spacing="20.0">
-                     <children>
-                        <Label text="- Editorial: ">
-                           <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="txtEditorial" text="SAS">
+
+                        <Label text="Editorial:" textFill="#4b5563" GridPane.rowIndex="1">
                            <font>
-                              <Font size="18.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets left="10.0" />
-                           </HBox.margin>
-                        </Label>
-                     </children>
-                  </HBox>
-                  <HBox spacing="20.0">
-                     <children>
-                        <Label text="- Categoría: ">
-                           <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="txtCategoria" text="LITERATURA">
+                        <Label fx:id="txtEditorial" text="-" textFill="#111827" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <font>
-                              <Font size="18.0" />
+                              <Font size="15.0" />
                            </font>
                         </Label>
-                     </children>
-                  </HBox>
-                  <HBox spacing="20.0">
-                     <children>
-                        <Label text="- Ubicación: ">
+
+                        <Label text="Categoría:" textFill="#4b5563" GridPane.rowIndex="2">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="txtUbicacion" text="H-2">
+                        <Label fx:id="txtCategoria" text="-" textFill="#111827" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <font>
-                              <Font size="18.0" />
+                              <Font size="15.0" />
                            </font>
                         </Label>
-                     </children>
-                  </HBox>
-                  <HBox spacing="20.0">
-                     <children>
-                        <Label text="- Unidades: ">
+
+                        <Label text="Ubicación:" textFill="#4b5563" GridPane.rowIndex="3">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="txtUnidades" text="30">
+                        <Label fx:id="txtUbicacion" text="-" textFill="#111827" GridPane.columnIndex="1" GridPane.rowIndex="3">
                            <font>
-                              <Font size="18.0" />
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+
+                        <Label text="Unidades:" textFill="#4b5563" GridPane.rowIndex="4">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="txtUnidades" text="-" textFill="#1E6FB8" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
                      </children>
-                  </HBox>
+                  </GridPane>
                </children>
             </VBox>
-            <HBox spacing="40.0">
+            <HBox spacing="20.0">
                <children>
-                  <Button fx:id="btnRegistrarPrestamo" mnemonicParsing="false" onAction="#clickRegistrarPrestamo" text="Registrar prestamo">
+                  <Button fx:id="btnRegistrarPrestamo" mnemonicParsing="false" onAction="#clickRegistrarPrestamo" prefHeight="40.0" prefWidth="180.0" text="Registrar préstamo">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="14.0" />
                      </font>
                      <styleClass>
                         <String fx:value="btn" />
                         <String fx:value="btn-primary" />
-                        <String fx:value="btn-lg" />
                      </styleClass>
                   </Button>
-                  <Button fx:id="btnRegistrarDevolucion" mnemonicParsing="false" onAction="#clickRegistrarDevolucion" text="Registrar devolucion">
+                  <Button fx:id="btnRegistrarDevolucion" mnemonicParsing="false" onAction="#clickRegistrarDevolucion" prefHeight="40.0" prefWidth="180.0" text="Registrar devolución">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="14.0" />
                      </font>
                      <styleClass>
                         <String fx:value="btn" />
                         <String fx:value="btn-success" />
-                        <String fx:value="btn-lg" />
                      </styleClass>
                   </Button>
                </children>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
             </HBox>
          </children>
       </VBox>

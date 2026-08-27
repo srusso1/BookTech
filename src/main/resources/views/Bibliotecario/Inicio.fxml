@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -9,123 +10,138 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Bibliotecario.InicioController">
-
     <children>
-        <VBox spacing="30" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <content>
+                <VBox spacing="20.0">
+                    <padding>
+                        <Insets bottom="25.0" left="30.0" right="30.0" top="20.0" />
+                    </padding>
+                    <children>
+                        <!-- Título -->
+                        <Label styleClass="titulo-seccion" text="Inicio">
+                            <font>
+                                <Font name="Roboto Medium" size="28.0" />
+                            </font>
+                        </Label>
 
-            <!-- Título -->
-            <Label styleClass="titulo-seccion" text="Inicio">
-                <font>
-                    <Font name="Roboto Medium" size="30" />
-                </font>
-            </Label>
+                        <Label styleClass="descripcion-seccion" text="Bienvenido al panel de inicio. Aquí encontrarás un resumen general de la actividad de la biblioteca, incluyendo registros, préstamos y consultas recientes." wrapText="true">
+                           <font>
+                              <Font name="Roboto Regular" size="15.0" />
+                           </font>
+                        </Label>
+                        <Separator maxWidth="Infinity" />
 
-            <Label maxWidth="1000.0" styleClass="descripcion-seccion" text="Bienvenido al panel de inicio. Aquí encontrarás un resumen general de la actividad de la biblioteca, incluyendo registros, préstamos y consultas recientes." wrapText="true">
-               <font>
-                  <Font name="Roboto Regular" size="16.0" />
-               </font>
-            </Label>
-         <Separator prefHeight="20.0" prefWidth="1100.0" />
+                        <!-- KPI Cards -->
+                        <HBox spacing="15.0">
+                            <children>
+                                <VBox alignment="CENTER" maxWidth="Infinity" minHeight="110.0" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                                    <Label text="Libros registrados">
+                                        <font>
+                                            <Font name="System Bold" size="14.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="librosRegistrados" text="0" textFill="#1E6FB8">
+                                        <font>
+                                            <Font name="System Bold" size="24.0" />
+                                        </font>
+                                    </Label>
+                                </VBox>
 
-            <!-- Cards -->
-            <HBox spacing="20">
-                <children>
+                                <VBox alignment="CENTER" maxWidth="Infinity" minHeight="110.0" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                                    <Label text="Unidades disponibles">
+                                        <font>
+                                            <Font name="System Bold" size="14.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="unidadesRegistradas" text="0" textFill="#1E6FB8">
+                                        <font>
+                                            <Font name="System Bold" size="24.0" />
+                                        </font>
+                                    </Label>
+                                </VBox>
 
-                    <VBox alignment="CENTER" prefHeight="140" prefWidth="260" spacing="15" styleClass="containerInfo">
-                        <Label text="Libros registrados">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font></Label>
-                        <Label fx:id="librosRegistrados" text="N">
-                     <font>
-                        <Font size="14.0" />
-                     </font></Label>
-                    </VBox>
+                                <VBox alignment="CENTER" maxWidth="Infinity" minHeight="110.0" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                                    <Label text="Préstamos activos">
+                                        <font>
+                                            <Font name="System Bold" size="14.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="prestamosActivos" text="0" textFill="#e11d48">
+                                        <font>
+                                            <Font name="System Bold" size="24.0" />
+                                        </font>
+                                    </Label>
+                                </VBox>
 
-                    <VBox alignment="CENTER" prefHeight="140" prefWidth="260" spacing="15" styleClass="containerInfo">
-                        <Label text="Unidades disponibles">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font></Label>
-                        <Label fx:id="unidadesRegistradas" text="N">
-                     <font>
-                        <Font size="14.0" />
-                     </font></Label>
-                    </VBox>
+                                <VBox alignment="CENTER" maxWidth="Infinity" minHeight="110.0" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                                    <Label text="Préstamos realizados">
+                                        <font>
+                                            <Font name="System Bold" size="14.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="prestamosRealizados" text="0" textFill="#10b981">
+                                        <font>
+                                            <Font name="System Bold" size="24.0" />
+                                        </font>
+                                    </Label>
+                                </VBox>
+                            </children>
+                        </HBox>
 
-                    <VBox alignment="CENTER" prefHeight="140" prefWidth="260" spacing="15" styleClass="containerInfo">
-                        <Label text="Prestamos activos">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font></Label>
-                        <Label fx:id="prestamosActivos" text="N">
-                     <font>
-                        <Font size="14.0" />
-                     </font></Label>
-                    </VBox>
+                        <!-- Módulos Informativos -->
+                        <VBox spacing="14.0">
+                            <children>
+                                <Label styleClass="subtitulo-seccion" text="Módulos del Sistema">
+                                    <font>
+                                        <Font name="System Bold" size="17.0" />
+                                    </font>
+                                </Label>
 
-                    <VBox alignment="CENTER" prefHeight="140" prefWidth="260" spacing="15" styleClass="containerInfo">
-                        <Label text="Prestamos realizados">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font></Label>
-                        <Label fx:id="prestamosRealizados" text="N">
-                     <font>
-                        <Font size="14.0" />
-                     </font></Label>
-                    </VBox>
+                                <HBox spacing="15.0">
+                                    <children>
+                                        <VBox maxWidth="Infinity" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label styleClass="subtitulo-seccion" text="Consulta y Préstamos">
+                                                    <font>
+                                                        <Font name="System Bold" size="14.0" />
+                                                    </font>
+                                                </Label>
+                                                <Label styleClass="descripcion-seccion" text="Visualiza la información detallada de cada libro, su ubicación física y registra préstamos o devoluciones." wrapText="true" />
+                                            </children>
+                                        </VBox>
 
-                </children>
-            </HBox>
-         <VBox prefHeight="200.0">
-            <children>
-               <Label styleClass="subtitulo-seccion" text="Módulo Consulta">
-                  <font>
-                     <Font name="System Bold" size="20.0" />
-                  </font>
-               </Label>
-               <Label styleClass="descripcion-seccion" text="Aquí podrás visualizar la información detallada de cada libro, incluyendo su ubicación dentro de la biblioteca. Desde este módulo también podrás registrar préstamos y devoluciones de forma rápida y sencilla." wrapText="true">
-                  <VBox.margin>
-                     <Insets top="5.0" />
-                  </VBox.margin>
-                  <font>
-                     <Font size="16.0" />
-                  </font>
-               </Label>
-               <AnchorPane maxHeight="50.0" prefHeight="200.0" prefWidth="200.0" />
-               <Label styleClass="subtitulo-seccion" text="Módulo Plataforma Virtual">
-                  <font>
-                     <Font name="System Bold" size="20.0" />
-                  </font>
-               </Label>
-               <Label styleClass="descripcion-seccion" text="Registra el uso de la plataforma virtual por parte de los docentes y estudiantes, seleccionando el motivo, el grado y el rango horario para llevar un control organizado de la actividad." wrapText="true">
-                  <VBox.margin>
-                     <Insets top="5.0" />
-                  </VBox.margin>
-                  <font>
-                     <Font size="16.0" />
-                  </font>
-               </Label>
-               <AnchorPane maxHeight="50.0" prefHeight="200.0" prefWidth="200.0" />
-                <Label styleClass="subtitulo-seccion" text="Módulo Prestamos Activos">
-                  <font>
-                     <Font name="System Bold" size="20.0" />
-                  </font>
-               </Label>
-                <Label styleClass="descripcion-seccion" text="En este apartado podrás monitorear los préstamos vigentes, identificar libros que aún no han sido devueltos y llevar un control claro del estado de cada préstamo." wrapText="true">
-                  <VBox.margin>
-                     <Insets top="5.0" />
-                  </VBox.margin>
-                  <font>
-                     <Font size="16.0" />
-                  </font>
-               </Label>
-            </children>
-         </VBox>
+                                        <VBox maxWidth="Infinity" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label styleClass="subtitulo-seccion" text="Plataforma Virtual">
+                                                    <font>
+                                                        <Font name="System Bold" size="14.0" />
+                                                    </font>
+                                                </Label>
+                                                <Label styleClass="descripcion-seccion" text="Gestiona los registros de uso de la sala virtual y equipos de cómputo por estudiantes y docentes." wrapText="true" />
+                                            </children>
+                                        </VBox>
 
-            <padding>
-                <Insets left="40" right="40" top="20" />
-            </padding>
-        </VBox>
+                                        <VBox maxWidth="Infinity" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label styleClass="subtitulo-seccion" text="Préstamos Activos">
+                                                    <font>
+                                                        <Font name="System Bold" size="14.0" />
+                                                    </font>
+                                                </Label>
+                                                <Label styleClass="descripcion-seccion" text="Monitorea préstamos en curso y detecta retrasos en las entregas para una gestión bibliotecaria eficiente." wrapText="true" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+                            </children>
+                            <VBox.margin>
+                                <Insets top="10.0" />
+                            </VBox.margin>
+                        </VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
     </children>
 </AnchorPane>

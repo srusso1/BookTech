@@ -9,55 +9,58 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="516.0" prefWidth="447.0" spacing="15" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Rectoria.RegistrarLibroController">
+<VBox prefWidth="440.0" spacing="15.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Rectoria.RegistrarLibroController">
    <padding>
-      <Insets bottom="20" left="20" right="20" top="20" />
+      <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
    </padding>
    <children>
       <Label fx:id="lblLibro" styleClass="subtitulo-seccion" text="Registrar nuevo libro">
          <font>
-            <Font size="16.0" />
+            <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="txtTitulo" prefHeight="50.0" prefWidth="202.0" promptText="Titulo" styleClass="combo-filtro">
+      <TextField fx:id="txtTitulo" maxWidth="Infinity" prefHeight="45.0" promptText="Título del libro" styleClass="combo-filtro">
          <font>
-            <Font size="15.0" />
+            <Font size="14.0" />
          </font>
       </TextField>
-      <TextField fx:id="txtUbicacion" prefHeight="50.0" prefWidth="202.0" promptText="Ubicación" styleClass="combo-filtro">
+      <TextField fx:id="txtUbicacion" maxWidth="Infinity" prefHeight="45.0" promptText="Ubicación (ej: Estante A-1)" styleClass="combo-filtro">
          <font>
-            <Font size="15.0" />
+            <Font size="14.0" />
          </font>
       </TextField>
-      <ComboBox fx:id="comboBoxCategoria" prefHeight="54.0" prefWidth="235.0" promptText="Elige una categoría" styleClass="combo-filtro" />
-      <TextField fx:id="txtEditorial" prefHeight="50.0" prefWidth="202.0" promptText="Editorial" styleClass="combo-filtro">
+      <ComboBox fx:id="comboBoxCategoria" maxWidth="Infinity" prefHeight="45.0" promptText="Elige una categoría" styleClass="combo-filtro" />
+      <TextField fx:id="txtEditorial" maxWidth="Infinity" prefHeight="45.0" promptText="Editorial" styleClass="combo-filtro">
          <font>
-            <Font size="15.0" />
+            <Font size="14.0" />
          </font>
       </TextField>
-      <TextField fx:id="txtAutor" prefHeight="50.0" prefWidth="202.0" promptText="Autor" styleClass="combo-filtro">
+      <TextField fx:id="txtAutor" maxWidth="Infinity" prefHeight="45.0" promptText="Autor" styleClass="combo-filtro">
          <font>
-            <Font size="15.0" />
+            <Font size="14.0" />
          </font>
       </TextField>
-      <TextField fx:id="txtUnidades" prefHeight="50.0" prefWidth="202.0" promptText="Unidades" styleClass="combo-filtro">
+      <TextField fx:id="txtUnidades" maxWidth="Infinity" prefHeight="45.0" promptText="Unidades disponibles" styleClass="combo-filtro">
          <font>
-            <Font size="15.0" />
+            <Font size="14.0" />
          </font>
       </TextField>
-      <Label styleClass="descripcion-seccion" text="Ingrese los campos requeridos para registrar un nuevo libro">
+      <Label styleClass="descripcion-seccion" text="Complete todos los campos para añadir el ejemplar al catálogo." wrapText="true">
          <font>
-            <Font name="System Bold Italic" size="13.0" />
+            <Font size="12.0" />
          </font>
       </Label>
-      <HBox alignment="CENTER_RIGHT" spacing="10">
+      <HBox alignment="CENTER_RIGHT" spacing="12.0">
          <children>
-            <Button onAction="#clickRegistrar" prefHeight="36.0" prefWidth="89.0" styleClass="btn-primary" text="Registrar">
+            <Button onAction="#clickRegistrar" prefHeight="40.0" prefWidth="120.0" styleClass="btn-primary" text="Registrar">
                <font>
-                  <Font size="16.0" />
+                  <Font size="14.0" />
                </font>
             </Button>
          </children>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
       </HBox>
    </children>
 </VBox>

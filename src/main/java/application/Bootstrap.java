@@ -1,11 +1,14 @@
 package application;
 
+import javafx.application.Application;
+
 /**
- * Punto de entrada no-JavaFX para evitar el chequeo de launcher con -jar.
+ * Punto de entrada principal para evitar el chequeo de launcher JavaFX en classpath.
  */
 public class Bootstrap {
     public static void main(String[] args) {
-        App.main(args);
+        Application.launch(App.class, args);
     }
 }
+
 

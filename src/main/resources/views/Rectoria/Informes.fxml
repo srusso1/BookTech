@@ -16,36 +16,36 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="870.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Rectoria.InformesController">
+<AnchorPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Rectoria.InformesController">
     <children>
-        <ScrollPane hbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <ScrollPane fitToWidth="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <content>
-                <VBox spacing="20.0">
+                <VBox spacing="18.0">
                     <padding>
-                        <Insets bottom="25.0" left="40.0" right="40.0" top="25.0" />
+                        <Insets bottom="25.0" left="30.0" right="30.0" top="20.0" />
                     </padding>
                     <children>
                         <!-- Título -->
                         <Label fx:id="lblTitulo" styleClass="titulo-seccion" text="Informes">
                             <font>
-                                <Font name="Roboto Medium" size="30.0" />
+                                <Font name="Roboto Medium" size="28.0" />
                             </font>
                         </Label>
 
                         <!-- Descripción -->
-                        <Label fx:id="lblDescripcion" styleClass="descripcion-seccion" text="Genere reportes PDF de prestamos, plataforma e inventario con filtros por tipo de reporte" wrapText="true">
+                        <Label fx:id="lblDescripcion" styleClass="descripcion-seccion" text="Genere reportes PDF de préstamos, plataforma e inventario con filtros por tipo de reporte." wrapText="true">
                             <font>
-                                <Font name="Roboto Regular" size="16.0" />
+                                <Font name="Roboto Regular" size="15.0" />
                             </font>
                         </Label>
 
                         <!-- Separador -->
-                        <Separator prefHeight="10.0" prefWidth="1100.0" />
+                        <Separator maxWidth="Infinity" />
 
                         <!-- Filtros -->
                         <VBox spacing="15.0">
                             <padding>
-                                <Insets bottom="10.0" top="10.0" />
+                                <Insets bottom="10.0" top="5.0" />
                             </padding>
                             <children>
                                 <!-- Tipo de Reporte -->
@@ -53,11 +53,11 @@
                                     <children>
                                         <Label minWidth="120.0" styleClass="label-filtro" text="Tipo de Reporte:" />
                                         <ComboBox fx:id="cbTipoReporte" prefWidth="250.0" styleClass="combo-filtro" />
-                                        <Label minWidth="100.0" styleClass="label-filtro" text="Estudiante:" />
+                                        <Label minWidth="90.0" styleClass="label-filtro" text="Estudiante:" />
                                         <TextField fx:id="txtEstudiante" managed="false" prefWidth="260.0" promptText="Escriba nombre del estudiante" styleClass="combo-filtro" visible="false" />
-                                         <Label minWidth="90.0" styleClass="label-filtro" text="Docente:" />
-                                         <TextField fx:id="txtDocente" managed="false" prefWidth="260.0" promptText="Escriba nombre del docente" styleClass="combo-filtro" visible="false" />
-                                        <Label fx:id="lblGrado" managed="false" minWidth="70.0" styleClass="label-filtro" text="Grado:" visible="false" />
+                                        <Label minWidth="70.0" styleClass="label-filtro" text="Docente:" />
+                                        <TextField fx:id="txtDocente" managed="false" prefWidth="260.0" promptText="Escriba nombre del docente" styleClass="combo-filtro" visible="false" />
+                                        <Label fx:id="lblGrado" managed="false" minWidth="60.0" styleClass="label-filtro" text="Grado:" visible="false" />
                                         <ComboBox fx:id="cbGrado" managed="false" prefWidth="140.0" styleClass="combo-filtro" visible="false" />
                                     </children>
                                 </HBox>
@@ -69,7 +69,7 @@
                                         <DatePicker fx:id="dpFechaInicio" prefWidth="150.0" styleClass="date-picker-filtro" />
                                         <Label minWidth="60.0" styleClass="label-filtro" text="Hasta:" />
                                         <DatePicker fx:id="dpFechaFin" prefWidth="150.0" styleClass="date-picker-filtro" />
-                                        <Button fx:id="btnFiltrar" onAction="#clickFiltrar" prefWidth="100.0" styleClass="btn-primary" text="Filtrar" />
+                                        <Button fx:id="btnFiltrar" onAction="#clickFiltrar" prefWidth="110.0" styleClass="btn-primary" text="Filtrar" />
                                         <Button fx:id="btnLimpiarFiltro" onAction="#clickLimpiarFiltro" prefWidth="140.0" styleClass="btn-secondary" text="Limpiar Filtro" />
                                     </children>
                                 </HBox>
@@ -81,7 +81,7 @@
                                         <CheckBox fx:id="chkIncluirTablas" selected="true" text="Incluir tablas detalladas" />
                                         <Label styleClass="descripcion-seccion" text="Descargará el reporte en PDF con los filtros aplicados">
                                             <font>
-                                                <Font name="Roboto Regular" size="12.0" />
+                                                <Font name="Roboto Regular" size="13.0" />
                                             </font>
                                         </Label>
                                     </children>
@@ -90,7 +90,7 @@
                         </VBox>
 
                         <!-- Separador -->
-                        <Separator prefHeight="10.0" prefWidth="1100.0" />
+                        <Separator maxWidth="Infinity" />
 
                         <!-- Tabla de préstamos -->
                         <Label fx:id="lblDatosTabla" styleClass="subtitulo-seccion" text="Datos de Préstamos">
@@ -99,7 +99,7 @@
                             </font>
                         </Label>
 
-                        <TableView fx:id="tblPrestamos" prefHeight="400.0" styleClass="tabla-datos">
+                        <TableView fx:id="tblPrestamos" maxHeight="Infinity" maxWidth="Infinity" minHeight="380.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
                             <columns>
                                 <TableColumn fx:id="colLibro" prefWidth="150.0" text="Libro" />
                                 <TableColumn fx:id="colEstudiante" prefWidth="150.0" text="Estudiante" />
@@ -112,9 +112,9 @@
                                 <TableColumn fx:id="colRegresadoTarde" prefWidth="120.0" text="Regresado tarde" />
                                 <TableColumn fx:id="colDiasTardanza" prefWidth="120.0" text="Días de tardanza" />
                             </columns>
-                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                     </columnResizePolicy>
+                            <columnResizePolicy>
+                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                            </columnResizePolicy>
                         </TableView>
 
                     </children>

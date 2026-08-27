@@ -12,17 +12,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox spacing="15" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Bibliotecario.PrestamoController">
-
+<VBox prefWidth="420.0" spacing="15.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Bibliotecario.PrestamoController">
     <padding>
-        <Insets bottom="20" left="20" right="20" top="20" />
+        <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
     </padding>
 
-    <Label fx:id="lblLibro" styleClass="subtitulo-seccion" />
+    <Label fx:id="lblLibro" styleClass="subtitulo-seccion" wrapText="true" />
 
-    <TextField fx:id="txtEstudiante" prefHeight="56.0" prefWidth="254.0" promptText="Nombre completo del estudiante" styleClass="combo-filtro">
+    <TextField fx:id="txtEstudiante" maxWidth="Infinity" prefHeight="45.0" promptText="Nombre completo del estudiante" styleClass="combo-filtro">
       <font>
-         <Font size="15.0" />
+         <Font size="14.0" />
       </font>
       <contextMenu>
          <ContextMenu fx:id="sugerenciasMenu">
@@ -30,43 +29,50 @@
              <MenuItem mnemonicParsing="false" text="Unspecified Action" />
            </items>
          </ContextMenu>
-      </contextMenu></TextField>
-   <VBox fx:id="contenedorInfoEstudiante" alignment="CENTER" prefWidth="100.0">
+      </contextMenu>
+    </TextField>
+
+   <VBox fx:id="contenedorInfoEstudiante" alignment="CENTER_LEFT" spacing="6.0">
       <children>
-         <HBox prefHeight="30.0" prefWidth="254.0" spacing="10.0">
+         <HBox spacing="10.0">
             <children>
                <Label text="Identificación:">
                   <font>
-                     <Font name="System Bold" size="15.0" />
+                     <Font name="System Bold" size="14.0" />
                   </font>
                </Label>
-               <Label fx:id="infoIdentificacion" text="Label">
+               <Label fx:id="infoIdentificacion" text="---">
                   <font>
-                     <Font size="15.0" />
+                     <Font size="14.0" />
                   </font>
                </Label>
             </children>
          </HBox>
-         <HBox prefHeight="35.0" prefWidth="254.0" spacing="10.0">
+         <HBox spacing="10.0">
             <children>
                <Label text="Grado:">
                   <font>
-                     <Font name="System Bold" size="15.0" />
+                     <Font name="System Bold" size="14.0" />
                   </font>
                </Label>
-               <Label fx:id="infoGrado" text="Label">
+               <Label fx:id="infoGrado" text="---">
                   <font>
-                     <Font size="15.0" />
+                     <Font size="14.0" />
                   </font>
                </Label>
             </children>
          </HBox>
       </children>
+      <padding>
+         <Insets bottom="5.0" top="5.0" />
+      </padding>
    </VBox>
-   <ComboBox fx:id="comboMotivosPrestamos" prefHeight="52.0" prefWidth="243.0" promptText="Elige un motivo del prestamo" styleClass="combo-filtro" />
-   <TextField fx:id="txtDocente" prefHeight="50.0" prefWidth="338.0" promptText="Docente que lo envía" styleClass="combo-filtro">
+
+   <ComboBox fx:id="comboMotivosPrestamos" maxWidth="Infinity" prefHeight="45.0" promptText="Elige un motivo del préstamo" styleClass="combo-filtro" />
+   
+   <TextField fx:id="txtDocente" maxWidth="Infinity" prefHeight="45.0" promptText="Docente que lo envía (o 'No aplica')" styleClass="combo-filtro">
       <font>
-         <Font size="15.0" />
+         <Font size="14.0" />
       </font>
       <contextMenu>
          <ContextMenu fx:id="sugerenciasDocente">
@@ -76,17 +82,28 @@
          </ContextMenu>
       </contextMenu>
    </TextField>
-    <DatePicker fx:id="dpFechaDevolucion" prefHeight="50.0" prefWidth="174.0" styleClass="date-picker-filtro" />
-   <Label styleClass="descripcion-seccion" text="NOTA: Si ningún docente envia al estudiante, escriba 'No aplica'" />
 
-    <HBox alignment="CENTER_RIGHT" spacing="10">
-        <Button onAction="#clickRegistrar" prefHeight="36.0" prefWidth="89.0" styleClass="btn-primary" text="Registrar">
+    <DatePicker fx:id="dpFechaDevolucion" maxWidth="Infinity" prefHeight="45.0" promptText="Fecha de devolución" styleClass="date-picker-filtro" />
+   
+    <Label styleClass="descripcion-seccion" text="NOTA: Si ningún docente envía al estudiante, escriba 'No aplica'" wrapText="true">
+      <font>
+         <Font size="12.0" />
+      </font>
+   </Label>
+
+    <HBox alignment="CENTER_RIGHT" spacing="12.0">
+        <Button onAction="#clickRegistrar" prefHeight="40.0" prefWidth="110.0" styleClass="btn-primary" text="Registrar">
          <font>
-            <Font size="16.0" />
-         </font></Button>
-        <Button onAction="#clickCancelar" prefHeight="36.0" prefWidth="86.0" styleClass="btn-secondary" text="Cancelar">
+            <Font size="14.0" />
+         </font>
+        </Button>
+        <Button onAction="#clickCancelar" prefHeight="40.0" prefWidth="100.0" styleClass="btn-secondary" text="Cancelar">
          <font>
-            <Font size="16.0" />
-         </font></Button>
+            <Font size="14.0" />
+         </font>
+        </Button>
+      <VBox.margin>
+         <Insets top="10.0" />
+      </VBox.margin>
     </HBox>
 </VBox>

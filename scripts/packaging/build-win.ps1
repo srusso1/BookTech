@@ -154,6 +154,19 @@ if ($LASTEXITCODE -ne 0 -or -not (Test-Path $ExePath)) {
 }
 
 if (-not (Test-Path $InnoExe)) {
+    $innoCandidates = @(
+        "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe",
+        "C:\Program Files\Inno Setup 6\ISCC.exe",
+        "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+    )
+    foreach ($cand in $innoCandidates) {
+        if (Test-Path $cand) {
+            $InnoExe = $cand
+            break
+        }
+    }
+}
+if (-not (Test-Path $InnoExe)) {
     throw "No se encontro Inno Setup (ISCC): $InnoExe"
 }
 

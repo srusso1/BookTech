@@ -2,149 +2,135 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Rectoria.InicioController">
    <children>
-      <VBox spacing="30" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-         <padding>
-            <Insets left="40.0" right="40.0" top="20.0" />
-         </padding>
-         <children>
-            <Label styleClass="titulo-seccion" text="Inicio">
-               <font>
-                  <Font name="Roboto Medium" size="30" />
-               </font>
-            </Label>
-            <Label styleClass="descripcion-seccion" text="Bienvenido al panel de inicio. Aquí encontrarás un resumen general de la actividad de la biblioteca, incluyendo registros, préstamos y consultas recientes." wrapText="true">
-               <font>
-                  <Font name="Roboto Regular" size="16.0" />
-               </font>
-            </Label>
-            <Separator prefHeight="20.0" prefWidth="1100.0" />
-            <HBox spacing="20">
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <content>
+            <VBox spacing="20.0">
+               <padding>
+                  <Insets bottom="25.0" left="30.0" right="30.0" top="20.0" />
+               </padding>
                <children>
-                  <VBox alignment="CENTER" prefHeight="140" prefWidth="260" spacing="15" styleClass="containerInfo">
+                  <Label styleClass="titulo-seccion" text="Inicio">
+                     <font>
+                        <Font name="Roboto Medium" size="28.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="descripcion-seccion" text="Bienvenido al panel de inicio de Rectoría. Aquí encontrarás un resumen de la actividad y métricas clave de la institución." wrapText="true">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Label>
+                  <Separator maxWidth="Infinity" />
+
+                  <!-- KPI Cards -->
+                  <HBox spacing="15.0">
                      <children>
-                        <Label text="Libros registrados">
-                           <font>
-                              <Font name="System Bold" size="16.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="librosRegistrados" text="N">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
+                        <VBox alignment="CENTER" maxWidth="Infinity" minHeight="110.0" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="Libros registrados">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="librosRegistrados" text="0" textFill="#1E6FB8">
+                                 <font>
+                                    <Font name="System Bold" size="24.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" maxWidth="Infinity" minHeight="110.0" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="Unidades disponibles">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="unidadesRegistradas" text="0" textFill="#1E6FB8">
+                                 <font>
+                                    <Font name="System Bold" size="24.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" maxWidth="Infinity" minHeight="110.0" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="Categoría más solicitada">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="categoriaSolicitada" text="Ninguna" textFill="#10b981">
+                                 <font>
+                                    <Font name="System Bold" size="22.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
                      </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="140" prefWidth="260" spacing="15" styleClass="containerInfo">
+                  </HBox>
+
+                  <!-- Módulos Informativos -->
+                  <VBox spacing="14.0">
                      <children>
-                        <Label text="Unidades disponibles">
+                        <Label styleClass="subtitulo-seccion" text="Módulos Administrativos">
                            <font>
-                              <Font name="System Bold" size="16.0" />
+                              <Font name="System Bold" size="17.0" />
                            </font>
                         </Label>
-                        <Label fx:id="unidadesRegistradas" text="N">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
+
+                        <HBox spacing="15.0">
+                           <children>
+                              <VBox maxWidth="Infinity" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label styleClass="subtitulo-seccion" text="Inventario">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label styleClass="descripcion-seccion" text="Administra y consulta el catálogo general de la biblioteca, existencias y registro de nuevos títulos." wrapText="true" />
+                                 </children>
+                              </VBox>
+
+                              <VBox maxWidth="Infinity" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label styleClass="subtitulo-seccion" text="Estadísticas">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label styleClass="descripcion-seccion" text="Resumen analítico con gráficos interactivos y tendencias de préstamos para la toma de decisiones." wrapText="true" />
+                                 </children>
+                              </VBox>
+
+                              <VBox maxWidth="Infinity" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label styleClass="subtitulo-seccion" text="Informes Oficiales">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label styleClass="descripcion-seccion" text="Genera reportes PDF oficiales con filtros avanzados por fechas, grados, docentes y estudiantes." wrapText="true" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
                      </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="140" prefWidth="260" spacing="15" styleClass="containerInfo">
-                     <children>
-                        <Label text="Categoría más solicitada">
-                           <font>
-                              <Font name="System Bold" size="16.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="categoriaSolicitada" text="N">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <VBox maxWidth="1400.0" VBox.vgrow="ALWAYS">
-               <children>
-                  <Label styleClass="subtitulo-seccion" text="Módulo Inventario">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                  </Label>
-                  <Label styleClass="descripcion-seccion" text="Administra y consulta fácilmente el catálogo completo de la biblioteca. Desde aquí podrás visualizar todos los libros registrados, filtrarlos por título para encontrarlos rápidamente, actualizar su información (como nombre, ubicación o cantidad disponible) y registrar nuevos libros para mantener el inventario siempre organizado y actualizado." wrapText="true">
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                  </Label>
-                  <Region prefHeight="35.0" prefWidth="1100.0" />
-                  <Label styleClass="subtitulo-seccion" text="Módulo Estadisticas">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </Label>
-                  <Label styleClass="descripcion-seccion" text="Accede a un resumen visual del uso de la biblioteca. Este módulo te permitirá analizar datos relevantes como la cantidad de préstamos realizados, las categorías más solicitadas y el comportamiento general de los usuarios, facilitando la toma de decisiones basada en información real." wrapText="true">
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                  </Label>
-                  <Region prefHeight="35.0" prefWidth="1100.0" />
-                  <Label styleClass="subtitulo-seccion" text="Módulo Informes">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </Label>
-                  <Label styleClass="descripcion-seccion" text="Genera reportes detallados sobre la actividad del sistema. Aquí podrás obtener información organizada sobre préstamos, inventario y movimientos registrados, ideal para llevar un control administrativo y realizar seguimientos periódicos." wrapText="true">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </Label>
-                  <Region prefHeight="35.0" prefWidth="1100.0" />
-                  <Label styleClass="subtitulo-seccion" text="Módulo Configuración">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </Label>
-                  <Label styleClass="descripcion-seccion" text="Personaliza y ajusta el funcionamiento del sistema según las necesidades de la institución. Desde este apartado podrás gestionar opciones generales, parámetros del sistema y futuras configuraciones administrativas." wrapText="true">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </Label>
                </children>
             </VBox>
-         </children>
-      </VBox>
+         </content>
+      </ScrollPane>
    </children>
-   <padding>
-      <Insets bottom="30.0" />
-   </padding>
 </AnchorPane>
