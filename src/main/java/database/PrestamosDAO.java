@@ -56,10 +56,19 @@ public class PrestamosDAO {
             p.dias_atraso,
             e.grado,
             l.titulo,
-            e.apellido_1 || ' ' || e.apellido_2 || ' ' || e.nombre_1 || ' ' || e.nombre_2 AS estudiante
+            e.apellido_1 || ' ' || e.apellido_2 || ' ' || e.nombre_1 || ' ' || e.nombre_2 AS estudiante,
+            d.id AS doc_id,
+            d.nombre_1 AS doc_nombre_1,
+            d.nombre_2 AS doc_nombre_2,
+            d.apellido_1 AS doc_apellido_1,
+            d.apellido_2 AS doc_apellido_2,
+            m.id AS motivo_id,
+            m.nombre_motivo
         FROM prestamos p
         JOIN libros l ON l.id = p.id_libro
         JOIN estudiantes e ON e.id = p.id_estudiante
+        LEFT JOIN docentes d ON d.id = p.id_docente
+        LEFT JOIN motivos_prestamo m ON m.id = p.id_motivo
         WHERE p.id_libro = ? AND p.estado != 1
         """;
 
@@ -71,27 +80,7 @@ public class PrestamosDAO {
             ps.setInt(1, idLibro);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    int idDocente = rs.getInt("id_docente");
-                    int idMotivo = rs.getInt("id_motivo");
-                    
-                    Docente docente = obtenerDocentePorId(conexion, idDocente);
-                    MotivoPrestamo motivoPrestamo = obtenerMotivoPorId(conexion, idMotivo);
-                    
-                    Prestamo prestamo = new Prestamo(
-                            rs.getInt("id"),
-                            rs.getInt("id_libro"),
-                            rs.getString("estudiante"),
-                            rs.getString("fecha_prestamo"),
-                            rs.getString("fecha_limite"),
-                            rs.getInt("estado"),
-                            rs.getInt("grado"),
-                            rs.getString("titulo"),
-                            docente,
-                            motivoPrestamo
-                    );
-                    prestamo.setDevuelto_tarde(rs.getInt("devuelto_tarde"));
-                    prestamo.setDias_atraso(rs.getInt("dias_atraso"));
-                    prestamos.add(prestamo);
+                    prestamos.add(mapearPrestamoConRelaciones(rs));
                 }
             }
 
@@ -116,10 +105,19 @@ public class PrestamosDAO {
             p.dias_atraso,
             e.grado,
             l.titulo,
-            e.apellido_1 || ' ' || e.apellido_2 || ' ' || e.nombre_1 || ' ' || e.nombre_2 AS estudiante
+            e.apellido_1 || ' ' || e.apellido_2 || ' ' || e.nombre_1 || ' ' || e.nombre_2 AS estudiante,
+            d.id AS doc_id,
+            d.nombre_1 AS doc_nombre_1,
+            d.nombre_2 AS doc_nombre_2,
+            d.apellido_1 AS doc_apellido_1,
+            d.apellido_2 AS doc_apellido_2,
+            m.id AS motivo_id,
+            m.nombre_motivo
         FROM prestamos p
         JOIN libros l ON l.id = p.id_libro
         JOIN estudiantes e ON e.id = p.id_estudiante
+        LEFT JOIN docentes d ON d.id = p.id_docente
+        LEFT JOIN motivos_prestamo m ON m.id = p.id_motivo
         WHERE p.estado != 1
         """;
 
@@ -130,27 +128,7 @@ public class PrestamosDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                int idDocente = rs.getInt("id_docente");
-                int idMotivo = rs.getInt("id_motivo");
-                
-                Docente docente = obtenerDocentePorId(conexion, idDocente);
-                MotivoPrestamo motivoPrestamo = obtenerMotivoPorId(conexion, idMotivo);
-                
-                Prestamo prestamo = new Prestamo(
-                        rs.getInt("id"),
-                        rs.getInt("id_libro"),
-                        rs.getString("estudiante"),
-                        rs.getString("fecha_prestamo"),
-                        rs.getString("fecha_limite"),
-                        rs.getInt("estado"),
-                        rs.getInt("grado"),
-                        rs.getString("titulo"),
-                        docente,
-                        motivoPrestamo
-                );
-                prestamo.setDevuelto_tarde(rs.getInt("devuelto_tarde"));
-                prestamo.setDias_atraso(rs.getInt("dias_atraso"));
-                prestamos.add(prestamo);
+                prestamos.add(mapearPrestamoConRelaciones(rs));
             }
 
         } catch (SQLException e) {
@@ -158,6 +136,45 @@ public class PrestamosDAO {
         }
 
         return prestamos;
+    }
+
+    private Prestamo mapearPrestamoConRelaciones(ResultSet rs) throws SQLException {
+        Docente docente = null;
+        int docId = rs.getInt("doc_id");
+        if (docId > 0 && !rs.wasNull()) {
+            docente = new Docente(
+                    docId,
+                    rs.getString("doc_nombre_1"),
+                    rs.getString("doc_nombre_2"),
+                    rs.getString("doc_apellido_1"),
+                    rs.getString("doc_apellido_2")
+            );
+        }
+
+        MotivoPrestamo motivoPrestamo = null;
+        int motivoId = rs.getInt("motivo_id");
+        if (motivoId > 0 && !rs.wasNull()) {
+            motivoPrestamo = new MotivoPrestamo(
+                    motivoId,
+                    rs.getString("nombre_motivo")
+            );
+        }
+
+        Prestamo prestamo = new Prestamo(
+                rs.getInt("id"),
+                rs.getInt("id_libro"),
+                rs.getString("estudiante"),
+                rs.getString("fecha_prestamo"),
+                rs.getString("fecha_limite"),
+                rs.getInt("estado"),
+                rs.getInt("grado"),
+                rs.getString("titulo"),
+                docente,
+                motivoPrestamo
+        );
+        prestamo.setDevuelto_tarde(rs.getInt("devuelto_tarde"));
+        prestamo.setDias_atraso(rs.getInt("dias_atraso"));
+        return prestamo;
     }
 
     public int actualizarPrestamosTarde() {
