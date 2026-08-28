@@ -4,133 +4,189 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Rectoria.ConfiguracionController">
     <children>
-        <VBox spacing="16.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <VBox spacing="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <padding>
-                <Insets bottom="20.0" left="24.0" right="24.0" top="20.0" />
+                <Insets bottom="16.0" left="24.0" right="24.0" top="16.0" />
             </padding>
 
-            <Label styleClass="titulo-seccion" text="Configuración">
-                <font>
-                    <Font name="Roboto Medium" size="30.0" />
-                </font>
-            </Label>
-
-            <Label styleClass="descripcion-seccion" text="Gestione estudiantes y catálogos del sistema (motivos de préstamo/plataforma)." wrapText="true" />
+            <VBox spacing="4.0">
+                <children>
+                    <Label styleClass="titulo-seccion" text="Configuración">
+                        <font>
+                            <Font name="Roboto Medium" size="28.0" />
+                        </font>
+                    </Label>
+                    <Label styleClass="descripcion-seccion" text="Gestione estudiantes matriculados y catálogos de motivos de préstamo y plataforma." wrapText="true" />
+                </children>
+            </VBox>
 
             <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                 <tabs>
+                    <!-- ================= TAB ESTUDIANTES (MASTER-DETAIL) ================= -->
                     <Tab text="Estudiantes">
                         <content>
                             <VBox spacing="12.0">
                                 <padding>
-                                    <Insets bottom="8.0" left="8.0" right="8.0" top="12.0" />
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="12.0" />
                                 </padding>
 
+                                <!-- Barra de Acciones CSV -->
                                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <children>
                                         <Button onAction="#clickCargarCsvEstudiantes" styleClass="btn-primary" text="Cargar CSV" />
                                         <Button fx:id="btnDescartarCsv" disable="true" onAction="#clickDescartarCsv" styleClass="btn-secondary" text="Descartar vista previa CSV" />
-                                        <Label fx:id="lblResumenCsv" text="Estructura esperada CSV: identificacion, grado, apellido_1, apellido_2, nombre_1, nombre_2, genero" wrapText="true" />
+                                        <Label fx:id="lblResumenCsv" style="-fx-text-fill: #64748b; -fx-font-size: 12px;" text="Estructura esperada CSV: identificacion, grado, apellido_1, apellido_2, nombre_1, nombre_2, genero" wrapText="true" />
                                     </children>
                                 </HBox>
 
-                                <HBox alignment="CENTER_LEFT" spacing="10.0">
-                                    <children>
-                                        <Label styleClass="label-filtro" text="Grado:" />
-                                        <ComboBox fx:id="cbFiltroGrado" prefWidth="110.0" styleClass="combo-filtro" />
-                                        <Label styleClass="label-filtro" text="Buscar estudiante:" />
-                                        <TextField fx:id="txtBuscarEstudiante" prefWidth="300.0" promptText="Nombre del estudiante" styleClass="combo-filtro" />
-                                    </children>
-                                </HBox>
+                                <!-- Master-Detail Split Container -->
+                                <HBox spacing="16.0" VBox.vgrow="ALWAYS">
+                                    <!-- Columna Izquierda: Master (Tabla con Filtros) -->
+                                    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                        <children>
+                                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                <children>
+                                                    <Label styleClass="label-filtro" text="Grado:" />
+                                                    <ComboBox fx:id="cbFiltroGrado" prefWidth="110.0" styleClass="combo-filtro" />
+                                                    <Label styleClass="label-filtro" text="Buscar:" />
+                                                    <TextField fx:id="txtBuscarEstudiante" promptText="Buscar por nombre o identificación..." styleClass="combo-filtro" HBox.hgrow="ALWAYS" />
+                                                </children>
+                                            </HBox>
 
-                                <TableView fx:id="tblEstudiantes" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
-                                    <columns>
-                                        <TableColumn fx:id="colEstIdentificacion" prefWidth="140.0" text="Identificación" />
-                                        <TableColumn fx:id="colEstGrado" prefWidth="80.0" text="Grado" />
-                                        <TableColumn fx:id="colEstApellido1" prefWidth="120.0" text="Apellido 1" />
-                                        <TableColumn fx:id="colEstApellido2" prefWidth="120.0" text="Apellido 2" />
-                                        <TableColumn fx:id="colEstNombre1" prefWidth="120.0" text="Nombre 1" />
-                                        <TableColumn fx:id="colEstNombre2" prefWidth="120.0" text="Nombre 2" />
-                                        <TableColumn fx:id="colEstGenero" prefWidth="90.0" text="Género" />
-                                    </columns>
-                                    <columnResizePolicy>
-                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                    </columnResizePolicy>
-                                </TableView>
+                                            <TableView fx:id="tblEstudiantes" minHeight="320.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                                                <columns>
+                                                    <TableColumn fx:id="colEstIdentificacion" prefWidth="120.0" text="Identificación" />
+                                                    <TableColumn fx:id="colEstGrado" prefWidth="70.0" text="Grado" />
+                                                    <TableColumn fx:id="colEstApellido1" prefWidth="120.0" text="Apellido 1" />
+                                                    <TableColumn fx:id="colEstApellido2" prefWidth="120.0" text="Apellido 2" />
+                                                    <TableColumn fx:id="colEstNombre1" prefWidth="120.0" text="Nombre 1" />
+                                                    <TableColumn fx:id="colEstNombre2" prefWidth="120.0" text="Nombre 2" />
+                                                    <TableColumn fx:id="colEstGenero" prefWidth="80.0" text="Género" />
+                                                </columns>
+                                                <columnResizePolicy>
+                                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                                </columnResizePolicy>
+                                            </TableView>
+                                        </children>
+                                    </VBox>
 
-                                <GridPane hgap="10.0" vgap="8.0">
-                                    <columnConstraints>
-                                        <ColumnConstraints percentWidth="14.0" />
-                                        <ColumnConstraints percentWidth="19.0" />
-                                        <ColumnConstraints percentWidth="14.0" />
-                                        <ColumnConstraints percentWidth="19.0" />
-                                        <ColumnConstraints percentWidth="14.0" />
-                                        <ColumnConstraints percentWidth="20.0" />
-                                    </columnConstraints>
+                                    <!-- Columna Derecha: Detail (Panel de Edición) -->
+                                    <VBox maxWidth="360.0" minWidth="310.0" prefWidth="330.0" spacing="10.0" styleClass="containerInfo">
+                                        <padding>
+                                            <Insets bottom="16.0" left="16.0" right="16.0" top="14.0" />
+                                        </padding>
+                                        <children>
+                                            <VBox spacing="3.0">
+                                                <children>
+                                                    <Label styleClass="subtitulo-seccion" text="Detalle y Edición" />
+                                                    <Label styleClass="descripcion-seccion" text="Selecciona un estudiante de la tabla para modificar sus datos." wrapText="true">
+                                                        <font>
+                                                            <Font size="12.0" />
+                                                        </font>
+                                                    </Label>
+                                                </children>
+                                            </VBox>
 
-                                    <children>
-                                        <Label text="Identificación" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                        <TextField fx:id="txtIdentificacion" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                            <Separator maxWidth="Infinity" />
 
-                                        <Label text="Grado" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                                        <TextField fx:id="txtGrado" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                                            <VBox spacing="8.0" VBox.vgrow="ALWAYS">
+                                                <children>
+                                                    <VBox spacing="3.0">
+                                                        <children>
+                                                            <Label styleClass="label-filtro" text="Identificación:" />
+                                                            <TextField fx:id="txtIdentificacion" promptText="Número de documento" />
+                                                        </children>
+                                                    </VBox>
 
-                                        <Label text="Género" GridPane.columnIndex="4" GridPane.rowIndex="0" />
-                                        <TextField fx:id="txtGenero" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+                                                    <HBox spacing="10.0">
+                                                        <children>
+                                                            <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                                                                <children>
+                                                                    <Label styleClass="label-filtro" text="Grado:" />
+                                                                    <TextField fx:id="txtGrado" promptText="Ej: 11" />
+                                                                </children>
+                                                            </VBox>
+                                                            <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                                                                <children>
+                                                                    <Label styleClass="label-filtro" text="Género:" />
+                                                                    <TextField fx:id="txtGenero" promptText="M / F" />
+                                                                </children>
+                                                            </VBox>
+                                                        </children>
+                                                    </HBox>
 
-                                        <Label text="Apellido 1" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                                        <TextField fx:id="txtApellido1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                    <HBox spacing="10.0">
+                                                        <children>
+                                                            <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                                                                <children>
+                                                                    <Label styleClass="label-filtro" text="Primer Nombre:" />
+                                                                    <TextField fx:id="txtNombre1" />
+                                                                </children>
+                                                            </VBox>
+                                                            <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                                                                <children>
+                                                                    <Label styleClass="label-filtro" text="Segundo Nombre:" />
+                                                                    <TextField fx:id="txtNombre2" />
+                                                                </children>
+                                                            </VBox>
+                                                        </children>
+                                                    </HBox>
 
-                                        <Label text="Apellido 2" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                        <TextField fx:id="txtApellido2" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                    <HBox spacing="10.0">
+                                                        <children>
+                                                            <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                                                                <children>
+                                                                    <Label styleClass="label-filtro" text="Primer Apellido:" />
+                                                                    <TextField fx:id="txtApellido1" />
+                                                                </children>
+                                                            </VBox>
+                                                            <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                                                                <children>
+                                                                    <Label styleClass="label-filtro" text="Segundo Apellido:" />
+                                                                    <TextField fx:id="txtApellido2" />
+                                                                </children>
+                                                            </VBox>
+                                                        </children>
+                                                    </HBox>
+                                                </children>
+                                            </VBox>
 
-                                        <Label text="Nombre 1" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                        <TextField fx:id="txtNombre1" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-
-                                        <Label text="Nombre 2" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                                        <TextField fx:id="txtNombre2" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    </children>
-                           <rowConstraints>
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                           </rowConstraints>
-                                </GridPane>
-
-                                <HBox alignment="CENTER_LEFT" spacing="12.0">
-                                    <children>
-                                        <Button fx:id="btnGuardarCambiosEstudiante" onAction="#clickGuardarCambiosEstudiante" styleClass="btn-success" text="Guardar cambios" />
-                                    </children>
+                                            <Button fx:id="btnGuardarCambiosEstudiante" maxWidth="Infinity" onAction="#clickGuardarCambiosEstudiante" styleClass="btn-success" text="Guardar cambios">
+                                                <VBox.margin>
+                                                    <Insets top="6.0" />
+                                                </VBox.margin>
+                                            </Button>
+                                        </children>
+                                    </VBox>
                                 </HBox>
                             </VBox>
                         </content>
                     </Tab>
 
+                    <!-- ================= TAB MOTIVOS ================= -->
                     <Tab text="Motivos">
                         <content>
                             <HBox spacing="16.0">
                                 <padding>
-                                    <Insets bottom="8.0" left="8.0" right="8.0" top="12.0" />
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="12.0" />
                                 </padding>
                                 <children>
                                     <VBox spacing="10.0" HBox.hgrow="ALWAYS">
                                         <Label styleClass="subtitulo-seccion" text="Motivos de préstamo" />
-                                        <TableView fx:id="tblMotivosPrestamo" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                                        <TableView fx:id="tblMotivosPrestamo" minHeight="320.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
                                             <columns>
                                                 <TableColumn fx:id="colPrestamoNombre" prefWidth="220.0" text="Motivo" />
                                                 <TableColumn fx:id="colPrestamoEstado" prefWidth="100.0" text="Estado" />
@@ -140,21 +196,18 @@
                                             </columnResizePolicy>
                                         </TableView>
 
-                                        <HBox alignment="CENTER" prefHeight="50.0" spacing="8.0">
+                                        <HBox alignment="CENTER" prefHeight="45.0" spacing="8.0">
                                             <children>
-                                                <TextField fx:id="txtNuevoMotivoPrestamo" prefHeight="40.0" promptText="Nuevo motivo de préstamo" HBox.hgrow="ALWAYS">
-                                       <font>
-                                          <Font size="15.0" />
-                                       </font></TextField>
-                                                <Button onAction="#clickAgregarMotivoPrestamo" prefHeight="30.0" styleClass="btn-primary" text="Agregar" />
-                                                <Button onAction="#clickAlternarEstadoMotivoPrestamo" prefHeight="30.0" styleClass="btn-secondary" text="Activar/Inactivar" />
+                                                <TextField fx:id="txtNuevoMotivoPrestamo" promptText="Nuevo motivo de préstamo..." HBox.hgrow="ALWAYS" />
+                                                <Button onAction="#clickAgregarMotivoPrestamo" styleClass="btn-primary" text="Agregar" />
+                                                <Button onAction="#clickAlternarEstadoMotivoPrestamo" styleClass="btn-secondary" text="Activar / Inactivar" />
                                             </children>
                                         </HBox>
                                     </VBox>
 
                                     <VBox spacing="10.0" HBox.hgrow="ALWAYS">
                                         <Label styleClass="subtitulo-seccion" text="Motivos de plataforma" />
-                                        <TableView fx:id="tblMotivosPlataforma" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                                        <TableView fx:id="tblMotivosPlataforma" minHeight="320.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
                                             <columns>
                                                 <TableColumn fx:id="colPlataformaNombre" prefWidth="220.0" text="Motivo" />
                                                 <TableColumn fx:id="colPlataformaEstado" prefWidth="100.0" text="Estado" />
@@ -164,14 +217,11 @@
                                             </columnResizePolicy>
                                         </TableView>
 
-                                        <HBox alignment="CENTER" prefHeight="50.0" spacing="8.0">
+                                        <HBox alignment="CENTER" prefHeight="45.0" spacing="8.0">
                                             <children>
-                                                <TextField fx:id="txtNuevoMotivoPlataforma" prefHeight="40.0" promptText="Nuevo motivo de plataforma" HBox.hgrow="ALWAYS">
-                                       <font>
-                                          <Font size="15.0" />
-                                       </font></TextField>
-                                                <Button onAction="#clickAgregarMotivoPlataforma" prefHeight="30.0" styleClass="btn-primary" text="Agregar" />
-                                                <Button onAction="#clickAlternarEstadoMotivoPlataforma" prefHeight="30.0" styleClass="btn-secondary" text="Activar/Inactivar" />
+                                                <TextField fx:id="txtNuevoMotivoPlataforma" promptText="Nuevo motivo de plataforma..." HBox.hgrow="ALWAYS" />
+                                                <Button onAction="#clickAgregarMotivoPlataforma" styleClass="btn-primary" text="Agregar" />
+                                                <Button onAction="#clickAlternarEstadoMotivoPlataforma" styleClass="btn-secondary" text="Activar / Inactivar" />
                                             </children>
                                         </HBox>
                                     </VBox>

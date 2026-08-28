@@ -45,6 +45,8 @@ public class App extends Application {
                 getClass().getResource("/styles/style.css").toExternalForm()
         );
 
+        utils.ResponsiveManager.aplicarEscena(scene);
+
         stage.setTitle("BookTech");
         stage.setScene(scene);
         stage.setMaximized(true);

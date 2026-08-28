@@ -85,7 +85,7 @@
       
           <!-- ================= SIDEBAR ================= -->
           <left>
-              <VBox alignment="TOP_CENTER" maxWidth="250.0" minWidth="250.0" prefWidth="250.0" spacing="15.0" styleClass="sidebar">
+              <VBox alignment="TOP_CENTER" maxWidth="295.0" minWidth="275.0" prefWidth="280.0" spacing="15.0" styleClass="sidebar">
                   <children>
                       <VBox alignment="CENTER" spacing="8.0">
                          <children>
@@ -96,7 +96,7 @@
                             </ImageView>
                             <Label text="Bibliotecario" textFill="WHITE">
                                 <font>
-                                    <Font name="System Bold" size="16.0" />
+                                    <Font name="System Bold" size="17.0" />
                                 </font>
                             </Label>
                          </children>
@@ -105,13 +105,13 @@
                          </VBox.margin>
                       </VBox>
 
-                      <Separator opacity="0.3" prefWidth="200.0" />
+                      <Separator opacity="0.3" prefWidth="220.0" />
       
-                      <VBox alignment="TOP_LEFT" spacing="8.0" VBox.vgrow="ALWAYS">
+                      <VBox alignment="TOP_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">
                           <children>
                               <HBox alignment="CENTER_LEFT" spacing="12.0">
                                   <children>
-                                      <ImageView fitHeight="24.0" fitWidth="24.0" preserveRatio="true">
+                                      <ImageView fitHeight="26.0" fitWidth="26.0" preserveRatio="true">
                                           <image>
                                               <Image url="@../../images/iconHome.png" />
                                           </image>
@@ -122,7 +122,7 @@
       
                               <HBox alignment="CENTER_LEFT" spacing="12.0">
                                   <children>
-                                      <ImageView fitHeight="24.0" fitWidth="24.0" preserveRatio="true">
+                                      <ImageView fitHeight="26.0" fitWidth="26.0" preserveRatio="true">
                                           <image>
                                               <Image url="@../../images/iconBusqueda.png" />
                                           </image>
@@ -133,7 +133,7 @@
 
                               <HBox alignment="CENTER_LEFT" spacing="12.0">
                                  <children>
-                                     <ImageView fitHeight="24.0" fitWidth="24.0" preserveRatio="true">
+                                     <ImageView fitHeight="26.0" fitWidth="26.0" preserveRatio="true">
                                         <image>
                                            <Image url="@../../images/virtual.png" />
                                         </image>
@@ -144,7 +144,7 @@
       
                               <HBox alignment="CENTER_LEFT" spacing="12.0">
                                   <children>
-                                      <ImageView fitHeight="24.0" fitWidth="24.0" preserveRatio="true">
+                                      <ImageView fitHeight="26.0" fitWidth="26.0" preserveRatio="true">
                                           <image>
                                               <Image url="@../../images/iconLibro.png" />
                                           </image>
