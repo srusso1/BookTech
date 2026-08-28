@@ -432,45 +432,6 @@ public class PrestamosDAO {
         return datos;
     }
 
-    private Docente obtenerDocentePorId(Connection conexion, int idDocente) {
-        String query = "SELECT id, nombre_1, nombre_2, apellido_1, apellido_2 FROM docentes WHERE id = ?";
-        try (PreparedStatement ps = conexion.prepareStatement(query)) {
-            ps.setInt(1, idDocente);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return new Docente(
-                            rs.getInt("id"),
-                            rs.getString("nombre_1"),
-                            rs.getString("nombre_2"),
-                            rs.getString("apellido_1"),
-                            rs.getString("apellido_2")
-                    );
-                }
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener docente por id: " + e.getMessage(), e);
-        }
-        return null;
-    }
-
-    private MotivoPrestamo obtenerMotivoPorId(Connection conexion, int idMotivo) {
-        String query = "SELECT id, nombre_motivo FROM motivos_prestamo WHERE id = ?";
-        try (PreparedStatement ps = conexion.prepareStatement(query)) {
-            ps.setInt(1, idMotivo);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return new MotivoPrestamo(
-                            rs.getInt("id"),
-                            rs.getString("nombre_motivo")
-                    );
-                }
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener motivo de préstamo por id: " + e.getMessage(), e);
-        }
-        return null;
-    }
-
     // ==================== MÉTODOS CON FILTRO DE FECHAS ====================
 
     public Map<String, Integer> obtenerPrestamosPorGenero(String fechaInicio, String fechaFin) {

@@ -3,6 +3,7 @@ package controllers.Rectoria;
 import database.DocentesDAO;
 import database.EstudiantesDAO;
 import database.InformesDAO;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -81,6 +82,11 @@ public class InformesController {
 
     @FXML
     private Button btnGenerarReporte;
+
+    @FXML
+    private Button btnExportarExcel;
+
+    private final reports.generators.ExcelExportManager excelExportManager = new reports.generators.ExcelExportManager();
 
     @FXML
     private Label lblDatosTabla;
@@ -318,55 +324,55 @@ public class InformesController {
         colRegresadoTarde.setText("Regresado tarde");
         colDiasTardanza.setText("Días de tardanza");
 
-        colLibro.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof Prestamo p)) return "N/A";
-            return p.getTituloLibro() != null ? p.getTituloLibro() : "N/A";
-        }));
+        colLibro.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof Prestamo p)) return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(p.getTituloLibro() != null ? p.getTituloLibro() : "N/A");
+        });
 
-        colEstudiante.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof Prestamo p)) return "N/A";
-            return p.getEstudiante() != null ? p.getEstudiante() : "N/A";
-        }));
+        colEstudiante.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof Prestamo p)) return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(p.getEstudiante() != null ? p.getEstudiante() : "N/A");
+        });
 
-        colDocente.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof Prestamo p)) return "N/A";
-            return p.getDocente() != null ? p.getDocente().getNombreCompleto() : "N/A";
-        }));
+        colDocente.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof Prestamo p)) return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(p.getDocente() != null ? p.getDocente().getNombreCompleto() : "N/A");
+        });
 
-        colMotivo.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof Prestamo p)) return "N/A";
-            return p.getMotivoPrestamo() != null ? p.getMotivoPrestamo().getNombre() : "N/A";
-        }));
+        colMotivo.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof Prestamo p)) return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(p.getMotivoPrestamo() != null ? p.getMotivoPrestamo().getNombre() : "N/A");
+        });
 
-        colFechaPrestamo.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof Prestamo p)) return "N/A";
-            return p.getFecha_prestamo() != null ? p.getFecha_prestamo() : "N/A";
-        }));
+        colFechaPrestamo.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof Prestamo p)) return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(p.getFecha_prestamo() != null ? p.getFecha_prestamo() : "N/A");
+        });
 
-        colFechaLimite.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof Prestamo p)) return "N/A";
-            return p.getFecha_limite() != null ? p.getFecha_limite() : "N/A";
-        }));
+        colFechaLimite.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof Prestamo p)) return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(p.getFecha_limite() != null ? p.getFecha_limite() : "N/A");
+        });
 
-        colFechaDevolucion.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof Prestamo p)) return "Pendiente";
-            return p.getFecha_devolucion() != null ? p.getFecha_devolucion() : "Pendiente";
-        }));
+        colFechaDevolucion.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof Prestamo p)) return new SimpleStringProperty("Pendiente");
+            return new SimpleStringProperty(p.getFecha_devolucion() != null ? p.getFecha_devolucion() : "Pendiente");
+        });
 
-        colEstado.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof Prestamo p)) return "--";
-            return obtenerNombreEstado(p.getEstado());
-        }));
+        colEstado.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof Prestamo p)) return new SimpleStringProperty("--");
+            return new SimpleStringProperty(obtenerNombreEstado(p.getEstado()));
+        });
 
-        colRegresadoTarde.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof Prestamo p)) return "--";
-            return p.getEstado() == ReportConfig.ESTADO_DEVUELTO ? (p.getDevuelto_tarde() == 1 ? "Sí" : "No") : "--";
-        }));
+        colRegresadoTarde.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof Prestamo p)) return new SimpleStringProperty("--");
+            return new SimpleStringProperty(p.getEstado() == ReportConfig.ESTADO_DEVUELTO ? (p.getDevuelto_tarde() == 1 ? "Sí" : "No") : "--");
+        });
 
-        colDiasTardanza.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof Prestamo p)) return "--";
-            return p.getEstado() == ReportConfig.ESTADO_DEVUELTO ? String.valueOf(p.getDias_atraso()) : "--";
-        }));
+        colDiasTardanza.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof Prestamo p)) return new SimpleStringProperty("--");
+            return new SimpleStringProperty(p.getEstado() == ReportConfig.ESTADO_DEVUELTO ? String.valueOf(p.getDias_atraso()) : "--");
+        });
     }
 
     private void configurarTablaPlataforma() {
@@ -381,44 +387,44 @@ public class InformesController {
         colRegresadoTarde.setText("--");
         colDiasTardanza.setText("--");
 
-        colLibro.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof RegistroPlataformaDetalle r)) return "N/A";
-            return r.getDocente() != null ? r.getDocente() : "N/A";
-        }));
+        colLibro.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof RegistroPlataformaDetalle r)) return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(r.getDocente() != null ? r.getDocente() : "N/A");
+        });
 
-        colEstudiante.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof RegistroPlataformaDetalle r)) return "N/A";
-            return r.getMotivoUso() != null ? r.getMotivoUso() : "N/A";
-        }));
+        colEstudiante.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof RegistroPlataformaDetalle r)) return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(r.getMotivoUso() != null ? r.getMotivoUso() : "N/A");
+        });
 
-        colDocente.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof RegistroPlataformaDetalle r)) return "N/A";
-            return r.getFecha() != null ? r.getFecha() : "N/A";
-        }));
+        colDocente.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof RegistroPlataformaDetalle r)) return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(r.getFecha() != null ? r.getFecha() : "N/A");
+        });
 
-        colMotivo.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof RegistroPlataformaDetalle r)) return "--";
-            return r.getHoraInicio() != null ? r.getHoraInicio() : "--";
-        }));
+        colMotivo.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof RegistroPlataformaDetalle r)) return new SimpleStringProperty("--");
+            return new SimpleStringProperty(r.getHoraInicio() != null ? r.getHoraInicio() : "--");
+        });
 
-        colFechaPrestamo.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof RegistroPlataformaDetalle r)) return "--";
-            return r.getHoraFin() != null ? r.getHoraFin() : "--";
-        }));
+        colFechaPrestamo.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof RegistroPlataformaDetalle r)) return new SimpleStringProperty("--");
+            return new SimpleStringProperty(r.getHoraFin() != null ? r.getHoraFin() : "--");
+        });
 
-        colFechaLimite.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof RegistroPlataformaDetalle r)) return "0h 0m";
-            return formatearMinutos(r.getTotalMinutos());
-        }));
+        colFechaLimite.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof RegistroPlataformaDetalle r)) return new SimpleStringProperty("0h 0m");
+            return new SimpleStringProperty(formatearMinutos(r.getTotalMinutos()));
+        });
 
-        colFechaDevolucion.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof RegistroPlataformaDetalle r)) return "--";
-            return r.getGrado() > 0 ? String.valueOf(r.getGrado()) : "--";
-        }));
+        colFechaDevolucion.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof RegistroPlataformaDetalle r)) return new SimpleStringProperty("--");
+            return new SimpleStringProperty(r.getGrado() > 0 ? String.valueOf(r.getGrado()) : "--");
+        });
 
-        colEstado.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> "Uso plataforma"));
-        colRegresadoTarde.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> "--"));
-        colDiasTardanza.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> "--"));
+        colEstado.setCellValueFactory(cellData -> new SimpleStringProperty("Uso plataforma"));
+        colRegresadoTarde.setCellValueFactory(cellData -> new SimpleStringProperty("--"));
+        colDiasTardanza.setCellValueFactory(cellData -> new SimpleStringProperty("--"));
     }
 
     private void configurarTablaInventario() {
@@ -433,55 +439,55 @@ public class InformesController {
         colRegresadoTarde.setText("Comprar");
         colDiasTardanza.setText("Estado");
 
-        colLibro.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return "N/A";
-            return i.getTitulo() != null ? i.getTitulo() : "N/A";
-        }));
+        colLibro.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(i.getTitulo() != null ? i.getTitulo() : "N/A");
+        });
 
-        colEstudiante.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return "N/A";
-            return i.getCategoria() != null ? i.getCategoria() : "N/A";
-        }));
+        colEstudiante.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(i.getCategoria() != null ? i.getCategoria() : "N/A");
+        });
 
-        colDocente.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return "N/A";
-            return i.getAutor() != null ? i.getAutor() : "N/A";
-        }));
+        colDocente.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(i.getAutor() != null ? i.getAutor() : "N/A");
+        });
 
-        colMotivo.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return "N/A";
-            return i.getEditorial() != null ? i.getEditorial() : "N/A";
-        }));
+        colMotivo.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(i.getEditorial() != null ? i.getEditorial() : "N/A");
+        });
 
-        colFechaPrestamo.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return "N/A";
-            return i.getUbicacion() != null ? i.getUbicacion() : "N/A";
-        }));
+        colFechaPrestamo.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(i.getUbicacion() != null ? i.getUbicacion() : "N/A");
+        });
 
-        colFechaLimite.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return "0";
-            return String.valueOf(i.getUnidades());
-        }));
+        colFechaLimite.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return new SimpleStringProperty("0");
+            return new SimpleStringProperty(String.valueOf(i.getUnidades()));
+        });
 
-        colFechaDevolucion.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return "0";
-            return String.valueOf(i.getPrestamosActivos());
-        }));
+        colFechaDevolucion.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return new SimpleStringProperty("0");
+            return new SimpleStringProperty(String.valueOf(i.getPrestamosActivos()));
+        });
 
-        colEstado.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return "0";
-            return String.valueOf(i.getStockObjetivo());
-        }));
+        colEstado.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return new SimpleStringProperty("0");
+            return new SimpleStringProperty(String.valueOf(i.getStockObjetivo()));
+        });
 
-        colRegresadoTarde.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return "0";
-            return String.valueOf(i.getRecomendadasComprar());
-        }));
+        colRegresadoTarde.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return new SimpleStringProperty("0");
+            return new SimpleStringProperty(String.valueOf(i.getRecomendadasComprar()));
+        });
 
-        colDiasTardanza.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createStringBinding(() -> {
-            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return "--";
-            return i.getEstadoStock();
-        }));
+        colDiasTardanza.setCellValueFactory(cellData -> {
+            if (!(cellData.getValue() instanceof InventarioLibroDetalle i)) return new SimpleStringProperty("--");
+            return new SimpleStringProperty(i.getEstadoStock() != null ? i.getEstadoStock() : "--");
+        });
     }
 
     private void cargarDatos() {
@@ -689,6 +695,80 @@ public class InformesController {
             btnGenerarReporte.setText("Generar reporte");
             Alertas.mostrarError("Error al iniciar el reporte: " + e.getMessage());
         }
+    }
+
+    @FXML
+    void clickExportarExcel() {
+        String tipoReporte = cbTipoReporte.getValue();
+        if (tipoReporte == null) {
+            Alertas.mostrarError("Seleccione un tipo de reporte.");
+            return;
+        }
+
+        if (REPORTE_ESTUDIANTE_PRESTAMOS.equals(tipoReporte) && estudianteSeleccionado == null) {
+            Alertas.mostrarError("Debe seleccionar un estudiante.");
+            return;
+        }
+
+        if (REPORTE_PLATAFORMA_DOCENTE.equals(tipoReporte) && docenteSeleccionado == null) {
+            Alertas.mostrarError("Debe seleccionar un docente.");
+            return;
+        }
+
+        javafx.stage.FileChooser chooser = new javafx.stage.FileChooser();
+        chooser.setTitle("Guardar Reporte en Excel");
+        String nombreSugerido = tipoReporte.replaceAll("[^a-zA-Z0-9.-]", "_") + "_" + LocalDate.now() + ".xlsx";
+        chooser.setInitialFileName(nombreSugerido);
+        chooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("Libro de Excel (*.xlsx)", "*.xlsx"));
+
+        java.io.File file = chooser.showSaveDialog(tblPrestamos.getScene().getWindow());
+        if (file == null) {
+            return;
+        }
+
+        btnExportarExcel.setDisable(true);
+        btnExportarExcel.setText("Exportando Excel...");
+
+        final Integer grado = obtenerGradoSeleccionado();
+        final Estudiante estudiante = this.estudianteSeleccionado;
+        final Docente docente = this.docenteSeleccionado;
+        final String fInicio = this.fechaFiltroInicio;
+        final String fFin = this.fechaFiltroFin;
+        final List<?> datosActuales = new ArrayList<>(tblPrestamos.getItems());
+
+        Task<Void> excelTask = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                excelExportManager.exportarReporte(
+                        tipoReporte,
+                        fInicio,
+                        fFin,
+                        grado,
+                        estudiante,
+                        docente,
+                        datosActuales,
+                        file.toPath()
+                );
+                return null;
+            }
+        };
+
+        excelTask.setOnSucceeded(e -> {
+            btnExportarExcel.setDisable(false);
+            btnExportarExcel.setText("Exportar Excel (.xlsx)");
+            Alertas.mostrarExito("Reporte Excel generado exitosamente en:\n" + file.getAbsolutePath());
+        });
+
+        excelTask.setOnFailed(e -> {
+            btnExportarExcel.setDisable(false);
+            btnExportarExcel.setText("Exportar Excel (.xlsx)");
+            Throwable ex = excelTask.getException();
+            Alertas.mostrarError("Error al generar el archivo Excel: " + (ex != null ? ex.getMessage() : "Error desconocido"));
+        });
+
+        Thread thread = new Thread(excelTask, "Excel-Export-Thread");
+        thread.setDaemon(true);
+        thread.start();
     }
 
     private String obtenerNombreEstado(int estado) {
