@@ -29,7 +29,7 @@
                             <Font name="Roboto Medium" size="28.0" />
                         </font>
                     </Label>
-                    <Label styleClass="descripcion-seccion" text="Gestione estudiantes matriculados y catálogos de motivos de préstamo y plataforma." wrapText="true" />
+                    <Label styleClass="descripcion-seccion" text="Gestione estudiantes matriculados, docentes y catálogos de motivos de préstamo y plataforma." wrapText="true" />
                 </children>
             </VBox>
 
@@ -169,6 +169,114 @@
                                                     <Insets top="6.0" />
                                                 </VBox.margin>
                                             </Button>
+                                        </children>
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+                        </content>
+                    </Tab>
+
+                    <!-- ================= TAB DOCENTES (MASTER-DETAIL) ================= -->
+                    <Tab text="Docentes">
+                        <content>
+                            <VBox spacing="12.0">
+                                <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="12.0" />
+                                </padding>
+
+                                <!-- Master-Detail Split Container -->
+                                <HBox spacing="16.0" VBox.vgrow="ALWAYS">
+                                    <!-- Columna Izquierda: Master (Tabla de Docentes con Buscador) -->
+                                    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                        <children>
+                                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                <children>
+                                                    <Label styleClass="label-filtro" text="Buscar:" />
+                                                    <TextField fx:id="txtBuscarDocente" promptText="Buscar docente por nombre o apellido..." styleClass="combo-filtro" HBox.hgrow="ALWAYS" />
+                                                    <Button onAction="#clickNuevoDocente" styleClass="btn-secondary" text="+ Nuevo docente" />
+                                                </children>
+                                            </HBox>
+
+                                            <TableView fx:id="tblDocentes" minHeight="320.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                                                <columns>
+                                                    <TableColumn fx:id="colDocId" prefWidth="60.0" text="ID" />
+                                                    <TableColumn fx:id="colDocNombre1" prefWidth="140.0" text="Primer Nombre" />
+                                                    <TableColumn fx:id="colDocNombre2" prefWidth="140.0" text="Segundo Nombre" />
+                                                    <TableColumn fx:id="colDocApellido1" prefWidth="140.0" text="Primer Apellido" />
+                                                    <TableColumn fx:id="colDocApellido2" prefWidth="140.0" text="Segundo Apellido" />
+                                                </columns>
+                                                <columnResizePolicy>
+                                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                                </columnResizePolicy>
+                                            </TableView>
+                                        </children>
+                                    </VBox>
+
+                                    <!-- Columna Derecha: Detail (Panel de Edición / Creación de Docente) -->
+                                    <VBox maxWidth="360.0" minWidth="310.0" prefWidth="330.0" spacing="10.0" styleClass="containerInfo">
+                                        <padding>
+                                            <Insets bottom="16.0" left="16.0" right="16.0" top="14.0" />
+                                        </padding>
+                                        <children>
+                                            <VBox spacing="3.0">
+                                                <children>
+                                                    <Label fx:id="lblTituloFormDocente" styleClass="subtitulo-seccion" text="Gestión de Docente" />
+                                                    <Label fx:id="lblEstadoEdicionDocente" styleClass="descripcion-seccion" text="Complete los datos para registrar o seleccione uno de la tabla para editar." wrapText="true">
+                                                        <font>
+                                                            <Font size="12.0" />
+                                                        </font>
+                                                    </Label>
+                                                </children>
+                                            </VBox>
+
+                                            <Separator maxWidth="Infinity" />
+
+                                            <VBox spacing="8.0" VBox.vgrow="ALWAYS">
+                                                <children>
+                                                    <VBox spacing="3.0">
+                                                        <children>
+                                                            <Label styleClass="label-filtro" text="Primer Nombre (*):" />
+                                                            <TextField fx:id="txtDocNombre1" promptText="Primer nombre" />
+                                                        </children>
+                                                    </VBox>
+
+                                                    <VBox spacing="3.0">
+                                                        <children>
+                                                            <Label styleClass="label-filtro" text="Segundo Nombre:" />
+                                                            <TextField fx:id="txtDocNombre2" promptText="Segundo nombre (opcional)" />
+                                                        </children>
+                                                    </VBox>
+
+                                                    <VBox spacing="3.0">
+                                                        <children>
+                                                            <Label styleClass="label-filtro" text="Primer Apellido (*):" />
+                                                            <TextField fx:id="txtDocApellido1" promptText="Primer apellido" />
+                                                        </children>
+                                                    </VBox>
+
+                                                    <VBox spacing="3.0">
+                                                        <children>
+                                                            <Label styleClass="label-filtro" text="Segundo Apellido:" />
+                                                            <TextField fx:id="txtDocApellido2" promptText="Segundo apellido (opcional)" />
+                                                        </children>
+                                                    </VBox>
+                                                </children>
+                                            </VBox>
+
+                                            <VBox spacing="8.0">
+                                                <children>
+                                                    <Button fx:id="btnGuardarDocente" maxWidth="Infinity" onAction="#clickGuardarDocente" styleClass="btn-success" text="Guardar nuevo docente" />
+                                                    <HBox spacing="8.0">
+                                                        <children>
+                                                            <Button fx:id="btnEliminarDocente" disable="true" maxWidth="Infinity" onAction="#clickEliminarDocente" styleClass="btn-danger" text="Eliminar" HBox.hgrow="ALWAYS" />
+                                                            <Button fx:id="btnNuevoDocente" maxWidth="Infinity" onAction="#clickNuevoDocente" styleClass="btn-secondary" text="Limpiar" HBox.hgrow="ALWAYS" />
+                                                        </children>
+                                                    </HBox>
+                                                </children>
+                                                <VBox.margin>
+                                                    <Insets top="6.0" />
+                                                </VBox.margin>
+                                            </VBox>
                                         </children>
                                     </VBox>
                                 </HBox>

@@ -133,7 +133,8 @@
 
 .btn-primary,
 .btn-secondary,
-.btn-success {
+.btn-success,
+.btn-danger {
     -fx-text-fill: white;
     -fx-font-size: 13px;
     -fx-padding: 7px 16px;
@@ -176,6 +177,18 @@
 
 .btn-success:pressed {
     -fx-background-color: #047857;
+}
+
+.btn-danger {
+    -fx-background-color: #ef4444;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #dc2626;
+}
+
+.btn-danger:pressed {
+    -fx-background-color: #b91c1c;
 }
 
 .btn-ghost {
