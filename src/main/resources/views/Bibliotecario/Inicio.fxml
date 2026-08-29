@@ -33,56 +33,56 @@
                         <Separator maxWidth="Infinity" />
 
                         <!-- KPI Cards -->
-                        <HBox spacing="15.0">
+                        <HBox spacing="16.0">
                             <children>
-                                <VBox alignment="CENTER" maxWidth="Infinity" minHeight="110.0" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
-                                    <Label text="Libros registrados">
+                                <VBox alignment="CENTER" maxWidth="Infinity" minHeight="125.0" spacing="10.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="kpi-label" text="Libros registrados">
                                         <font>
-                                            <Font name="System Bold" size="14.0" />
+                                            <Font name="System Bold" size="14.5" />
                                         </font>
                                     </Label>
-                                    <Label fx:id="librosRegistrados" text="0" textFill="#1E6FB8">
+                                    <Label fx:id="librosRegistrados" styleClass="kpi-number" text="0" textFill="#1E6FB8">
                                         <font>
-                                            <Font name="System Bold" size="24.0" />
-                                        </font>
-                                    </Label>
-                                </VBox>
-
-                                <VBox alignment="CENTER" maxWidth="Infinity" minHeight="110.0" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
-                                    <Label text="Unidades disponibles">
-                                        <font>
-                                            <Font name="System Bold" size="14.0" />
-                                        </font>
-                                    </Label>
-                                    <Label fx:id="unidadesRegistradas" text="0" textFill="#1E6FB8">
-                                        <font>
-                                            <Font name="System Bold" size="24.0" />
+                                            <Font name="System Bold" size="32.0" />
                                         </font>
                                     </Label>
                                 </VBox>
 
-                                <VBox alignment="CENTER" maxWidth="Infinity" minHeight="110.0" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
-                                    <Label text="Préstamos activos">
+                                <VBox alignment="CENTER" maxWidth="Infinity" minHeight="125.0" spacing="10.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="kpi-label" text="Unidades disponibles">
                                         <font>
-                                            <Font name="System Bold" size="14.0" />
+                                            <Font name="System Bold" size="14.5" />
                                         </font>
                                     </Label>
-                                    <Label fx:id="prestamosActivos" text="0" textFill="#e11d48">
+                                    <Label fx:id="unidadesRegistradas" styleClass="kpi-number" text="0" textFill="#1E6FB8">
                                         <font>
-                                            <Font name="System Bold" size="24.0" />
+                                            <Font name="System Bold" size="32.0" />
                                         </font>
                                     </Label>
                                 </VBox>
 
-                                <VBox alignment="CENTER" maxWidth="Infinity" minHeight="110.0" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
-                                    <Label text="Préstamos realizados">
+                                <VBox alignment="CENTER" maxWidth="Infinity" minHeight="125.0" spacing="10.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="kpi-label" text="Préstamos activos">
                                         <font>
-                                            <Font name="System Bold" size="14.0" />
+                                            <Font name="System Bold" size="14.5" />
                                         </font>
                                     </Label>
-                                    <Label fx:id="prestamosRealizados" text="0" textFill="#10b981">
+                                    <Label fx:id="prestamosActivos" styleClass="kpi-number" text="0" textFill="#e11d48">
                                         <font>
-                                            <Font name="System Bold" size="24.0" />
+                                            <Font name="System Bold" size="32.0" />
+                                        </font>
+                                    </Label>
+                                </VBox>
+
+                                <VBox alignment="CENTER" maxWidth="Infinity" minHeight="125.0" spacing="10.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="kpi-label" text="Préstamos realizados">
+                                        <font>
+                                            <Font name="System Bold" size="14.5" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="prestamosRealizados" styleClass="kpi-number" text="0" textFill="#10b981">
+                                        <font>
+                                            <Font name="System Bold" size="32.0" />
                                         </font>
                                     </Label>
                                 </VBox>

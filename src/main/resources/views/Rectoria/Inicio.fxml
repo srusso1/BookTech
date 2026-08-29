@@ -31,46 +31,46 @@
                   <Separator maxWidth="Infinity" />
 
                   <!-- KPI Cards -->
-                  <HBox spacing="15.0">
+                  <HBox spacing="16.0">
                      <children>
-                        <VBox alignment="CENTER" maxWidth="Infinity" minHeight="110.0" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                        <VBox alignment="CENTER" maxWidth="Infinity" minHeight="125.0" spacing="10.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="Libros registrados">
+                              <Label styleClass="kpi-label" text="Libros registrados">
                                  <font>
-                                    <Font name="System Bold" size="14.0" />
+                                    <Font name="System Bold" size="14.5" />
                                  </font>
                               </Label>
-                              <Label fx:id="librosRegistrados" text="0" textFill="#1E6FB8">
+                              <Label fx:id="librosRegistrados" styleClass="kpi-number" text="0" textFill="#1E6FB8">
                                  <font>
-                                    <Font name="System Bold" size="24.0" />
+                                    <Font name="System Bold" size="32.0" />
                                  </font>
                               </Label>
                            </children>
                         </VBox>
-                        <VBox alignment="CENTER" maxWidth="Infinity" minHeight="110.0" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                        <VBox alignment="CENTER" maxWidth="Infinity" minHeight="125.0" spacing="10.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="Unidades disponibles">
+                              <Label styleClass="kpi-label" text="Unidades disponibles">
                                  <font>
-                                    <Font name="System Bold" size="14.0" />
+                                    <Font name="System Bold" size="14.5" />
                                  </font>
                               </Label>
-                              <Label fx:id="unidadesRegistradas" text="0" textFill="#1E6FB8">
+                              <Label fx:id="unidadesRegistradas" styleClass="kpi-number" text="0" textFill="#1E6FB8">
                                  <font>
-                                    <Font name="System Bold" size="24.0" />
+                                    <Font name="System Bold" size="32.0" />
                                  </font>
                               </Label>
                            </children>
                         </VBox>
-                        <VBox alignment="CENTER" maxWidth="Infinity" minHeight="110.0" spacing="8.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
+                        <VBox alignment="CENTER" maxWidth="Infinity" minHeight="125.0" spacing="10.0" styleClass="containerInfo" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="Categoría más solicitada">
+                              <Label styleClass="kpi-label" text="Categoría más solicitada">
                                  <font>
-                                    <Font name="System Bold" size="14.0" />
+                                    <Font name="System Bold" size="14.5" />
                                  </font>
                               </Label>
-                              <Label fx:id="categoriaSolicitada" text="Ninguna" textFill="#10b981">
+                              <Label fx:id="categoriaSolicitada" styleClass="kpi-number" text="Ninguna" textFill="#10b981">
                                  <font>
-                                    <Font name="System Bold" size="22.0" />
+                                    <Font name="System Bold" size="28.0" />
                                  </font>
                               </Label>
                            </children>

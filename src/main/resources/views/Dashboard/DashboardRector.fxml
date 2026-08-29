@@ -15,11 +15,11 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="contenedorPrincipal" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Dashboard.DashboardRectorController">
+<AnchorPane fx:id="contenedorPrincipal" stylesheets="@../../styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Dashboard.DashboardRectorController">
    <children>
       <BorderPane fx:id="contenedor" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
-             <HBox alignment="CENTER_LEFT" minHeight="70.0" prefHeight="70.0" spacing="15.0" styleClass="header">
+             <HBox alignment="CENTER_LEFT" minHeight="74.0" prefHeight="74.0" spacing="15.0" styleClass="header">
                  <children>
                      <Button focusTraversable="false" mnemonicParsing="false" onAction="#clickSalir" styleClass="btn-header-action" text="Cerrar sesión">
                          <graphic>
@@ -81,7 +81,7 @@
              </HBox>
          </top>
          <left>
-            <VBox alignment="TOP_CENTER" maxWidth="295.0" minWidth="275.0" prefWidth="280.0" spacing="12.0" styleClass="sidebar">
+            <VBox alignment="TOP_CENTER" maxWidth="300.0" minWidth="280.0" prefWidth="285.0" spacing="12.0" styleClass="sidebar">
                <children>
                   <VBox alignment="CENTER" spacing="8.0">
                      <children>
@@ -90,9 +90,9 @@
                               <Image url="@../../images/rectoria.png" />
                            </image>
                         </ImageView>
-                        <Label text="Rectoría" textFill="WHITE">
+                        <Label styleClass="sidebar-role-title" text="Rectoría" textFill="WHITE">
                            <font>
-                              <Font name="System Bold" size="17.0" />
+                              <Font name="System Bold" size="19.0" />
                            </font>
                         </Label>
                      </children>
