@@ -47,12 +47,6 @@ public class DevolucionController {
     private Label lbUnidadesPrestadas;
 
     @FXML
-    private TableColumn<Prestamo, String> tbDocente;
-
-    @FXML
-    private TableColumn<Prestamo, String> tbMotivo;
-
-    @FXML
     private TableView<Prestamo> tabla;
 
     @FXML
@@ -75,6 +69,11 @@ public class DevolucionController {
     @FXML
     void clickDevolucion(ActionEvent event) {
         registrarDevolucion();
+    }
+
+    @FXML
+    void clickCancelar(ActionEvent event) {
+        cerrar();
     }
 
     @FXML
@@ -133,16 +132,6 @@ public class DevolucionController {
         tbGrado.setCellValueFactory(data ->
                 new SimpleStringProperty(Integer.toString(data.getValue().getGrado()))
         );
-
-        tbMotivo.setCellValueFactory(data -> {
-            var motivo = data.getValue().getMotivoPrestamo();
-            return new SimpleStringProperty(motivo != null ? motivo.getNombre() : "");
-        });
-
-        tbDocente.setCellValueFactory(data -> {
-            var docente = data.getValue().getDocente();
-            return new SimpleStringProperty(docente != null ? docente.getNombreCompleto() : "");
-        });
 
         tabla.getColumns().forEach(col -> col.setReorderable(false));
     }

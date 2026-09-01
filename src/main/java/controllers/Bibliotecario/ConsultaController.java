@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import model.Libro;
 import model.Prestamo;
 import utils.Alertas;
@@ -92,16 +93,18 @@ public class ConsultaController {
             PrestamoController controller = loader.getController();
             controller.setLibro(libroSeleccionado);
 
-            // 🔹 Diálogo
-            Dialog<Void> dialog = new Dialog<>();
-            dialog.setTitle("Registrar préstamo");
-            dialog.getDialogPane().setContent(root);
-            aplicarEstilosDialogo(dialog);
-
-            // 🔹 Botón cerrar (el formulario maneja registrar/cancelar)
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-
-            dialog.showAndWait();
+            // 🔹 Crear un Stage real en lugar de un Dialog para evitar botones duplicados
+            Stage modal = new Stage();
+            modal.setTitle("Registrar préstamo");
+            modal.initModality(javafx.stage.Modality.WINDOW_MODAL);
+            modal.initOwner(txtBuscarLibro.getScene().getWindow());
+            
+            javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            scene.getStylesheets().add(java.util.Objects.requireNonNull(getClass().getResource("/styles/style.css")).toExternalForm());
+            modal.setScene(scene);
+            modal.setResizable(false);
+            
+            modal.showAndWait();
 
         } catch (Exception e) {
             Alertas.mostrarError("ERROR: " + e.getMessage());
@@ -136,16 +139,18 @@ public class ConsultaController {
             controller.setLibro(libroSeleccionado);
             controller.setPrestamos(prestamosActivos);
 
-            // 🔹 Diálogo
-            Dialog<Void> dialog = new Dialog<>();
-            dialog.setTitle("Registrar devolución");
-            dialog.getDialogPane().setContent(root);
-            aplicarEstilosDialogo(dialog);
-
-            // 🔹 Botón cerrar (el formulario maneja registrar/cancelar)
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-
-            dialog.showAndWait();
+            // 🔹 Crear un Stage real en lugar de un Dialog para evitar botones duplicados
+            Stage modal = new Stage();
+            modal.setTitle("Registrar devolución");
+            modal.initModality(javafx.stage.Modality.WINDOW_MODAL);
+            modal.initOwner(txtBuscarLibro.getScene().getWindow());
+            
+            javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            scene.getStylesheets().add(java.util.Objects.requireNonNull(getClass().getResource("/styles/style.css")).toExternalForm());
+            modal.setScene(scene);
+            modal.setResizable(false);
+            
+            modal.showAndWait();
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error al cargar la vista lateral", e);
