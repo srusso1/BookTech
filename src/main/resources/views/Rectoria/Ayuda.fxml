@@ -59,7 +59,7 @@
                                         <Font name="System Bold" size="16.0" />
                                     </font>
                                 </Label>
-                                <Label styleClass="descripcion-seccion" text="• Realiza copias de seguridad periódicas de la base de datos local ubicada en AppData.\n• Aplica actualizaciones fuera del horario de atención para evitar interrupciones en los préstamos.\n• Si el entorno no cuenta con conexión a internet, utiliza el instalador independiente (Setup.exe)." wrapText="true">
+                                <Label styleClass="descripcion-seccion" text="• Realiza copias de seguridad periódicas de la base de datos local ubicada en AppData.&#10;• Aplica actualizaciones fuera del horario de atención para evitar interrupciones en los préstamos.&#10;• Si el entorno no cuenta con conexión a internet, utiliza el instalador independiente (Setup.exe)." wrapText="true">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
@@ -72,4 +72,3 @@
         </ScrollPane>
     </children>
 </AnchorPane>
-
