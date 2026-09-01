@@ -78,7 +78,7 @@
       <artifactId>gson</artifactId>
       <version>2.11.0</version>
     </dependency>
-    <!-- iText para generación de PDFs -->
+    <!-- iText para generaciÃ³n de PDFs -->
     <dependency>
       <groupId>com.itextpdf</groupId>
       <artifactId>kernel</artifactId>
@@ -94,13 +94,13 @@
       <artifactId>io</artifactId>
       <version>${itext.version}</version>
     </dependency>
-    <!-- Hashing seguro de contraseñas con BCrypt -->
+    <!-- Hashing seguro de contraseÃ±as con BCrypt -->
     <dependency>
       <groupId>org.mindrot</groupId>
       <artifactId>jbcrypt</artifactId>
       <version>0.4</version>
     </dependency>
-    <!-- Apache POI para generación profesional de hojas de cálculo Excel (.xlsx) -->
+    <!-- Apache POI para generaciÃ³n profesional de hojas de cÃ¡lculo Excel (.xlsx) -->
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
@@ -159,6 +159,9 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.5.2</version>
         <configuration>
+          <systemPropertyVariables>
+            <booktech.env>test</booktech.env>
+          </systemPropertyVariables>
           <argLine>
             -Dtestfx.robot=glass
             -Dtestfx.headless=false
