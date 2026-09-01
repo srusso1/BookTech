@@ -32,29 +32,29 @@ public class DashboardRectorNavigationTest {
     }
 
     @Test
-    @DisplayName("Verifica navegaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n entre los mÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³dulos del Dashboard de RectorÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­a")
+    @DisplayName("Verifica navegación entre los módulos del Dashboard de Rectoría")
     void testNavegacionDashboardRector(FxRobot robot) {
         FxAssert.verifyThat("#contenedor", NodeMatchers.isVisible());
         BorderPane contenedor = robot.lookup("#contenedor").queryAs(BorderPane.class);
         assertThat(contenedor.getCenter()).isNotNull();
 
-        // NavegaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n a Inventario (#btnConsulta)
+        // Navegación a Inventario (#btnConsulta)
         robot.clickOn("#btnConsulta");
         assertThat(contenedor.getCenter()).isNotNull();
 
-        // NavegaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n a EstadÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­sticas (#btnPrestamos)
+        // Navegación a Estadísticas (#btnPrestamos)
         robot.clickOn("#btnPrestamos");
         assertThat(contenedor.getCenter()).isNotNull();
 
-        // NavegaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n a Informes (#btnInformes)
+        // Navegación a Informes (#btnInformes)
         robot.clickOn("#btnInformes");
         assertThat(contenedor.getCenter()).isNotNull();
 
-        // NavegaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n a ConfiguraciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n (#btnConfig)
+        // Navegación a Configuración (#btnConfig)
         robot.clickOn("#btnConfig");
         assertThat(contenedor.getCenter()).isNotNull();
 
-        // NavegaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n a Ayuda (#btnAyuda)
+        // Navegación a Ayuda (#btnAyuda)
         robot.clickOn("#btnAyuda");
         assertThat(contenedor.getCenter()).isNotNull();
 

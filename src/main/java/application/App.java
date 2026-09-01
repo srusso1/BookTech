@@ -25,13 +25,13 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        // ConfiguraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n global del tema moderno AtlantaFX PrimerLight
+        // Configuración global del tema moderno AtlantaFX PrimerLight
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
 
-        // Iniciamos la bÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºsqueda de actualizaciones una vez que el toolkit de JavaFX estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ listo.
+        // Iniciamos la búsqueda de actualizaciones una vez que el toolkit de JavaFX está listo.
         new Thread(() -> {
             try {
-                // PequeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â±a espera para asegurar que la ventana principal sea visible antes de la alerta
+                // Pequeña espera para asegurar que la ventana principal sea visible antes de la alerta
                 Thread.sleep(1000);
                 UpdateService.notificarActualizacionSiExiste();
             } catch (Exception e) {

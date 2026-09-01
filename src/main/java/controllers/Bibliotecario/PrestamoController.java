@@ -55,10 +55,10 @@ public class PrestamoController {
     private final DocentesDAO docentesDAO;
     List<MotivoPrestamo> motivosPrestamos = new ArrayList<>();
     List<Docente> listaDocentes = new ArrayList<>();
-    // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¹ mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©todo para recibir el libro
+    // íƒÆ’í‚Â°íƒâ€¦í‚Â¸íƒÂ¢í¢â€šÂ¬í‚Âíƒâ€ší‚Â¹ método para recibir el libro
     public void setLibro(Libro libro) {
         this.libro = libro;
-        lblLibro.setText(libro.getTitulo() + " ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â " + libro.getAutor());
+        lblLibro.setText(libro.getTitulo() + " íƒÆ’í‚Â¢íƒÂ¢í¢â‚¬Å¡í‚Â¬íƒÂ¢í¢â€šÂ¬í‚Â " + libro.getAutor());
     }
 
     @FXML
@@ -87,7 +87,7 @@ public class PrestamoController {
         motivosPrestamos = motivosPrestamoDAO.obtenerMotivosPrestamoActivos();
         comboMotivosPrestamos.getItems().addAll(motivosPrestamos);
         if (motivosPrestamos.isEmpty()) {
-            Alertas.mostrarError("No hay motivos de prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©stamo activos. Solicite activarlos en ConfiguraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n.");
+            Alertas.mostrarError("No hay motivos de préstamo activos. Solicite activarlos en Configuración.");
         }
 
         listaDocentes = docentesDAO.obtenerDocentes();
@@ -120,7 +120,7 @@ public class PrestamoController {
 
 
         if(dpFechaDevolucion.getValue() == null){
-            Alertas.mostrarError("Es necesario establecer una fecha lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­mite de devoluciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n");
+            Alertas.mostrarError("Es necesario establecer una fecha límite de devolución");
             return;
         }
 

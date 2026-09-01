@@ -111,7 +111,7 @@ public class EstudiantesDAO {
                 }
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener estudiante por identificaciÃ³n: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener estudiante por identificación: " + e.getMessage(), e);
         }
         return null;
     }
@@ -126,7 +126,7 @@ public class EstudiantesDAO {
                 return rs.next() && rs.getInt("total") > 0;
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al validar identificaciÃ³n: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al validar identificación: " + e.getMessage(), e);
         }
         return false;
     }
@@ -191,7 +191,7 @@ public class EstudiantesDAO {
             conn = ConexionSQLite.conectar();
             if (conn == null) return false;
             
-            // Iniciar transacciÃ³n
+            // Iniciar transacción
             conn.setAutoCommit(false);
             
             try (PreparedStatement psInsert = conn.prepareStatement(sqlInsert);
@@ -228,7 +228,7 @@ public class EstudiantesDAO {
                     psUpdate.executeBatch();
                 }
 
-                // Confirmar transacciÃ³n
+                // Confirmar transacción
                 conn.commit();
                 return true;
             }
@@ -247,7 +247,7 @@ public class EstudiantesDAO {
                     conn.setAutoCommit(true);
                     conn.close();
                 } catch (SQLException ex) {
-                    LOGGER.log(Level.SEVERE, "Error al cerrar conexiÃ³n: " + ex.getMessage(), ex);
+                    LOGGER.log(Level.SEVERE, "Error al cerrar conexión: " + ex.getMessage(), ex);
                 }
             }
         }

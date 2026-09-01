@@ -18,7 +18,7 @@ public class AlertasVencimientoTest {
     private final PrestamosDAO prestamosDAO = new PrestamosDAO();
 
     @Test
-    @DisplayName("Verifica la detecciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n automÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tica de alertas: Vencido, Por vencer hoy y PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ximo a vencer")
+    @DisplayName("Verifica la detección automática de alertas: Vencido, Por vencer hoy y Próximo a vencer")
     void testAlertasVencimiento() {
         int idLibro = 0;
         int idEstudiante = 0;
@@ -59,13 +59,13 @@ public class AlertasVencimientoTest {
                 }
             }
 
-            // 2. Insertar 3 prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©stamos de prueba
+            // 2. Insertar 3 préstamos de prueba
             LocalDate hoy = LocalDate.now();
             String fVencida = hoy.minusDays(4).toString();
             String fHoy = hoy.toString();
             String fProxima = hoy.plusDays(1).toString();
 
-            // PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©stamo vencido
+            // Préstamo vencido
             try (PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO prestamos (id_libro, id_estudiante, id_motivo, id_docente, fecha_prestamo, fecha_limite, estado) VALUES (?, ?, 1, 1, ?, ?, 0)",
                     Statement.RETURN_GENERATED_KEYS)) {
@@ -79,7 +79,7 @@ public class AlertasVencimientoTest {
                 }
             }
 
-            // PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©stamo que vence hoy
+            // Préstamo que vence hoy
             try (PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO prestamos (id_libro, id_estudiante, id_motivo, id_docente, fecha_prestamo, fecha_limite, estado) VALUES (?, ?, 1, 1, ?, ?, 0)",
                     Statement.RETURN_GENERATED_KEYS)) {
@@ -93,7 +93,7 @@ public class AlertasVencimientoTest {
                 }
             }
 
-            // PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©stamo prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ximo a vencer
+            // Préstamo próximo a vencer
             try (PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO prestamos (id_libro, id_estudiante, id_motivo, id_docente, fecha_prestamo, fecha_limite, estado) VALUES (?, ?, 1, 1, ?, ?, 0)",
                     Statement.RETURN_GENERATED_KEYS)) {

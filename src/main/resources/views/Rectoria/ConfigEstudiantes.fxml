@@ -63,7 +63,7 @@
                         <VBox spacing="3.0"><children><Label styleClass="label-filtro" text="Identificacion:" /><TextField fx:id="txtIdentificacion" promptText="Numero de documento" /></children></VBox>
                         <HBox spacing="10.0"><children>
                             <VBox spacing="3.0" HBox.hgrow="ALWAYS"><children><Label styleClass="label-filtro" text="Grado:" /><TextField fx:id="txtGrado" promptText="Ej: 11" /></children></VBox>
-                            <VBox spacing="3.0" HBox.hgrow="ALWAYS"><children><Label styleClass="label-filtro" text="Genero:" /><TextField fx:id="txtGenero" promptText="M / F" /></children></VBox>
+                            <VBox spacing="3.0" HBox.hgrow="ALWAYS"><children><Label styleClass="label-filtro" text="Genero:" /><TextField fx:id="txtGenero" promptText="Masculino / Femenino" /></children></VBox>
                         </children></HBox>
                         <HBox spacing="10.0"><children>
                             <VBox spacing="3.0" HBox.hgrow="ALWAYS"><children><Label styleClass="label-filtro" text="Primer Nombre:" /><TextField fx:id="txtNombre1" /></children></VBox>

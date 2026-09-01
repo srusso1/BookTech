@@ -24,10 +24,10 @@ public class DevolucionController {
     private final PrestamosDAO prestamosDAO;
     private final LibrosDAO librosDAO;
 
-    // Ã°Å¸â€Â¹ mÃƒÂ©todo para recibir el libro
+    // í°Å¸â€Â¹ método para recibir el libro
     public void setLibro(Libro libro) {
         this.libro = libro;
-        lblLibro.setText(libro.getTitulo() + " Ã¢â‚¬â€ " + libro.getAutor());
+        lblLibro.setText(libro.getTitulo() + " í¢â‚¬â€ " + libro.getAutor());
     }
 
     public void setPrestamos(List<Prestamo> prestamos) {
@@ -93,7 +93,7 @@ public class DevolucionController {
 
     private void registrarDevolucion(){
         if(tabla.getSelectionModel().getSelectedItem() == null){
-            Alertas.mostrarError("Seleccione un prestamo para registrar su devoluciÃƒÂ³n");
+            Alertas.mostrarError("Seleccione un prestamo para registrar su devolución");
             return;
         }
 
@@ -103,13 +103,13 @@ public class DevolucionController {
         if(prestamoService.registrarDevolucion(prestamoSeleccionado, libro.getId())){
             if (Fechas.esDespues(Fechas.fechaActualISO(), prestamoSeleccionado.getFecha_limite())) {
                 String fechaLimiteUI = Fechas.convertirAUI(prestamoSeleccionado.getFecha_limite());
-                Alertas.mostrarInfo("Se registro la devoluciÃƒÂ³n correctamente. Sin embargo, fue devuelto fuera de tiempo, la fecha lÃƒÂ­mite era hasta: " + (fechaLimiteUI != null ? fechaLimiteUI : prestamoSeleccionado.getFecha_limite()));
+                Alertas.mostrarInfo("Se registro la devolución correctamente. Sin embargo, fue devuelto fuera de tiempo, la fecha límite era hasta: " + (fechaLimiteUI != null ? fechaLimiteUI : prestamoSeleccionado.getFecha_limite()));
             }else{
-                Alertas.mostrarExito("Se registro correctamente la devoluciÃƒÂ³n y fue dentro de la fecha establecida.");
+                Alertas.mostrarExito("Se registro correctamente la devolución y fue dentro de la fecha establecida.");
             }
             cerrar();
         } else {
-            Alertas.mostrarError("OcurriÃƒÂ³ un error al registrar la devoluciÃƒÂ³n.");
+            Alertas.mostrarError("Ocurrió un error al registrar la devolución.");
         }
     }
 

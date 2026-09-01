@@ -59,7 +59,7 @@ public class PlataformaVirtualController {
         comboGrados.getItems().addAll(grados);
         comboMotivoUso.getItems().setAll(motivos);
         if (motivos.isEmpty()) {
-            Alertas.mostrarError("No hay motivos de plataforma activos. Solicite activarlos en ConfiguraciÃƒÂ³n.");
+            Alertas.mostrarError("No hay motivos de plataforma activos. Solicite activarlos en Configuración.");
         }
         txtDocente.setContextMenu(sugerenciasDocente);
 
@@ -99,7 +99,7 @@ public class PlataformaVirtualController {
         spinnerFin.setValueFactory(factoryFin);
         spinnerFin.setEditable(false);
 
-        // Listeners para calcular diferencia automÃƒÂ¡ticamente
+        // Listeners para calcular diferencia automíƒ¡ticamente
         spinnerInicio.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (obs != null && newVal != null && !newVal.equals(oldVal)) {
                 actualizarDiferencia();

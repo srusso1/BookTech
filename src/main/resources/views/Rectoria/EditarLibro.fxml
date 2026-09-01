@@ -23,7 +23,7 @@
          <children>
             <HBox spacing="10.0">
                <children>
-                  <Label text="UbicaciÃƒÂ³n:">
+                  <Label text="Ubicación:">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
@@ -37,7 +37,7 @@
             </HBox>
             <HBox spacing="10.0">
                <children>
-                  <Label text="CategorÃƒÂ­a:">
+                  <Label text="Categoría:">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
@@ -96,7 +96,7 @@
             <Insets bottom="5.0" top="5.0" />
          </padding>
       </VBox>
-      <ComboBox fx:id="comboBoxModificar" maxWidth="Infinity" prefHeight="45.0" promptText="Ã‚Â¿QuÃƒÂ© desea modificar?" styleClass="combo-filtro" />
+      <ComboBox fx:id="comboBoxModificar" maxWidth="Infinity" prefHeight="45.0" promptText="¿Qué desea modificar?" styleClass="combo-filtro" />
       <TextField fx:id="txtEditar" maxWidth="Infinity" prefHeight="45.0" promptText="Nuevo valor..." styleClass="combo-filtro">
          <font>
             <Font size="14.0" />

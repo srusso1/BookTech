@@ -93,7 +93,7 @@ public class DashboardBibliotecarioController {
     void clickNotificaciones(ActionEvent event) {
         List<AlertaPrestamo> alertas = prestamosDAO.obtenerAlertasVencimiento();
         if (alertas.isEmpty()) {
-            Alertas.mostrarInfo("No hay prÃ©stamos vencidos ni alertas pendientes en este momento.");
+            Alertas.mostrarInfo("No hay préstamos vencidos ni alertas pendientes en este momento.");
             return;
         }
 
@@ -107,7 +107,7 @@ public class DashboardBibliotecarioController {
 
     @FXML
     void clickSalir(ActionEvent event) {
-        if (Alertas.mostrarConfirmacion("Â¿EstÃ¡s seguro que deseas cerrar sesiÃ³n?")) {
+        if (Alertas.mostrarConfirmacion("¿Estás seguro que deseas cerrar sesión?")) {
             utils.SessionManager.getInstance().logout();
             ManagerView.cargarVista(contenedorPrincipal, Paths.LOGIN);
         }

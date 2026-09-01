@@ -87,7 +87,7 @@ public class RegistrarLibroController {
         }
 
         if(!Validaciones.validarCampoNumerico(txtUnidades)){
-            Alertas.mostrarError("ÃƒÅ¡nicamente se permiten valores numÃƒÂ©ricos en el campo de unidades");
+            Alertas.mostrarError("Únicamente se permiten valores numéricos en el campo de unidades");
             return;
         }
 

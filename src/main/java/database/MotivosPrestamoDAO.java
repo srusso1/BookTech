@@ -36,7 +36,7 @@ public class MotivosPrestamoDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener motivos de prÃ©stamo activos: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener motivos de préstamo activos: " + e.getMessage(), e);
         }
 
         return motivos;
@@ -59,7 +59,7 @@ public class MotivosPrestamoDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener todos los motivos de prÃ©stamo: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener todos los motivos de préstamo: " + e.getMessage(), e);
         }
 
         return motivos;
@@ -73,7 +73,7 @@ public class MotivosPrestamoDAO {
             ps.setString(1, nombreMotivo.trim().toUpperCase());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al registrar motivo de prÃ©stamo: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al registrar motivo de préstamo: " + e.getMessage(), e);
         }
         return false;
     }
@@ -87,7 +87,7 @@ public class MotivosPrestamoDAO {
             ps.setInt(2, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al actualizar motivo de prÃ©stamo: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al actualizar motivo de préstamo: " + e.getMessage(), e);
         }
         return false;
     }
@@ -101,7 +101,7 @@ public class MotivosPrestamoDAO {
             ps.setInt(2, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al actualizar estado del motivo de prÃ©stamo: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al actualizar estado del motivo de préstamo: " + e.getMessage(), e);
         }
         return false;
     }

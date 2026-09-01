@@ -32,7 +32,7 @@ public class DashboardNavigationTest {
     }
 
     @Test
-    @DisplayName("Verifica navegaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n entre los mÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³dulos del Dashboard Bibliotecario")
+    @DisplayName("Verifica navegación entre los módulos del Dashboard Bibliotecario")
     void testNavegacionDashboardBibliotecario(FxRobot robot) {
         FxAssert.verifyThat("#contenedor", NodeMatchers.isVisible());
         BorderPane contenedor = robot.lookup("#contenedor").queryAs(BorderPane.class);
@@ -42,7 +42,7 @@ public class DashboardNavigationTest {
         robot.clickOn("#btnConsulta");
         assertThat(contenedor.getCenter()).isNotNull();
 
-        // Clic en PrÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©stamos Activos
+        // Clic en Préstamos Activos
         robot.clickOn("#btnPrestamos");
         assertThat(contenedor.getCenter()).isNotNull();
 

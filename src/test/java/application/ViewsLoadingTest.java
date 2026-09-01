@@ -32,7 +32,7 @@ public class ViewsLoadingTest {
     }
 
     @Test
-    @DisplayName("Verifica que todas las vistas FXML del sistema carguen sin errores de importaciÃ³n o tipo")
+    @DisplayName("Verifica que todas las vistas FXML del sistema carguen sin errores de importación o tipo")
     void testAllViewsLoadWithoutError() {
         String[] allViews = {
             Paths.LOGIN,

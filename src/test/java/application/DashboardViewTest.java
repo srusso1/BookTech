@@ -29,7 +29,7 @@ public class DashboardViewTest {
     }
 
     @Test
-    @DisplayName("Verifica que los botones del menÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº lateral y el contenedor central del Dashboard carguen correctamente")
+    @DisplayName("Verifica que los botones del menú lateral y el contenedor central del Dashboard carguen correctamente")
     void testDashboardElementos(FxRobot robot) {
         FxAssert.verifyThat("#btnInicio", NodeMatchers.isVisible());
         FxAssert.verifyThat("#btnConsulta", NodeMatchers.isVisible());

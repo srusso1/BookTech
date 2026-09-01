@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DAOsTest {
 
     @Test
-    @DisplayName("Verifica que ConexionSQLite conecte con WAL mode y sin singleton estÃ¡tico bloqueante")
+    @DisplayName("Verifica que ConexionSQLite conecte con WAL mode y sin singleton estático bloqueante")
     void testConexionSQLite() {
         try (Connection conn = ConexionSQLite.conectar()) {
             assertThat(conn).isNotNull();
@@ -43,12 +43,12 @@ public class DAOsTest {
         List<Docente> docentes = docentesDAO.obtenerDocentes();
         assertThat(docentes).isNotNull();
 
-        // Prueba de inserciÃ³n en minÃºsculas/mixto
+        // Prueba de inserción en minúsculas/mixto
         Docente prueba = new Docente(0, "carlos", "alberto", "gomez", "perez");
         boolean insertado = docentesDAO.insertarDocente(prueba);
         assertThat(insertado).isTrue();
 
-        // Buscar el docente insertado y verificar mayÃºsculas
+        // Buscar el docente insertado y verificar mayúsculas
         List<Docente> listaActualizada = docentesDAO.obtenerDocentes();
         Docente encontrado = listaActualizada.stream()
                 .filter(d -> "CARLOS".equals(d.getNombre_1()) && "GOMEZ".equals(d.getApellido_1()))
@@ -57,7 +57,7 @@ public class DAOsTest {
         assertThat(encontrado.getNombre_2()).isEqualTo("ALBERTO");
         assertThat(encontrado.getApellido_2()).isEqualTo("PEREZ");
 
-        // Prueba de actualizaciÃ³n y verificaciÃ³n de mayÃºsculas
+        // Prueba de actualización y verificación de mayúsculas
         encontrado.setNombre_1("carlos modificado");
         boolean actualizado = docentesDAO.actualizarDocente(encontrado);
         assertThat(actualizado).isTrue();
@@ -69,7 +69,7 @@ public class DAOsTest {
         assertThat(actualizadoEncontrado).isNotNull();
         assertThat(actualizadoEncontrado.getNombre_1()).isEqualTo("CARLOS MODIFICADO");
 
-        // Prueba de eliminaciÃ³n
+        // Prueba de eliminación
         boolean eliminado = docentesDAO.eliminarDocente(encontrado.getId());
         assertThat(eliminado).isTrue();
 
