@@ -20,6 +20,8 @@ public class ConexionSQLite {
     private static final Path DB_PATH = DB_DIR.resolve("BookTechDB.db");
     private static final String URL = "jdbc:sqlite:" + DB_PATH.toString();
 
+    private static boolean migracionesAplicadas = false;
+
     public static Connection conectar() {
         try {
             inicializarDbSiNoExiste();
@@ -29,10 +31,34 @@ public class ConexionSQLite {
                 stmt.execute("PRAGMA journal_mode = WAL;");
                 stmt.execute("PRAGMA busy_timeout = 5000;");
             }
+            if (!migracionesAplicadas) {
+                ejecutarMigraciones(conn);
+                migracionesAplicadas = true;
+            }
             return conn;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error al conectar a la base de datos: " + e.getMessage(), e);
             return null;
+        }
+    }
+
+    private static synchronized void ejecutarMigraciones(Connection conn) {
+        try (Statement stmt = conn.createStatement()) {
+            // Migración para añadir grado_historico
+            try {
+                stmt.execute("ALTER TABLE prestamos ADD COLUMN grado_historico INTEGER;");
+                LOGGER.info("Columna grado_historico añadida a la tabla prestamos.");
+                // Backfill inicial usando los datos existentes
+                stmt.executeUpdate("UPDATE prestamos SET grado_historico = (SELECT grado FROM estudiantes WHERE estudiantes.id = prestamos.id_estudiante) WHERE grado_historico IS NULL;");
+                LOGGER.info("Datos de grado_historico migrados exitosamente.");
+            } catch (SQLException e) {
+                // SQLite lanza excepcion si la columna ya existe, lo ignoramos
+                if (!e.getMessage().contains("duplicate column name")) {
+                    LOGGER.log(Level.WARNING, "Advertencia en migración (puede ser normal si ya existe): " + e.getMessage());
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error crítico ejecutando migraciones: " + e.getMessage(), e);
         }
     }
 

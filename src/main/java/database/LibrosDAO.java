@@ -45,9 +45,17 @@ public class LibrosDAO {
     }
 
     public boolean disminuirUnidadLibro(int idLibro) {
+        try (Connection conn = ConexionSQLite.conectar()) {
+            return disminuirUnidadLibro(conn, idLibro);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al conectar: " + e.getMessage(), e);
+            return false;
+        }
+    }
+
+    public boolean disminuirUnidadLibro(Connection conn, int idLibro) {
         String sql = "UPDATE libros SET unidades = unidades - 1 WHERE id = ?";
-        try (Connection conn = ConexionSQLite.conectar();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, idLibro);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -57,9 +65,17 @@ public class LibrosDAO {
     }
 
     public boolean aumentarUnidadLibro(int idLibro) {
+        try (Connection conn = ConexionSQLite.conectar()) {
+            return aumentarUnidadLibro(conn, idLibro);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al conectar: " + e.getMessage(), e);
+            return false;
+        }
+    }
+
+    public boolean aumentarUnidadLibro(Connection conn, int idLibro) {
         String sql = "UPDATE libros SET unidades = unidades + 1 WHERE id = ?";
-        try (Connection conn = ConexionSQLite.conectar();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, idLibro);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -74,9 +90,9 @@ public class LibrosDAO {
             SELECT
                 (SELECT COUNT(*) FROM libros) AS libros_registrados,
                 (SELECT SUM(unidades) FROM libros) AS unidades_registradas,
-                (SELECT COUNT(*) FROM prestamos WHERE estado = 0) AS prestamos_activos,
+                (SELECT COUNT(*) FROM prestamos WHERE estado != %d) AS prestamos_activos,
                 (SELECT COUNT(*) FROM prestamos) AS prestamos_realizados
-        """;
+        """.formatted(model.enums.EstadoPrestamo.DEVUELTO.getId());
         try (Connection con = ConexionSQLite.conectar();
              PreparedStatement ps = con.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
