@@ -81,7 +81,14 @@ public class DashboardRectorController {
 
     @FXML
     void initialize() {
+        if (!utils.SessionManager.getInstance().isUserLoggedIn() || utils.SessionManager.getInstance().getUsuarioActual().getRol() != model.enums.RolUsuario.RECTOR.getId()) {
+            ManagerView.cargarVista(contenedorPrincipal, Paths.LOGIN);
+            return;
+        }
         ManagerView.cargarCentro(contenedor, Paths.INICIO_RECTORIA);
+        
+        utils.DashboardNotifier.setActualizarNotificacionesCallback(this::actualizarAlertas);
+        
         actualizarAlertas();
     }
 
@@ -116,6 +123,7 @@ public class DashboardRectorController {
     @FXML
     void clickSalir(ActionEvent event) {
         if (Alertas.mostrarConfirmacion("¿Estás seguro que deseas cerrar sesión?")) {
+            utils.SessionManager.getInstance().logout();
             ManagerView.cargarVista(contenedorPrincipal, Paths.LOGIN);
         }
     }
