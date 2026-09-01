@@ -14,6 +14,8 @@ import model.Estudiante;
 import model.MotivoPlataforma;
 import model.MotivoPrestamo;
 import utils.Alertas;
+import services.EstudianteService;
+import javafx.concurrent.Task;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -415,39 +417,51 @@ public class ConfiguracionController {
     }
 
     private void aplicarCambiosCsvPendientes() {
-        int insertados = 0;
-        int actualizados = 0;
-        int sinCambios = 0;
-        int errores = 0;
+        btnGuardarCambiosEstudiante.setDisable(true);
+        btnDescartarCsv.setDisable(true);
+        lblResumenCsv.setText("Guardando... por favor espere.");
 
-        for (Estudiante estudiante : estudiantesPendientesCsv) {
-            try {
-                int resultado = estudiantesDAO.guardarOModificarPorIdentificacion(estudiante);
-                if (resultado == EstudiantesDAO.RESULTADO_INSERTADO) {
-                    insertados++;
-                } else if (resultado == EstudiantesDAO.RESULTADO_ACTUALIZADO) {
-                    actualizados++;
-                } else {
-                    sinCambios++;
-                }
-            } catch (Exception e) {
-                errores++;
+        Task<EstudianteService.CsvResult> tarea = new Task<>() {
+            @Override
+            protected EstudianteService.CsvResult call() throws Exception {
+                EstudianteService service = new EstudianteService();
+                return service.procesarYGuardarLote(estudiantesPendientesCsv);
             }
-        }
+        };
 
-        hayCsvPendiente = false;
-        estudiantesPendientesCsv.clear();
-        actualizarEstadoBotonGuardado();
-        txtBuscarEstudiante.clear();
-        cbFiltroGrado.setValue("Todos");
-        cargarEstudiantes();
+        tarea.setOnSucceeded(e -> {
+            btnGuardarCambiosEstudiante.setDisable(false);
+            btnDescartarCsv.setDisable(false);
+            EstudianteService.CsvResult res = tarea.getValue();
+            hayCsvPendiente = false;
+            estudiantesPendientesCsv.clear();
+            actualizarEstadoBotonGuardado();
+            txtBuscarEstudiante.clear();
+            cbFiltroGrado.setValue("Todos");
+            cargarEstudiantes();
 
-        String resumen = "CSV guardado. Insertados: " + insertados
-                + ", Actualizados: " + actualizados
-                + ", Sin cambios: " + sinCambios
-                + ", Errores: " + errores;
-        lblResumenCsv.setText(resumen);
-        Alertas.mostrarExito(resumen);
+            if (res.exito) {
+                String resumen = "CSV guardado. Insertados: " + res.insertados
+                        + ", Actualizados: " + res.actualizados
+                        + ", Sin cambios: " + res.sinCambios
+                        + ", Errores: " + res.errores;
+                lblResumenCsv.setText(resumen);
+                Alertas.mostrarExito(resumen);
+            } else {
+                lblResumenCsv.setText("Error al guardar CSV.");
+                Alertas.mostrarError("Ocurrió un error grave al guardar el CSV. Se canceló la operación (Rollback).");
+            }
+        });
+
+        tarea.setOnFailed(e -> {
+            btnGuardarCambiosEstudiante.setDisable(false);
+            btnDescartarCsv.setDisable(false);
+            actualizarEstadoBotonGuardado();
+            lblResumenCsv.setText("Fallo crítico en el proceso.");
+            Alertas.mostrarError("Error crítico al procesar el lote: " + tarea.getException().getMessage());
+        });
+
+        new Thread(tarea).start();
     }
 
     @FXML
@@ -576,12 +590,15 @@ public class ConfiguracionController {
     }
 
     private void configurarTablaDocentes() {
-        if (tblDocentes == null) return;
+        if (tblDocentes == null)
+            return;
         colDocId.setCellValueFactory(cd -> Bindings.createStringBinding(() -> String.valueOf(cd.getValue().getId())));
         colDocNombre1.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getNombre_1));
-        colDocNombre2.setCellValueFactory(cd -> Bindings.createStringBinding(() -> valorSeguro(cd.getValue().getNombre_2())));
+        colDocNombre2.setCellValueFactory(
+                cd -> Bindings.createStringBinding(() -> valorSeguro(cd.getValue().getNombre_2())));
         colDocApellido1.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getApellido_1));
-        colDocApellido2.setCellValueFactory(cd -> Bindings.createStringBinding(() -> valorSeguro(cd.getValue().getApellido_2())));
+        colDocApellido2.setCellValueFactory(
+                cd -> Bindings.createStringBinding(() -> valorSeguro(cd.getValue().getApellido_2())));
 
         tblDocentes.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, nuevo) -> {
             docenteSeleccionado = nuevo;
@@ -593,10 +610,14 @@ public class ConfiguracionController {
             txtDocNombre2.setText(valorSeguro(nuevo.getNombre_2()));
             txtDocApellido1.setText(valorSeguro(nuevo.getApellido_1()));
             txtDocApellido2.setText(valorSeguro(nuevo.getApellido_2()));
-            if (lblTituloFormDocente != null) lblTituloFormDocente.setText("Editar Docente #" + nuevo.getId());
-            if (lblEstadoEdicionDocente != null) lblEstadoEdicionDocente.setText("Modifique los datos y presione Actualizar.");
-            if (btnGuardarDocente != null) btnGuardarDocente.setText("Actualizar docente");
-            if (btnEliminarDocente != null) btnEliminarDocente.setDisable(false);
+            if (lblTituloFormDocente != null)
+                lblTituloFormDocente.setText("Editar Docente #" + nuevo.getId());
+            if (lblEstadoEdicionDocente != null)
+                lblEstadoEdicionDocente.setText("Modifique los datos y presione Actualizar.");
+            if (btnGuardarDocente != null)
+                btnGuardarDocente.setText("Actualizar docente");
+            if (btnEliminarDocente != null)
+                btnEliminarDocente.setDisable(false);
         });
     }
 
@@ -613,9 +634,11 @@ public class ConfiguracionController {
     }
 
     private void aplicarFiltroDocentes() {
-        if (tblDocentes == null) return;
+        if (tblDocentes == null)
+            return;
         String busqueda = txtBuscarDocente == null || txtBuscarDocente.getText() == null
-                ? "" : txtBuscarDocente.getText().trim().toLowerCase();
+                ? ""
+                : txtBuscarDocente.getText().trim().toLowerCase();
 
         List<Docente> filtrados = docentesBaseTabla.stream()
                 .filter(d -> busqueda.isEmpty()
@@ -680,7 +703,8 @@ public class ConfiguracionController {
 
         boolean confirma = Alertas.mostrarConfirmacion("¿Está seguro de eliminar al docente '" +
                 docenteSeleccionado.getNombreCompleto() + "'?");
-        if (!confirma) return;
+        if (!confirma)
+            return;
 
         boolean ok = docentesDAO.eliminarDocente(docenteSeleccionado.getId());
         if (ok) {
@@ -702,13 +726,22 @@ public class ConfiguracionController {
 
     private void limpiarFormularioDocente() {
         docenteSeleccionado = null;
-        if (txtDocNombre1 != null) txtDocNombre1.clear();
-        if (txtDocNombre2 != null) txtDocNombre2.clear();
-        if (txtDocApellido1 != null) txtDocApellido1.clear();
-        if (txtDocApellido2 != null) txtDocApellido2.clear();
-        if (lblTituloFormDocente != null) lblTituloFormDocente.setText("Gestión de Docente");
-        if (lblEstadoEdicionDocente != null) lblEstadoEdicionDocente.setText("Complete los datos para registrar o seleccione uno de la tabla para editar.");
-        if (btnGuardarDocente != null) btnGuardarDocente.setText("Guardar nuevo docente");
-        if (btnEliminarDocente != null) btnEliminarDocente.setDisable(true);
+        if (txtDocNombre1 != null)
+            txtDocNombre1.clear();
+        if (txtDocNombre2 != null)
+            txtDocNombre2.clear();
+        if (txtDocApellido1 != null)
+            txtDocApellido1.clear();
+        if (txtDocApellido2 != null)
+            txtDocApellido2.clear();
+        if (lblTituloFormDocente != null)
+            lblTituloFormDocente.setText("Gestión de Docente");
+        if (lblEstadoEdicionDocente != null)
+            lblEstadoEdicionDocente
+                    .setText("Complete los datos para registrar o seleccione uno de la tabla para editar.");
+        if (btnGuardarDocente != null)
+            btnGuardarDocente.setText("Guardar nuevo docente");
+        if (btnEliminarDocente != null)
+            btnEliminarDocente.setDisable(true);
     }
 }

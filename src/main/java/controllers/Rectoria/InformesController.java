@@ -772,12 +772,11 @@ public class InformesController {
     }
 
     private String obtenerNombreEstado(int estado) {
-        return switch (estado) {
-            case 0 -> "Prestado";
-            case 1 -> "Devuelto";
-            case 2 -> "Pendiente";
-            default -> "Desconocido";
-        };
+        try {
+            return model.enums.EstadoPrestamo.fromId(estado).getDescripcion();
+        } catch (IllegalArgumentException e) {
+            return "Desconocido";
+        }
     }
 
     private String formatearMinutos(int minutos) {

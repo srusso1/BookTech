@@ -174,6 +174,85 @@ public class EstudiantesDAO {
         return false;
     }
 
+    public boolean procesarLote(ArrayList<Estudiante> aInsertar, ArrayList<Estudiante> aActualizar) {
+        String sqlInsert = """
+                INSERT INTO estudiantes (identificacion, grado, apellido_1, apellido_2, nombre_1, nombre_2, genero)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """;
+        String sqlUpdate = """
+                UPDATE estudiantes
+                SET identificacion = ?, grado = ?, apellido_1 = ?, apellido_2 = ?, nombre_1 = ?, nombre_2 = ?, genero = ?
+                WHERE id = ?
+                """;
+
+        Connection conn = null;
+        try {
+            conn = ConexionSQLite.conectar();
+            if (conn == null) return false;
+            
+            // Iniciar transacción
+            conn.setAutoCommit(false);
+            
+            try (PreparedStatement psInsert = conn.prepareStatement(sqlInsert);
+                 PreparedStatement psUpdate = conn.prepareStatement(sqlUpdate)) {
+                
+                // Lote de Inserciones
+                for (Estudiante est : aInsertar) {
+                    psInsert.setLong(1, est.getIdentificacion());
+                    psInsert.setInt(2, est.getGrado());
+                    psInsert.setString(3, normalizarTexto(est.getApellido_1()));
+                    psInsert.setString(4, normalizarTexto(est.getApellido_2()));
+                    psInsert.setString(5, normalizarTexto(est.getNombre_1()));
+                    psInsert.setString(6, normalizarTexto(est.getNombre_2()));
+                    psInsert.setString(7, normalizarTexto(est.getGenero()));
+                    psInsert.addBatch();
+                }
+                if (!aInsertar.isEmpty()) {
+                    psInsert.executeBatch();
+                }
+
+                // Lote de Actualizaciones
+                for (Estudiante est : aActualizar) {
+                    psUpdate.setLong(1, est.getIdentificacion());
+                    psUpdate.setInt(2, est.getGrado());
+                    psUpdate.setString(3, normalizarTexto(est.getApellido_1()));
+                    psUpdate.setString(4, normalizarTexto(est.getApellido_2()));
+                    psUpdate.setString(5, normalizarTexto(est.getNombre_1()));
+                    psUpdate.setString(6, normalizarTexto(est.getNombre_2()));
+                    psUpdate.setString(7, normalizarTexto(est.getGenero()));
+                    psUpdate.setInt(8, est.getId());
+                    psUpdate.addBatch();
+                }
+                if (!aActualizar.isEmpty()) {
+                    psUpdate.executeBatch();
+                }
+
+                // Confirmar transacción
+                conn.commit();
+                return true;
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al procesar lote de estudiantes: " + e.getMessage(), e);
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    LOGGER.log(Level.SEVERE, "Error al hacer rollback: " + ex.getMessage(), ex);
+                }
+            }
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException ex) {
+                    LOGGER.log(Level.SEVERE, "Error al cerrar conexión: " + ex.getMessage(), ex);
+                }
+            }
+        }
+        return false;
+    }
+
     public int guardarOModificarPorIdentificacion(Estudiante estudiante) {
         Estudiante existente = obtenerEstudiantePorIdentificacion(estudiante.getIdentificacion());
         if (existente == null) {

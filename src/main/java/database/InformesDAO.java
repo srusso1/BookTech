@@ -343,7 +343,7 @@ public class InformesDAO {
             }
 
             // Total de devoluciones a tiempo
-            String queryDevueltos = "SELECT COUNT(*) as total FROM prestamos WHERE estado = 1";
+            String queryDevueltos = "SELECT COUNT(*) as total FROM prestamos WHERE estado = " + model.enums.EstadoPrestamo.DEVUELTO.getId();
             try (PreparedStatement ps = conexion.prepareStatement(queryDevueltos);
                  ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -594,7 +594,8 @@ public class InformesDAO {
             FROM prestamos p
             JOIN libros l ON l.id = p.id_libro
             JOIN estudiantes e ON e.id = p.id_estudiante
-            WHERE p.estado = 1 AND p.devuelto_tarde = 1
+            WHERE p.estado = """ + model.enums.EstadoPrestamo.DEVUELTO.getId() + """ 
+            AND p.devuelto_tarde = 1
         """);
 
         List<Object> parametros = new ArrayList<>();
@@ -645,7 +646,8 @@ public class InformesDAO {
             SELECT e.grado, COUNT(p.id) total
             FROM prestamos p
             JOIN estudiantes e ON e.id = p.id_estudiante
-            WHERE p.estado = 1 AND p.devuelto_tarde = 1
+            WHERE p.estado = """ + model.enums.EstadoPrestamo.DEVUELTO.getId() + """ 
+            AND p.devuelto_tarde = 1
         """);
 
         boolean conFiltroFecha = fechaInicio != null && fechaFin != null;

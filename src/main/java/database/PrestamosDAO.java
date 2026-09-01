@@ -26,9 +26,18 @@ public class PrestamosDAO {
     // ESTADO: 0 - Prestado, 1 - Devuelto, 2 - Pendiente
 
     public boolean registrarPrestamo(int idLibro, int id_estudiante, int id_motivo, int id_docente, String fechaPrestamo, String fechaLimite) {
-        String query = "INSERT INTO prestamos (id_libro, id_estudiante, id_motivo, id_docente, fecha_prestamo, fecha_limite, devuelto_tarde, dias_atraso) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conexion = ConexionSQLite.conectar();
-             PreparedStatement ps = conexion.prepareStatement(query)) {
+        try (Connection conexion = ConexionSQLite.conectar()) {
+            return registrarPrestamo(conexion, idLibro, id_estudiante, id_motivo, id_docente, fechaPrestamo, fechaLimite);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al conectar: " + e.getMessage(), e);
+            return false;
+        }
+    }
+
+    public boolean registrarPrestamo(Connection conexion, int idLibro, int id_estudiante, int id_motivo, int id_docente, String fechaPrestamo, String fechaLimite) {
+        String query = "INSERT INTO prestamos (id_libro, id_estudiante, id_motivo, id_docente, fecha_prestamo, fecha_limite, devuelto_tarde, dias_atraso, grado_historico) " +
+                       "SELECT ?, ?, ?, ?, ?, ?, ?, ?, grado FROM estudiantes WHERE id = ?";
+        try (PreparedStatement ps = conexion.prepareStatement(query)) {
             ps.setInt(1, idLibro);
             ps.setInt(2, id_estudiante);
             ps.setInt(3, id_motivo);
@@ -37,6 +46,7 @@ public class PrestamosDAO {
             ps.setString(6, fechaLimite);
             ps.setInt(7, 0);
             ps.setInt(8, 0);
+            ps.setInt(9, id_estudiante);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error al registrar el préstamo: " + e.getMessage(), e);
@@ -56,7 +66,7 @@ public class PrestamosDAO {
             p.fecha_limite,
             p.devuelto_tarde,
             p.dias_atraso,
-            e.grado,
+            COALESCE(p.grado_historico, e.grado) AS grado,
             l.titulo,
             e.apellido_1 || ' ' || e.apellido_2 || ' ' || e.nombre_1 || ' ' || e.nombre_2 AS estudiante,
             d.id AS doc_id,
@@ -71,8 +81,7 @@ public class PrestamosDAO {
         JOIN estudiantes e ON e.id = p.id_estudiante
         LEFT JOIN docentes d ON d.id = p.id_docente
         LEFT JOIN motivos_prestamo m ON m.id = p.id_motivo
-        WHERE p.id_libro = ? AND p.estado != 1
-        """;
+        WHERE p.id_libro = ? AND p.estado != """ + model.enums.EstadoPrestamo.DEVUELTO.getId();
 
         ArrayList<Prestamo> prestamos = new ArrayList<>();
 
@@ -105,7 +114,7 @@ public class PrestamosDAO {
             p.fecha_limite,
             p.devuelto_tarde,
             p.dias_atraso,
-            e.grado,
+            COALESCE(p.grado_historico, e.grado) AS grado,
             l.titulo,
             e.apellido_1 || ' ' || e.apellido_2 || ' ' || e.nombre_1 || ' ' || e.nombre_2 AS estudiante,
             d.id AS doc_id,
@@ -120,8 +129,7 @@ public class PrestamosDAO {
         JOIN estudiantes e ON e.id = p.id_estudiante
         LEFT JOIN docentes d ON d.id = p.id_docente
         LEFT JOIN motivos_prestamo m ON m.id = p.id_motivo
-        WHERE p.estado != 1
-        """;
+        WHERE p.estado != """ + model.enums.EstadoPrestamo.DEVUELTO.getId();
 
         ArrayList<Prestamo> prestamos = new ArrayList<>();
 
@@ -182,13 +190,15 @@ public class PrestamosDAO {
     public int actualizarPrestamosTarde() {
         String query = """
             UPDATE prestamos 
-            SET estado = 2 
-            WHERE estado = 0 AND fecha_limite < ?
+            SET estado = ? 
+            WHERE estado = ? AND fecha_limite < ?
         """;
         
         try (Connection conexion = ConexionSQLite.conectar();
              PreparedStatement ps = conexion.prepareStatement(query)) {
-            ps.setString(1, Fechas.fechaActualISO());
+            ps.setInt(1, model.enums.EstadoPrestamo.VENCIDO.getId());
+            ps.setInt(2, model.enums.EstadoPrestamo.PRESTADO.getId());
+            ps.setString(3, Fechas.fechaActualISO());
             return ps.executeUpdate();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error al actualizar préstamos vencidos: " + e.getMessage(), e);
@@ -200,7 +210,7 @@ public class PrestamosDAO {
         String query = "UPDATE prestamos SET estado = ? WHERE id = ?";
         try (Connection conexion = ConexionSQLite.conectar();
              PreparedStatement ps = conexion.prepareStatement(query)) {
-            ps.setInt(1, 2);
+            ps.setInt(1, model.enums.EstadoPrestamo.VENCIDO.getId());
             ps.setInt(2, prestamo.getId());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -218,7 +228,7 @@ public class PrestamosDAO {
             p.id,
             l.titulo,
             e.apellido_1 || ' ' || e.apellido_2 || ' ' || e.nombre_1 || ' ' || e.nombre_2 AS estudiante,
-            e.grado,
+            COALESCE(p.grado_historico, e.grado) AS grado,
             p.fecha_limite,
             p.estado
         FROM prestamos p
@@ -264,6 +274,15 @@ public class PrestamosDAO {
     }
 
     public boolean registrarDevolucion(Prestamo prestamo) {
+        try (Connection conexion = ConexionSQLite.conectar()) {
+            return registrarDevolucion(conexion, prestamo);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al conectar: " + e.getMessage(), e);
+            return false;
+        }
+    }
+
+    public boolean registrarDevolucion(Connection conexion, Prestamo prestamo) {
         String fechaDevolucion = Fechas.fechaActualISO();
         int diasAtraso = calcularDiasAtraso(prestamo.getFecha_limite(), fechaDevolucion);
         int devueltoTarde = diasAtraso > 0 ? 1 : 0;
@@ -273,9 +292,8 @@ public class PrestamosDAO {
                 SET estado = ?, fecha_devolucion = ?, devuelto_tarde = ?, dias_atraso = ?
                 WHERE id = ?
             """;
-        try (Connection conexion = ConexionSQLite.conectar();
-             PreparedStatement ps = conexion.prepareStatement(query)) {
-            ps.setInt(1, 1);
+        try (PreparedStatement ps = conexion.prepareStatement(query)) {
+            ps.setInt(1, model.enums.EstadoPrestamo.DEVUELTO.getId());
             ps.setString(2, fechaDevolucion);
             ps.setInt(3, devueltoTarde);
             ps.setInt(4, diasAtraso);
@@ -301,9 +319,17 @@ public class PrestamosDAO {
     }
 
     public boolean validarPrestamo(int idLibro, int idEstudiante) {
-        String query = "SELECT 1 FROM prestamos WHERE id_estudiante = ? AND (estado = 0 OR estado = 2) AND id_libro = ?";
-        try (Connection conexion = ConexionSQLite.conectar();
-             PreparedStatement ps = conexion.prepareStatement(query)) {
+        try (Connection conexion = ConexionSQLite.conectar()) {
+            return validarPrestamo(conexion, idLibro, idEstudiante);
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al conectar: " + e.getMessage(), e);
+            return false;
+        }
+    }
+
+    public boolean validarPrestamo(Connection conexion, int idLibro, int idEstudiante) {
+        String query = "SELECT 1 FROM prestamos WHERE id_estudiante = ? AND (estado = " + model.enums.EstadoPrestamo.PRESTADO.getId() + " OR estado = " + model.enums.EstadoPrestamo.VENCIDO.getId() + ") AND id_libro = ?";
+        try (PreparedStatement ps = conexion.prepareStatement(query)) {
             ps.setInt(1, idEstudiante);
             ps.setInt(2, idLibro);
             try (ResultSet rs = ps.executeQuery()) {
@@ -404,10 +430,10 @@ public class PrestamosDAO {
 
     public Map<String, Integer> obtenerPrestamosPorGradoTop(int limite) {
         String query = """
-        SELECT e.grado, COUNT(p.id) AS total
+        SELECT COALESCE(p.grado_historico, e.grado) AS grado, COUNT(p.id) AS total
         FROM prestamos p
         JOIN estudiantes e ON e.id = p.id_estudiante
-        GROUP BY e.grado
+        GROUP BY COALESCE(p.grado_historico, e.grado)
         ORDER BY total DESC
         LIMIT ?
         """;
@@ -535,11 +561,11 @@ public class PrestamosDAO {
 
     public Map<String, Integer> obtenerPrestamosPorGradoTop(int limite, String fechaInicio, String fechaFin) {
         String query = """
-        SELECT e.grado, COUNT(p.id) AS total
+        SELECT COALESCE(p.grado_historico, e.grado) AS grado, COUNT(p.id) AS total
         FROM prestamos p
         JOIN estudiantes e ON e.id = p.id_estudiante
         WHERE p.fecha_prestamo >= ? AND p.fecha_prestamo <= ?
-        GROUP BY e.grado
+        GROUP BY COALESCE(p.grado_historico, e.grado)
         ORDER BY total DESC
         LIMIT ?
         """;

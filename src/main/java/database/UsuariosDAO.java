@@ -69,11 +69,13 @@ public class UsuariosDAO {
                         LOGGER.info("Contraseña de usuario '" + usuarioRegistrado + "' migrada exitosamente a hash BCrypt.");
                     }
 
-                    return switch (rol) {
-                        case 1 -> new Rector(nombre, apellido, usuarioRegistrado, "[PROTECTED]");
-                        case 0 -> new Bibliotecario(nombre, apellido, usuarioRegistrado, "[PROTECTED]");
-                        default -> null;
-                    };
+                    model.enums.RolUsuario rolUsuario = model.enums.RolUsuario.fromId(rol);
+                    if (rolUsuario == model.enums.RolUsuario.RECTOR) {
+                        return new Rector(nombre, apellido, usuarioRegistrado, "[PROTECTED]");
+                    } else if (rolUsuario == model.enums.RolUsuario.BIBLIOTECARIO) {
+                        return new Bibliotecario(nombre, apellido, usuarioRegistrado, "[PROTECTED]");
+                    }
+                    return null;
                 }
             }
         } catch (SQLException e) {

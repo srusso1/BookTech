@@ -63,13 +63,17 @@ public class LoginController {
         }
 
         Alertas.mostrarExito("Bienvenido " + user.getClass().getSimpleName().toUpperCase() + " " + user.getNombreCompleto());
-        if(user.getRol() == 0){
+        
+        // Guardar sesión global
+        utils.SessionManager.getInstance().setUsuarioActual(user);
+
+        if(user.getRol() == model.enums.RolUsuario.BIBLIOTECARIO.getId()){
             ManagerView.cargarVista(contenedor, Paths.DASHBOARD_BIBLIOTECARIO);
             int vencidos = prestamosDAO.actualizarPrestamosTarde();
             if(vencidos > 0) {
                 Alertas.mostrarInfo("Se actualizaron " + vencidos + " préstamos vencidos. Consulte el módulo 'Préstamos activos'.");
             }
-        }else if(user.getRol() == 1){
+        }else if(user.getRol() == model.enums.RolUsuario.RECTOR.getId()){
             ManagerView.cargarVista(contenedor, Paths.DASHBOARD_RECTORIA);
         }
 
