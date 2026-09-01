@@ -99,7 +99,7 @@ public class PlataformaVirtualController {
         spinnerFin.setValueFactory(factoryFin);
         spinnerFin.setEditable(false);
 
-        // Listeners para calcular diferencia automíƒ¡ticamente
+        // Listeners para calcular diferencia automáticamente
         spinnerInicio.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (obs != null && newVal != null && !newVal.equals(oldVal)) {
                 actualizarDiferencia();

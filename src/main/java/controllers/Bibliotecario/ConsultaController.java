@@ -202,7 +202,7 @@ public class ConsultaController {
 
         for (Libro libro : resultados) {
             MenuItem item = new MenuItem(
-                    libro.getTitulo() + " íƒÆ’í†â€™íƒâ€ í¢â‚¬â„¢íƒÆ’í¢â‚¬Å¡íƒâ€ší‚Â¢íƒÆ’í†â€™íƒâ€ší‚Â¢íƒÆ’í‚Â¢íƒÂ¢í¢â‚¬Å¡í‚Â¬íƒâ€¦í‚¡íƒÆ’í¢â‚¬Å¡íƒâ€ší‚Â¬íƒÆ’í†â€™íƒâ€ší‚Â¢íƒÆ’í‚Â¢íƒÂ¢í¢â€šÂ¬í…¡íƒâ€ší‚Â¬íƒÆ’í¢â‚¬Å¡íƒâ€ší‚Â " + libro.getAutor()
+                    libro.getTitulo() + " - " + libro.getAutor()
             );
 
             item.setOnAction(e -> {

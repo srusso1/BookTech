@@ -123,7 +123,7 @@ public class InventarioController {
             Alertas.mostrarError("Seleccione un libro para eliminar");
             return;
         }
-        boolean ok = Alertas.mostrarConfirmacion("¿Estíƒ¡s seguro de eliminar el libro: '" + libroSeleccionado.getTitulo() +"'? Estíƒ¡ acción no se puede deshacer");
+        boolean ok = Alertas.mostrarConfirmacion("¿Estás seguro de eliminar el libro: '" + libroSeleccionado.getTitulo() +"'? Esta acción no se puede deshacer");
         if(ok){
             if(librosDAO.eliminarLibro(libroSeleccionado.getId())){
                 Alertas.mostrarExito("Se eliminado correctamente el libro: '" + libroSeleccionado.getTitulo() + "' del inventario.");
@@ -146,7 +146,7 @@ public class InventarioController {
     private void configurarBusquedaTitulo(){
         txtBuscarLibro.textProperty().addListener((obs, oldText, newText) -> {
 
-            // Si estíƒ¡ vacío → mostrar todos
+            // Si está vacío → mostrar todos
             if (newText == null || newText.isBlank()) {
                 tabla.getItems().setAll(inventarioLibros);
                 return;
