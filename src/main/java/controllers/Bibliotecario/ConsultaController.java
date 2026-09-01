@@ -85,6 +85,7 @@ public class ConsultaController {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource(Paths.PRESTAMO_BIBLIOTECARIO)
             );
+            loader.setControllerFactory(utils.AppDIContainer.getInstance());
 
             // 🔹 El root ES un VBox
             VBox root = loader.load();
@@ -130,6 +131,7 @@ public class ConsultaController {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource(Paths.DEVOLUCION_BIBLIOTECARIO)
             );
+            loader.setControllerFactory(utils.AppDIContainer.getInstance());
 
             // 🔹 El root ES un VBox
             VBox root = loader.load();

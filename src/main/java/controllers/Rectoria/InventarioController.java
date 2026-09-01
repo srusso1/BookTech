@@ -8,6 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.stage.Modality;
+import javafx.scene.Scene;
 import model.Libro;
 import utils.Alertas;
 import utils.Paths;
@@ -60,9 +63,8 @@ public class InventarioController {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource(Paths.EDITAR_LIBRO_RECTORIA)
-            );
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(Paths.EDITAR_LIBRO_RECTORIA));
+            loader.setControllerFactory(utils.AppDIContainer.getInstance());
 
             // í°Å¸â€Â¹ El root ES un VBox
             VBox root = loader.load();
@@ -72,15 +74,17 @@ public class InventarioController {
             controller.setLibro(libroSeleccionado);
 
             // í°Å¸â€Â¹ Diíƒ¡logo
-            Dialog<Void> dialog = new Dialog<>();
-            dialog.setTitle("Editar libro");
-            dialog.getDialogPane().setContent(root);
-            aplicarEstilosDialogo(dialog);
-
-            // í°Å¸â€Â¹ Botón cerrar (el formulario maneja registrar/cancelar)
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-
-            dialog.showAndWait();
+            Stage modal = new Stage();
+            modal.setTitle("Editar libro");
+            modal.initModality(Modality.WINDOW_MODAL);
+            modal.initOwner(txtBuscarLibro.getScene().getWindow());
+            
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(java.util.Objects.requireNonNull(getClass().getResource("/styles/style.css")).toExternalForm());
+            modal.setScene(scene);
+            modal.setResizable(false);
+            
+            modal.showAndWait();
 
         } catch (Exception e) {
             Alertas.mostrarError("ERROR: " + e.getMessage());
@@ -92,23 +96,24 @@ public class InventarioController {
     @FXML
     void clickNuevoLibro(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource(Paths.REGISTRAR_LIBRO_RECTORIA)
-            );
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(Paths.REGISTRAR_LIBRO_RECTORIA));
+            loader.setControllerFactory(utils.AppDIContainer.getInstance());
 
             // í°Å¸â€Â¹ El root ES un VBox
             VBox root = loader.load();
 
             // í°Å¸â€Â¹ Diíƒ¡logo
-            Dialog<Void> dialog = new Dialog<>();
-            dialog.setTitle("Libro nuevo");
-            dialog.getDialogPane().setContent(root);
-            aplicarEstilosDialogo(dialog);
-
-            // í°Å¸â€Â¹ Botón cerrar (el formulario maneja registrar/cancelar)
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-
-            dialog.showAndWait();
+            Stage modal = new Stage();
+            modal.setTitle("Libro nuevo");
+            modal.initModality(Modality.WINDOW_MODAL);
+            modal.initOwner(txtBuscarLibro.getScene().getWindow());
+            
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(java.util.Objects.requireNonNull(getClass().getResource("/styles/style.css")).toExternalForm());
+            modal.setScene(scene);
+            modal.setResizable(false);
+            
+            modal.showAndWait();
 
         } catch (Exception e) {
             Alertas.mostrarError("ERROR: " + e.getMessage());
