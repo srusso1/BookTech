@@ -1,6 +1,7 @@
 package controllers.Rectoria;
 
 import database.CategoriasDAO;
+import database.EditorialesDAO;
 import database.LibrosDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.Categoria;
+import model.Editorial;
 import model.Libro;
 import utils.Alertas;
 import utils.Validaciones;
@@ -30,6 +32,9 @@ public class EditarLibroController {
 
     @FXML
     private ComboBox<Categoria> comboCategorias;
+
+    @FXML
+    private ComboBox<Editorial> comboEditoriales;
 
     @FXML
     private Label lblAutor;
@@ -54,6 +59,7 @@ public class EditarLibroController {
 
     LibrosDAO librosDAO = new LibrosDAO();
     CategoriasDAO categoriasDAO = new CategoriasDAO();
+    EditorialesDAO editorialesDAO = new EditorialesDAO();
 
     @FXML
     void clickRegistrar(ActionEvent event) {
@@ -73,7 +79,14 @@ public class EditarLibroController {
                 return;
             }
             nuevoValor = String.valueOf(categoriaSeleccionada.getId());
-        }else{
+        } else if(campo.equals("Editorial")) {
+            Editorial editorialSeleccionada = comboEditoriales.getSelectionModel().getSelectedItem();
+            if(editorialSeleccionada == null){
+                Alertas.mostrarError("Seleccione una editorial");
+                return;
+            }
+            nuevoValor = String.valueOf(editorialSeleccionada.getId());
+        } else {
             if(txtEditar.getText().isEmpty()){
                 Alertas.mostrarError("Ingrese el nuevo valor");
                 return;
@@ -95,6 +108,9 @@ public class EditarLibroController {
         if(campo.equals("Categoria")){
             Categoria categoriaSeleccionada = comboCategorias.getSelectionModel().getSelectedItem();
             valorVisible = categoriaSeleccionada != null ? categoriaSeleccionada.getNombreCategoria() : "";
+        } else if(campo.equals("Editorial")){
+            Editorial editorialSeleccionada = comboEditoriales.getSelectionModel().getSelectedItem();
+            valorVisible = editorialSeleccionada != null ? editorialSeleccionada.getNombre() : "";
         }
 
         boolean ok = Alertas.mostrarConfirmacion("Estas seguro de modificar el " + campo + "? Se cambiara por '" + valorVisible + "'");
@@ -111,6 +127,7 @@ public class EditarLibroController {
     void initialize() {
 
         cargarCategorias();
+        cargarEditoriales();
         ocultarElementos();
 
         comboBoxModificar.getItems().addAll(
@@ -127,13 +144,15 @@ public class EditarLibroController {
                     if (newVal.equals("Categoria")) {
                         mostrarComboCategorias();
                         txtEditar.setPromptText("");
+                    } else if (newVal.equals("Editorial")) {
+                        mostrarComboEditoriales();
+                        txtEditar.setPromptText("");
                     } else {
                         mostrarCampoTexto();
 
                         Map<String, String> prompts = Map.of(
                                 "Titulo", "Ingrese el nuevo titulo",
                                 "Autor", "Ingrese el nuevo autor",
-                                "Editorial", "Ingrese la nueva editorial",
                                 "Ubicacion", "Ingrese la nueva ubicacion",
                                 "Unidades", "Ingrese la nueva cantidad de unidades"
                         );
@@ -151,12 +170,19 @@ public class EditarLibroController {
         ArrayList<Categoria> categorias = categoriasDAO.obtenerCategorias();
         comboCategorias.getItems().setAll(categorias);
     }
+    
+    private void cargarEditoriales() {
+        ArrayList<Editorial> editoriales = editorialesDAO.obtenerEditorialesActivas();
+        comboEditoriales.getItems().setAll(editoriales);
+    }
 
     private void ocultarElementos() {
         txtEditar.setVisible(false);
         txtEditar.setManaged(false);
         comboCategorias.setVisible(false);
         comboCategorias.setManaged(false);
+        comboEditoriales.setVisible(false);
+        comboEditoriales.setManaged(false);
     }
 
     private void mostrarCampoTexto(){
@@ -164,14 +190,28 @@ public class EditarLibroController {
         txtEditar.setManaged(true);
         comboCategorias.setVisible(false);
         comboCategorias.setManaged(false);
+        comboEditoriales.setVisible(false);
+        comboEditoriales.setManaged(false);
     }
 
     private void mostrarComboCategorias(){
         txtEditar.clear();
         txtEditar.setVisible(false);
         txtEditar.setManaged(false);
+        comboEditoriales.setVisible(false);
+        comboEditoriales.setManaged(false);
         comboCategorias.setVisible(true);
         comboCategorias.setManaged(true);
+    }
+
+    private void mostrarComboEditoriales(){
+        txtEditar.clear();
+        txtEditar.setVisible(false);
+        txtEditar.setManaged(false);
+        comboCategorias.setVisible(false);
+        comboCategorias.setManaged(false);
+        comboEditoriales.setVisible(true);
+        comboEditoriales.setManaged(true);
     }
 
     private void cargarDatos() {
@@ -189,6 +229,4 @@ public class EditarLibroController {
         Stage stage = (Stage) lblLibro.getScene().getWindow();
         stage.close();
     }
-
-
 }

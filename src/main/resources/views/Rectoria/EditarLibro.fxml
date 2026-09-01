@@ -23,7 +23,7 @@
          <children>
             <HBox spacing="10.0">
                <children>
-                  <Label text="Ubicación:">
+                  <Label text="UbicaciÃƒÂ³n:">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
@@ -37,7 +37,7 @@
             </HBox>
             <HBox spacing="10.0">
                <children>
-                  <Label text="Categoría:">
+                  <Label text="CategorÃƒÂ­a:">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
@@ -96,13 +96,14 @@
             <Insets bottom="5.0" top="5.0" />
          </padding>
       </VBox>
-      <ComboBox fx:id="comboBoxModificar" maxWidth="Infinity" prefHeight="45.0" promptText="¿Qué desea modificar?" styleClass="combo-filtro" />
+      <ComboBox fx:id="comboBoxModificar" maxWidth="Infinity" prefHeight="45.0" promptText="Ã‚Â¿QuÃƒÂ© desea modificar?" styleClass="combo-filtro" />
       <TextField fx:id="txtEditar" maxWidth="Infinity" prefHeight="45.0" promptText="Nuevo valor..." styleClass="combo-filtro">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <ComboBox fx:id="comboCategorias" maxWidth="Infinity" prefHeight="45.0" promptText="Elige una categoría válida" styleClass="combo-filtro" />
+      <ComboBox fx:id="comboCategorias" maxWidth="Infinity" prefHeight="45.0" promptText="Elige una categoria" styleClass="combo-filtro" />
+      <ComboBox fx:id="comboEditoriales" maxWidth="Infinity" prefHeight="45.0" promptText="Elige una editorial" styleClass="combo-filtro" />
       <HBox alignment="CENTER_RIGHT" spacing="12.0">
          <children>
              <Button onAction="#clickRegistrar" prefHeight="40.0" prefWidth="120.0" styleClass="btn-primary" text="Guardar">
