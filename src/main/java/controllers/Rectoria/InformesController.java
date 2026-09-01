@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Controlador para el módulo de Informes
+ * Controlador para el mÃ³dulo de Informes
  */
 public class InformesController {
 
@@ -134,8 +134,8 @@ public class InformesController {
     private final ContextMenu sugerenciasEstudiante = new ContextMenu();
     private final ContextMenu sugerenciasDocente = new ContextMenu();
 
-    private ArrayList<Estudiante> listaEstudiantes = new ArrayList<>();
-    private ArrayList<Docente> listaDocentes = new ArrayList<>();
+    private List<Estudiante> listaEstudiantes = new ArrayList<>();
+    private List<Docente> listaDocentes = new ArrayList<>();
 
     private Estudiante estudianteSeleccionado;
     private Docente docenteSeleccionado;
@@ -226,7 +226,7 @@ public class InformesController {
         } else if (REPORTE_INVENTARIO.equals(tipo)) {
             lblDatosTabla.setText("Datos de Inventario");
         } else {
-            lblDatosTabla.setText("Datos de Préstamos");
+            lblDatosTabla.setText("Datos de PrÃ©stamos");
         }
     }
 
@@ -317,12 +317,12 @@ public class InformesController {
         colEstudiante.setText("Estudiante");
         colDocente.setText("Docente");
         colMotivo.setText("Motivo");
-        colFechaPrestamo.setText("Fecha Préstamo");
-        colFechaLimite.setText("Fecha Límite");
-        colFechaDevolucion.setText("Fecha Devolución");
+        colFechaPrestamo.setText("Fecha PrÃ©stamo");
+        colFechaLimite.setText("Fecha LÃ­mite");
+        colFechaDevolucion.setText("Fecha DevoluciÃ³n");
         colEstado.setText("Estado");
         colRegresadoTarde.setText("Regresado tarde");
-        colDiasTardanza.setText("Días de tardanza");
+        colDiasTardanza.setText("DÃ­as de tardanza");
 
         colLibro.setCellValueFactory(cellData -> {
             if (!(cellData.getValue() instanceof Prestamo p)) return new SimpleStringProperty("N/A");
@@ -366,7 +366,7 @@ public class InformesController {
 
         colRegresadoTarde.setCellValueFactory(cellData -> {
             if (!(cellData.getValue() instanceof Prestamo p)) return new SimpleStringProperty("--");
-            return new SimpleStringProperty(p.getEstado() == ReportConfig.ESTADO_DEVUELTO ? (p.getDevuelto_tarde() == 1 ? "Sí" : "No") : "--");
+            return new SimpleStringProperty(p.getEstado() == ReportConfig.ESTADO_DEVUELTO ? (p.getDevuelto_tarde() == 1 ? "SÃ­" : "No") : "--");
         });
 
         colDiasTardanza.setCellValueFactory(cellData -> {
@@ -381,7 +381,7 @@ public class InformesController {
         colDocente.setText("Fecha");
         colMotivo.setText("Hora inicio");
         colFechaPrestamo.setText("Hora fin");
-        colFechaLimite.setText("Duración");
+        colFechaLimite.setText("DuraciÃ³n");
         colFechaDevolucion.setText("Grado");
         colEstado.setText("Tipo");
         colRegresadoTarde.setText("--");
@@ -429,12 +429,12 @@ public class InformesController {
 
     private void configurarTablaInventario() {
         colLibro.setText("Libro");
-        colEstudiante.setText("Categoría");
+        colEstudiante.setText("CategorÃ­a");
         colDocente.setText("Autor");
         colMotivo.setText("Editorial");
-        colFechaPrestamo.setText("Ubicación");
+        colFechaPrestamo.setText("UbicaciÃ³n");
         colFechaLimite.setText("Unidades");
-        colFechaDevolucion.setText("Préstamos activos");
+        colFechaDevolucion.setText("PrÃ©stamos activos");
         colEstado.setText("Stock objetivo");
         colRegresadoTarde.setText("Comprar");
         colDiasTardanza.setText("Estado");
@@ -606,7 +606,7 @@ public class InformesController {
         dpFechaFin.setValue(hoy);
 
         cargarDatos();
-        Alertas.mostrarExito("Filtro limpiado, mostrando datos sin restricción de fechas");
+        Alertas.mostrarExito("Filtro limpiado, mostrando datos sin restricciÃ³n de fechas");
     }
 
     @FXML

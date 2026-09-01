@@ -15,21 +15,22 @@ import utils.Alertas;
 import utils.Fechas;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DevolucionController {
 
     private Libro libro;
-    private ArrayList<Prestamo> prestamos;
+    private List<Prestamo> prestamos;
     PrestamosDAO prestamosDAO = new PrestamosDAO();
     LibrosDAO librosDAO = new LibrosDAO();
 
-    // 🔹 método para recibir el libro
+    // ðŸ”¹ mÃ©todo para recibir el libro
     public void setLibro(Libro libro) {
         this.libro = libro;
-        lblLibro.setText(libro.getTitulo() + " — " + libro.getAutor());
+        lblLibro.setText(libro.getTitulo() + " â€” " + libro.getAutor());
     }
 
-    public void setPrestamos(ArrayList<Prestamo> prestamos) {
+    public void setPrestamos(List<Prestamo> prestamos) {
         this.prestamos = prestamos;
         cargarPrestamos();
     }
@@ -87,7 +88,7 @@ public class DevolucionController {
 
     private void registrarDevolucion(){
         if(tabla.getSelectionModel().getSelectedItem() == null){
-            Alertas.mostrarError("Seleccione un prestamo para registrar su devolución");
+            Alertas.mostrarError("Seleccione un prestamo para registrar su devoluciÃ³n");
             return;
         }
 
@@ -97,13 +98,13 @@ public class DevolucionController {
         if(prestamoService.registrarDevolucion(prestamoSeleccionado, libro.getId())){
             if (Fechas.esDespues(Fechas.fechaActualISO(), prestamoSeleccionado.getFecha_limite())) {
                 String fechaLimiteUI = Fechas.convertirAUI(prestamoSeleccionado.getFecha_limite());
-                Alertas.mostrarInfo("Se registro la devolución correctamente. Sin embargo, fue devuelto fuera de tiempo, la fecha límite era hasta: " + (fechaLimiteUI != null ? fechaLimiteUI : prestamoSeleccionado.getFecha_limite()));
+                Alertas.mostrarInfo("Se registro la devoluciÃ³n correctamente. Sin embargo, fue devuelto fuera de tiempo, la fecha lÃ­mite era hasta: " + (fechaLimiteUI != null ? fechaLimiteUI : prestamoSeleccionado.getFecha_limite()));
             }else{
-                Alertas.mostrarExito("Se registro correctamente la devolución y fue dentro de la fecha establecida.");
+                Alertas.mostrarExito("Se registro correctamente la devoluciÃ³n y fue dentro de la fecha establecida.");
             }
             cerrar();
         } else {
-            Alertas.mostrarError("Ocurrió un error al registrar la devolución.");
+            Alertas.mostrarError("OcurriÃ³ un error al registrar la devoluciÃ³n.");
         }
     }
 

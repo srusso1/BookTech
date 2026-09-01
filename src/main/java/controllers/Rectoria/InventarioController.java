@@ -13,6 +13,7 @@ import utils.Alertas;
 import utils.Paths;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class InventarioController {
@@ -42,7 +43,7 @@ public class InventarioController {
     private TextField txtBuscarLibro;
 
 
-    ArrayList<Libro> inventarioLibros = new ArrayList<Libro>();
+    List<Libro> inventarioLibros = new ArrayList<Libro>();
     LibrosDAO librosDAO = new LibrosDAO();
     Libro libroSeleccionado;
 
@@ -59,20 +60,20 @@ public class InventarioController {
                     getClass().getResource(Paths.EDITAR_LIBRO_RECTORIA)
             );
 
-            // 🔹 El root ES un VBox
+            // ðŸ”¹ El root ES un VBox
             VBox root = loader.load();
 
-            // 🔹 Controller del préstamo
+            // ðŸ”¹ Controller del prÃ©stamo
             EditarLibroController controller = loader.getController();
             controller.setLibro(libroSeleccionado);
 
-            // 🔹 Diálogo
+            // ðŸ”¹ DiÃ¡logo
             Dialog<Void> dialog = new Dialog<>();
             dialog.setTitle("Editar libro");
             dialog.getDialogPane().setContent(root);
             aplicarEstilosDialogo(dialog);
 
-            // 🔹 Botón cerrar (el formulario maneja registrar/cancelar)
+            // ðŸ”¹ BotÃ³n cerrar (el formulario maneja registrar/cancelar)
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
             dialog.showAndWait();
@@ -91,16 +92,16 @@ public class InventarioController {
                     getClass().getResource(Paths.REGISTRAR_LIBRO_RECTORIA)
             );
 
-            // 🔹 El root ES un VBox
+            // ðŸ”¹ El root ES un VBox
             VBox root = loader.load();
 
-            // 🔹 Diálogo
+            // ðŸ”¹ DiÃ¡logo
             Dialog<Void> dialog = new Dialog<>();
             dialog.setTitle("Libro nuevo");
             dialog.getDialogPane().setContent(root);
             aplicarEstilosDialogo(dialog);
 
-            // 🔹 Botón cerrar (el formulario maneja registrar/cancelar)
+            // ðŸ”¹ BotÃ³n cerrar (el formulario maneja registrar/cancelar)
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
             dialog.showAndWait();
@@ -118,14 +119,14 @@ public class InventarioController {
             Alertas.mostrarError("Seleccione un libro para eliminar");
             return;
         }
-        boolean ok = Alertas.mostrarConfirmacion("¿Estás seguro de eliminar el libro: '" + libroSeleccionado.getTitulo() +"'? Está acción no se puede deshacer");
+        boolean ok = Alertas.mostrarConfirmacion("Â¿EstÃ¡s seguro de eliminar el libro: '" + libroSeleccionado.getTitulo() +"'? EstÃ¡ acciÃ³n no se puede deshacer");
         if(ok){
             if(librosDAO.eliminarLibro(libroSeleccionado.getId())){
                 Alertas.mostrarExito("Se eliminado correctamente el libro: '" + libroSeleccionado.getTitulo() + "' del inventario.");
                 cargarLibros();
             }
         }else{
-            Alertas.mostrarInfo("Acción cancelada por el usuario");
+            Alertas.mostrarInfo("AcciÃ³n cancelada por el usuario");
         }
         cargarLibros();
     }
@@ -141,7 +142,7 @@ public class InventarioController {
     private void configurarBusquedaTitulo(){
         txtBuscarLibro.textProperty().addListener((obs, oldText, newText) -> {
 
-            // Si está vacío → mostrar todos
+            // Si estÃ¡ vacÃ­o â†’ mostrar todos
             if (newText == null || newText.isBlank()) {
                 tabla.getItems().setAll(inventarioLibros);
                 return;
@@ -149,7 +150,7 @@ public class InventarioController {
 
             String texto = newText.toLowerCase();
 
-            ArrayList<Libro> filtrados = new ArrayList<>();
+            List<Libro> filtrados = new ArrayList<>();
 
             for (Libro libro : inventarioLibros) {
 

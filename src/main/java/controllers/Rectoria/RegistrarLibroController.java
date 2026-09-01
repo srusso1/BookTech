@@ -17,6 +17,7 @@ import utils.Alertas;
 import utils.Validaciones;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RegistrarLibroController {
 
@@ -80,7 +81,7 @@ public class RegistrarLibroController {
         }
 
         if(!Validaciones.validarCampoNumerico(txtUnidades)){
-            Alertas.mostrarError("Únicamente se permiten valores numéricos en el campo de unidades");
+            Alertas.mostrarError("Ãšnicamente se permiten valores numÃ©ricos en el campo de unidades");
             return;
         }
 
@@ -115,10 +116,10 @@ public class RegistrarLibroController {
 
     @FXML
     void initialize() {
-        ArrayList<Categoria> listaCategorias = categoriasDAO.obtenerCategorias();
+        List<Categoria> listaCategorias = categoriasDAO.obtenerCategorias();
         comboBoxCategoria.getItems().addAll(listaCategorias);
         
-        ArrayList<Editorial> listaEditoriales = editorialesDAO.obtenerEditorialesActivas();
+        List<Editorial> listaEditoriales = editorialesDAO.obtenerEditorialesActivas();
         comboBoxEditorial.getItems().addAll(listaEditoriales);
     }
 

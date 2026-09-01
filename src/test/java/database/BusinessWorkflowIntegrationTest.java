@@ -22,7 +22,7 @@ public class BusinessWorkflowIntegrationTest {
     private final MotivosPrestamoDAO motivosDAO = new MotivosPrestamoDAO();
 
     @Test
-    @DisplayName("Flujo E2E completo: Crear libro -> Préstamo -> Validación de Stock -> Devolución -> Resumen en Informes")
+    @DisplayName("Flujo E2E completo: Crear libro -> PrÃ©stamo -> ValidaciÃ³n de Stock -> DevoluciÃ³n -> Resumen en Informes")
     void testFlujoCompletoPrestamoYDevolucion() {
         // 1. Crear libro de prueba
         String tituloUnico = "LIBRO TEST E2E " + System.currentTimeMillis();
@@ -30,7 +30,7 @@ public class BusinessWorkflowIntegrationTest {
         boolean libroRegistrado = librosDAO.registrarLibro(libro);
         assertThat(libroRegistrado).isTrue();
 
-        // Buscar el libro recién creado para obtener su ID autogenerado
+        // Buscar el libro reciÃ©n creado para obtener su ID autogenerado
         List<Libro> librosEncontrados = librosDAO.buscarSimilares(tituloUnico);
         assertThat(librosEncontrados).isNotEmpty();
         Libro libroCreado = librosEncontrados.get(0);
@@ -38,20 +38,20 @@ public class BusinessWorkflowIntegrationTest {
         assertThat(libroId).isGreaterThan(0);
         assertThat(libroCreado.getUnidades()).isEqualTo(5);
 
-        // 2. Obtener estudiante, docente y motivo válidos
-        ArrayList<Estudiante> estudiantes = estudiantesDAO.obtenerEstudiantes();
+        // 2. Obtener estudiante, docente y motivo vÃ¡lidos
+        List<Estudiante> estudiantes = estudiantesDAO.obtenerEstudiantes();
         assertThat(estudiantes).isNotEmpty();
         Estudiante estudiante = estudiantes.get(0);
 
-        ArrayList<Docente> docentes = docentesDAO.obtenerDocentes();
+        List<Docente> docentes = docentesDAO.obtenerDocentes();
         assertThat(docentes).isNotEmpty();
         Docente docente = docentes.get(0);
 
-        ArrayList<MotivoPrestamo> motivos = motivosDAO.obtenerTodosMotivosPrestamo();
+        List<MotivoPrestamo> motivos = motivosDAO.obtenerTodosMotivosPrestamo();
         assertThat(motivos).isNotEmpty();
         MotivoPrestamo motivo = motivos.get(0);
 
-        // 3. Registrar préstamo del libro
+        // 3. Registrar prÃ©stamo del libro
         LocalDate hoy = LocalDate.now();
         String fPrestamo = Fechas.convertirAISO(hoy);
         String fLimite = Fechas.convertirAISO(hoy.plusDays(3));
@@ -73,13 +73,13 @@ public class BusinessWorkflowIntegrationTest {
         Libro libroPostPrestamo = librosDAO.buscarSimilares(tituloUnico).get(0);
         assertThat(libroPostPrestamo.getUnidades()).isEqualTo(4);
 
-        // 5. Verificar que el préstamo aparece en la lista de préstamos del libro
-        ArrayList<Prestamo> prestamosLibro = prestamosDAO.buscarPrestamosLibro(libroId);
+        // 5. Verificar que el prÃ©stamo aparece en la lista de prÃ©stamos del libro
+        List<Prestamo> prestamosLibro = prestamosDAO.buscarPrestamosLibro(libroId);
         assertThat(prestamosLibro).isNotEmpty();
         Prestamo prestamoActivo = prestamosLibro.get(0);
         assertThat(prestamoActivo.getId_libro()).isEqualTo(libroId);
 
-        // 6. Registrar la devolución
+        // 6. Registrar la devoluciÃ³n
         boolean devolucionRegistrada = prestamosDAO.registrarDevolucion(prestamoActivo);
         assertThat(devolucionRegistrada).isTrue();
 
@@ -89,7 +89,7 @@ public class BusinessWorkflowIntegrationTest {
         Libro libroPostDevolucion = librosDAO.buscarSimilares(tituloUnico).get(0);
         assertThat(libroPostDevolucion.getUnidades()).isEqualTo(5);
 
-        // 7. Verificar que el historial del estudiante refleja el préstamo
+        // 7. Verificar que el historial del estudiante refleja el prÃ©stamo
         List<Prestamo> historial = informesDAO.obtenerHistorialEstudiante(estudiante.getId());
         assertThat(historial).isNotEmpty();
 

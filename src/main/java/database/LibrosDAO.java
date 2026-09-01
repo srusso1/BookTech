@@ -85,8 +85,8 @@ public class LibrosDAO {
         return false;
     }
 
-    public ArrayList<Integer> infoDashboardBibliotecario() {
-        ArrayList<Integer> info = new ArrayList<>();
+    public List<Integer> infoDashboardBibliotecario() {
+        List<Integer> info = new ArrayList<>();
         String query = """
             SELECT
                 (SELECT COUNT(*) FROM libros) AS libros_registrados,
@@ -110,8 +110,8 @@ public class LibrosDAO {
         return info;
     }
 
-    public ArrayList<String> infoDashboardRectoria() {
-        ArrayList<String> info = new ArrayList<>();
+    public List<String> infoDashboardRectoria() {
+        List<String> info = new ArrayList<>();
         String query = "SELECT (SELECT COUNT(*) FROM libros) AS libros_registrados, " +
                 "(SELECT SUM(unidades) FROM libros) AS unidades_registradas, " +
                 "(SELECT c.nombre_categoria FROM prestamos p JOIN libros l ON p.id_libro = l.id JOIN categorias c ON c.id = l.id_categoria GROUP BY c.nombre_categoria ORDER BY COUNT(p.id) DESC LIMIT 1) AS categoria_mas_prestada;";
@@ -131,8 +131,8 @@ public class LibrosDAO {
         return info;
     }
 
-    public ArrayList<Libro> inventarioLibros() {
-        ArrayList<Libro> libros = new ArrayList<>();
+    public List<Libro> inventarioLibros() {
+        List<Libro> libros = new ArrayList<>();
         String query = """
                 SELECT l.id, l.titulo, l.ubicacion, l.id_categoria, l.id_editorial, l.autor, l.unidades,
                        c.nombre_categoria, e.nombre AS editorial_nombre

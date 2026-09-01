@@ -47,12 +47,12 @@ public class PlataformaVirtualController {
     @FXML
     void initialize() {
         listaDocentes.addAll(docentesDAO.obtenerDocentes());
-        ArrayList<Integer> grados = estudiantesDAO.obtenerGrados();
-        ArrayList<MotivoPlataforma> motivos = motivosPlataformaDAO.obtenerMotivosPlataformaActivos();
+        List<Integer> grados = estudiantesDAO.obtenerGrados();
+        List<MotivoPlataforma> motivos = motivosPlataformaDAO.obtenerMotivosPlataformaActivos();
         comboGrados.getItems().addAll(grados);
         comboMotivoUso.getItems().setAll(motivos);
         if (motivos.isEmpty()) {
-            Alertas.mostrarError("No hay motivos de plataforma activos. Solicite activarlos en Configuración.");
+            Alertas.mostrarError("No hay motivos de plataforma activos. Solicite activarlos en ConfiguraciÃ³n.");
         }
         txtDocente.setContextMenu(sugerenciasDocente);
 
@@ -92,7 +92,7 @@ public class PlataformaVirtualController {
         spinnerFin.setValueFactory(factoryFin);
         spinnerFin.setEditable(false);
 
-        // Listeners para calcular diferencia automáticamente
+        // Listeners para calcular diferencia automÃ¡ticamente
         spinnerInicio.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (obs != null && newVal != null && !newVal.equals(oldVal)) {
                 actualizarDiferencia();

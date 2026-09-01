@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,8 +19,8 @@ public class EstudiantesDAO {
     public static final int RESULTADO_ACTUALIZADO = 2;
     public static final int RESULTADO_SIN_CAMBIOS = 3;
 
-    public ArrayList<Estudiante> obtenerEstudiantes() {
-        ArrayList<Estudiante> lista = new ArrayList<>();
+    public List<Estudiante> obtenerEstudiantes() {
+        List<Estudiante> lista = new ArrayList<>();
         String sql = "SELECT * FROM estudiantes ORDER BY apellido_1, nombre_1";
 
         try (Connection conn = ConexionSQLite.conectar();
@@ -75,8 +76,8 @@ public class EstudiantesDAO {
         return null;
     }
 
-    public ArrayList<Integer> obtenerGrados() {
-        ArrayList<Integer> grados = new ArrayList<>();
+    public List<Integer> obtenerGrados() {
+        List<Integer> grados = new ArrayList<>();
         String sql = "SELECT DISTINCT grado FROM estudiantes ORDER BY grado";
         try (Connection conn = ConexionSQLite.conectar();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -110,7 +111,7 @@ public class EstudiantesDAO {
                 }
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener estudiante por identificación: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener estudiante por identificaciÃ³n: " + e.getMessage(), e);
         }
         return null;
     }
@@ -125,7 +126,7 @@ public class EstudiantesDAO {
                 return rs.next() && rs.getInt("total") > 0;
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al validar identificación: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al validar identificaciÃ³n: " + e.getMessage(), e);
         }
         return false;
     }
@@ -174,7 +175,7 @@ public class EstudiantesDAO {
         return false;
     }
 
-    public boolean procesarLote(ArrayList<Estudiante> aInsertar, ArrayList<Estudiante> aActualizar) {
+    public boolean procesarLote(List<Estudiante> aInsertar, List<Estudiante> aActualizar) {
         String sqlInsert = """
                 INSERT INTO estudiantes (identificacion, grado, apellido_1, apellido_2, nombre_1, nombre_2, genero)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -190,7 +191,7 @@ public class EstudiantesDAO {
             conn = ConexionSQLite.conectar();
             if (conn == null) return false;
             
-            // Iniciar transacción
+            // Iniciar transacciÃ³n
             conn.setAutoCommit(false);
             
             try (PreparedStatement psInsert = conn.prepareStatement(sqlInsert);
@@ -227,7 +228,7 @@ public class EstudiantesDAO {
                     psUpdate.executeBatch();
                 }
 
-                // Confirmar transacción
+                // Confirmar transacciÃ³n
                 conn.commit();
                 return true;
             }
@@ -246,7 +247,7 @@ public class EstudiantesDAO {
                     conn.setAutoCommit(true);
                     conn.close();
                 } catch (SQLException ex) {
-                    LOGGER.log(Level.SEVERE, "Error al cerrar conexión: " + ex.getMessage(), ex);
+                    LOGGER.log(Level.SEVERE, "Error al cerrar conexiÃ³n: " + ex.getMessage(), ex);
                 }
             }
         }

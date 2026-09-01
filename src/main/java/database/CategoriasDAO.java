@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,21 +15,21 @@ public class CategoriasDAO {
 
     private static final Logger LOGGER = Logger.getLogger(CategoriasDAO.class.getName());
 
-    public ArrayList<Categoria> obtenerCategoriasActivas() {
+    public List<Categoria> obtenerCategoriasActivas() {
         return obtenerLista("SELECT id, nombre_categoria, estado FROM categorias WHERE estado = 1");
     }
 
-    public ArrayList<Categoria> obtenerCategorias() {
+    public List<Categoria> obtenerCategorias() {
         // Fallback or alias for existing code, returns only active
         return obtenerCategoriasActivas();
     }
 
-    public ArrayList<Categoria> obtenerTodas() {
+    public List<Categoria> obtenerTodas() {
         return obtenerLista("SELECT id, nombre_categoria, estado FROM categorias");
     }
 
-    private ArrayList<Categoria> obtenerLista(String query) {
-        ArrayList<Categoria> lista = new ArrayList<>();
+    private List<Categoria> obtenerLista(String query) {
+        List<Categoria> lista = new ArrayList<>();
         try (Connection con = ConexionSQLite.conectar();
              PreparedStatement ps = con.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {

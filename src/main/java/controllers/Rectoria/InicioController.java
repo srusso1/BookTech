@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class InicioController {
 
@@ -24,7 +25,7 @@ public class InicioController {
 
     @FXML
     void initialize(){
-        ArrayList<String> infoDashboard = librosDAO.infoDashboardRectoria();
+        List<String> infoDashboard = librosDAO.infoDashboardRectoria();
         librosRegistrados.setText(infoDashboard.getFirst());
         unidadesRegistradas.setText(infoDashboard.get(1));
         categoriaSolicitada.setText(infoDashboard.getLast());

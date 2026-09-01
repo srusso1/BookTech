@@ -17,14 +17,14 @@ public class EstudianteService {
     }
 
     public CsvResult procesarYGuardarLote(List<Estudiante> pendientesCsv) {
-        ArrayList<Estudiante> existentes = estudiantesDAO.obtenerEstudiantes();
+        List<Estudiante> existentes = estudiantesDAO.obtenerEstudiantes();
         Map<Long, Estudiante> mapaExistentes = new HashMap<>();
         for (Estudiante e : existentes) {
             mapaExistentes.put(e.getIdentificacion(), e);
         }
 
-        ArrayList<Estudiante> aInsertar = new ArrayList<>();
-        ArrayList<Estudiante> aActualizar = new ArrayList<>();
+        List<Estudiante> aInsertar = new ArrayList<>();
+        List<Estudiante> aActualizar = new ArrayList<>();
         int sinCambios = 0;
 
         for (Estudiante csvEst : pendientesCsv) {

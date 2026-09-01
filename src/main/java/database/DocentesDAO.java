@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,8 +15,8 @@ public class DocentesDAO {
 
     private static final Logger LOGGER = Logger.getLogger(DocentesDAO.class.getName());
 
-    public ArrayList<Docente> obtenerDocentes() {
-        ArrayList<Docente> lista = new ArrayList<>();
+    public List<Docente> obtenerDocentes() {
+        List<Docente> lista = new ArrayList<>();
         String sql = "SELECT * FROM docentes ORDER BY apellido_1, nombre_1";
 
         try (Connection conn = ConexionSQLite.conectar();

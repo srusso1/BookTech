@@ -16,6 +16,7 @@ import utils.Alertas;
 import utils.Validaciones;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class EditarLibroController {
@@ -167,12 +168,12 @@ public class EditarLibroController {
     }
 
     private void cargarCategorias() {
-        ArrayList<Categoria> categorias = categoriasDAO.obtenerCategorias();
+        List<Categoria> categorias = categoriasDAO.obtenerCategorias();
         comboCategorias.getItems().setAll(categorias);
     }
     
     private void cargarEditoriales() {
-        ArrayList<Editorial> editoriales = editorialesDAO.obtenerEditorialesActivas();
+        List<Editorial> editoriales = editorialesDAO.obtenerEditorialesActivas();
         comboEditoriales.getItems().setAll(editoriales);
     }
 

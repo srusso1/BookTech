@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,12 +15,12 @@ public class MotivosPlataformaDAO {
 
     private static final Logger LOGGER = Logger.getLogger(MotivosPlataformaDAO.class.getName());
 
-    public ArrayList<MotivoPlataforma> obtenerMotivosPlataforma() {
+    public List<MotivoPlataforma> obtenerMotivosPlataforma() {
         return obtenerMotivosPlataformaActivos();
     }
 
-    public ArrayList<MotivoPlataforma> obtenerMotivosPlataformaActivos() {
-        ArrayList<MotivoPlataforma> motivos = new ArrayList<>();
+    public List<MotivoPlataforma> obtenerMotivosPlataformaActivos() {
+        List<MotivoPlataforma> motivos = new ArrayList<>();
         String query = "SELECT id, nombre_motivo, estado FROM motivos_plataforma WHERE estado = 1 ORDER BY nombre_motivo";
 
         try (Connection conexion = ConexionSQLite.conectar();
@@ -41,8 +42,8 @@ public class MotivosPlataformaDAO {
         return motivos;
     }
 
-    public ArrayList<MotivoPlataforma> obtenerTodosMotivosPlataforma() {
-        ArrayList<MotivoPlataforma> motivos = new ArrayList<>();
+    public List<MotivoPlataforma> obtenerTodosMotivosPlataforma() {
+        List<MotivoPlataforma> motivos = new ArrayList<>();
         String query = "SELECT id, nombre_motivo, estado FROM motivos_plataforma ORDER BY estado DESC, nombre_motivo";
 
         try (Connection conexion = ConexionSQLite.conectar();

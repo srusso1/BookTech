@@ -49,12 +49,12 @@ public class PrestamosDAO {
             ps.setInt(9, id_estudiante);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al registrar el préstamo: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al registrar el prÃ©stamo: " + e.getMessage(), e);
         }
         return false;
     }
 
-    public ArrayList<Prestamo> buscarPrestamosLibro(int idLibro) {
+    public List<Prestamo> buscarPrestamosLibro(int idLibro) {
         String query = """
         SELECT 
             p.id,
@@ -83,7 +83,7 @@ public class PrestamosDAO {
         LEFT JOIN motivos_prestamo m ON m.id = p.id_motivo
         WHERE p.id_libro = ? AND p.estado != """ + model.enums.EstadoPrestamo.DEVUELTO.getId();
 
-        ArrayList<Prestamo> prestamos = new ArrayList<>();
+        List<Prestamo> prestamos = new ArrayList<>();
 
         try (Connection conexion = ConexionSQLite.conectar();
              PreparedStatement ps = conexion.prepareStatement(query)) {
@@ -96,13 +96,13 @@ public class PrestamosDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al buscar préstamos por libro: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al buscar prÃ©stamos por libro: " + e.getMessage(), e);
         }
 
         return prestamos;
     }
 
-    public ArrayList<Prestamo> buscarPrestamosActivos() {
+    public List<Prestamo> buscarPrestamosActivos() {
         String query = """
         SELECT 
             p.id,
@@ -131,7 +131,7 @@ public class PrestamosDAO {
         LEFT JOIN motivos_prestamo m ON m.id = p.id_motivo
         WHERE p.estado != """ + model.enums.EstadoPrestamo.DEVUELTO.getId();
 
-        ArrayList<Prestamo> prestamos = new ArrayList<>();
+        List<Prestamo> prestamos = new ArrayList<>();
 
         try (Connection conexion = ConexionSQLite.conectar();
              PreparedStatement ps = conexion.prepareStatement(query);
@@ -142,7 +142,7 @@ public class PrestamosDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al buscar préstamos activos: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al buscar prÃ©stamos activos: " + e.getMessage(), e);
         }
 
         return prestamos;
@@ -201,7 +201,7 @@ public class PrestamosDAO {
             ps.setString(3, Fechas.fechaActualISO());
             return ps.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al actualizar préstamos vencidos: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al actualizar prÃ©stamos vencidos: " + e.getMessage(), e);
             return 0;
         }
     }
@@ -220,7 +220,7 @@ public class PrestamosDAO {
     }
 
     /**
-     * Obtiene alertas automáticas de préstamos vencidos, que vencen hoy o próximos a vencer en 2 días.
+     * Obtiene alertas automÃ¡ticas de prÃ©stamos vencidos, que vencen hoy o prÃ³ximos a vencer en 2 dÃ­as.
      */
     public List<AlertaPrestamo> obtenerAlertasVencimiento() {
         String query = """
@@ -300,7 +300,7 @@ public class PrestamosDAO {
             ps.setInt(5, prestamo.getId());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al registrar la devolución: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al registrar la devoluciÃ³n: " + e.getMessage(), e);
         }
         return false;
     }
@@ -336,7 +336,7 @@ public class PrestamosDAO {
                 return rs.next();
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al validar el préstamo: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al validar el prÃ©stamo: " + e.getMessage(), e);
         }
         return false;
     }
@@ -362,7 +362,7 @@ public class PrestamosDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener estadísticas por género: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener estadÃ­sticas por gÃ©nero: " + e.getMessage(), e);
         }
 
         return datos;
@@ -389,7 +389,7 @@ public class PrestamosDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por categoría: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener prÃ©stamos por categorÃ­a: " + e.getMessage(), e);
         }
 
         return datos;
@@ -422,7 +422,7 @@ public class PrestamosDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por docente: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener prÃ©stamos por docente: " + e.getMessage(), e);
         }
 
         return datos;
@@ -452,13 +452,13 @@ public class PrestamosDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por grado: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener prÃ©stamos por grado: " + e.getMessage(), e);
         }
 
         return datos;
     }
 
-    // ==================== MÉTODOS CON FILTRO DE FECHAS ====================
+    // ==================== MÃ‰TODOS CON FILTRO DE FECHAS ====================
 
     public Map<String, Integer> obtenerPrestamosPorGenero(String fechaInicio, String fechaFin) {
         String query = """
@@ -486,7 +486,7 @@ public class PrestamosDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener estadísticas por género: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener estadÃ­sticas por gÃ©nero: " + e.getMessage(), e);
         }
 
         return datos;
@@ -517,7 +517,7 @@ public class PrestamosDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por categoría con fechas: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener prÃ©stamos por categorÃ­a con fechas: " + e.getMessage(), e);
         }
 
         return datos;
@@ -553,7 +553,7 @@ public class PrestamosDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por docente con fechas: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener prÃ©stamos por docente con fechas: " + e.getMessage(), e);
         }
 
         return datos;
@@ -586,7 +586,7 @@ public class PrestamosDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por grado con fechas: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener prÃ©stamos por grado con fechas: " + e.getMessage(), e);
         }
 
         return datos;

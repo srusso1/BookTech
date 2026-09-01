@@ -3,14 +3,15 @@ package database;
 import model.Editorial;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class EditorialesDAO {
     private static final Logger LOGGER = Logger.getLogger(EditorialesDAO.class.getName());
 
-    public ArrayList<Editorial> obtenerEditorialesActivas() {
-        ArrayList<Editorial> editoriales = new ArrayList<>();
+    public List<Editorial> obtenerEditorialesActivas() {
+        List<Editorial> editoriales = new ArrayList<>();
         String query = "SELECT * FROM editoriales WHERE estado = 1 ORDER BY nombre ASC";
         try (Connection con = ConexionSQLite.conectar();
              PreparedStatement ps = con.prepareStatement(query);
@@ -24,8 +25,8 @@ public class EditorialesDAO {
         return editoriales;
     }
 
-    public ArrayList<Editorial> obtenerTodas() {
-        ArrayList<Editorial> editoriales = new ArrayList<>();
+    public List<Editorial> obtenerTodas() {
+        List<Editorial> editoriales = new ArrayList<>();
         String query = "SELECT * FROM editoriales ORDER BY nombre ASC";
         try (Connection con = ConexionSQLite.conectar();
              PreparedStatement ps = con.prepareStatement(query);

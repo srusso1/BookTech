@@ -19,6 +19,7 @@ import utils.Fechas;
 import utils.Validaciones;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class PrestamoController {
@@ -33,7 +34,7 @@ public class PrestamoController {
     @FXML private Label infoIdentificacion;
     @FXML private VBox contenedorInfoEstudiante;
     private final ContextMenu sugerenciasMenu = new ContextMenu();
-    private ArrayList<Estudiante> listaEstudiantes = new ArrayList<>();
+    private List<Estudiante> listaEstudiantes = new ArrayList<>();
     private Estudiante estudianteSeleccionado;
     private Docente docenteSeleccionado;
 
@@ -44,12 +45,12 @@ public class PrestamoController {
     EstudiantesDAO estudiantesDAO = new EstudiantesDAO();
     MotivosPrestamoDAO motivosPrestamoDAO = new MotivosPrestamoDAO();
     DocentesDAO docentesDAO = new DocentesDAO();
-    ArrayList<MotivoPrestamo> motivosPrestamos = new ArrayList<>();
-    ArrayList<Docente> listaDocentes = new ArrayList<>();
-    // 🔹 método para recibir el libro
+    List<MotivoPrestamo> motivosPrestamos = new ArrayList<>();
+    List<Docente> listaDocentes = new ArrayList<>();
+    // ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¹ mÃƒÆ’Ã‚Â©todo para recibir el libro
     public void setLibro(Libro libro) {
         this.libro = libro;
-        lblLibro.setText(libro.getTitulo() + " — " + libro.getAutor());
+        lblLibro.setText(libro.getTitulo() + " ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â " + libro.getAutor());
     }
 
     @FXML
@@ -78,7 +79,7 @@ public class PrestamoController {
         motivosPrestamos = motivosPrestamoDAO.obtenerMotivosPrestamoActivos();
         comboMotivosPrestamos.getItems().addAll(motivosPrestamos);
         if (motivosPrestamos.isEmpty()) {
-            Alertas.mostrarError("No hay motivos de préstamo activos. Solicite activarlos en Configuración.");
+            Alertas.mostrarError("No hay motivos de prÃƒÆ’Ã‚Â©stamo activos. Solicite activarlos en ConfiguraciÃƒÆ’Ã‚Â³n.");
         }
 
         listaDocentes = docentesDAO.obtenerDocentes();
@@ -111,7 +112,7 @@ public class PrestamoController {
 
 
         if(dpFechaDevolucion.getValue() == null){
-            Alertas.mostrarError("Es necesario establecer una fecha límite de devolución");
+            Alertas.mostrarError("Es necesario establecer una fecha lÃƒÆ’Ã‚Â­mite de devoluciÃƒÆ’Ã‚Â³n");
             return;
         }
 

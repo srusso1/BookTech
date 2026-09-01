@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,12 +15,12 @@ public class MotivosPrestamoDAO {
 
     private static final Logger LOGGER = Logger.getLogger(MotivosPrestamoDAO.class.getName());
 
-    public ArrayList<MotivoPrestamo> obtenerMotivosPrestamo() {
+    public List<MotivoPrestamo> obtenerMotivosPrestamo() {
         return obtenerMotivosPrestamoActivos();
     }
 
-    public ArrayList<MotivoPrestamo> obtenerMotivosPrestamoActivos() {
-        ArrayList<MotivoPrestamo> motivos = new ArrayList<>();
+    public List<MotivoPrestamo> obtenerMotivosPrestamoActivos() {
+        List<MotivoPrestamo> motivos = new ArrayList<>();
         String query = "SELECT id, nombre_motivo, estado FROM motivos_prestamo WHERE estado = 1 ORDER BY nombre_motivo";
 
         try (Connection conexion = ConexionSQLite.conectar();
@@ -35,14 +36,14 @@ public class MotivosPrestamoDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener motivos de préstamo activos: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener motivos de prÃ©stamo activos: " + e.getMessage(), e);
         }
 
         return motivos;
     }
 
-    public ArrayList<MotivoPrestamo> obtenerTodosMotivosPrestamo() {
-        ArrayList<MotivoPrestamo> motivos = new ArrayList<>();
+    public List<MotivoPrestamo> obtenerTodosMotivosPrestamo() {
+        List<MotivoPrestamo> motivos = new ArrayList<>();
         String query = "SELECT id, nombre_motivo, estado FROM motivos_prestamo ORDER BY estado DESC, nombre_motivo";
 
         try (Connection conexion = ConexionSQLite.conectar();
@@ -58,7 +59,7 @@ public class MotivosPrestamoDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener todos los motivos de préstamo: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener todos los motivos de prÃ©stamo: " + e.getMessage(), e);
         }
 
         return motivos;
@@ -72,7 +73,7 @@ public class MotivosPrestamoDAO {
             ps.setString(1, nombreMotivo.trim().toUpperCase());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al registrar motivo de préstamo: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al registrar motivo de prÃ©stamo: " + e.getMessage(), e);
         }
         return false;
     }
@@ -86,7 +87,7 @@ public class MotivosPrestamoDAO {
             ps.setInt(2, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al actualizar motivo de préstamo: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al actualizar motivo de prÃ©stamo: " + e.getMessage(), e);
         }
         return false;
     }
@@ -100,7 +101,7 @@ public class MotivosPrestamoDAO {
             ps.setInt(2, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al actualizar estado del motivo de préstamo: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al actualizar estado del motivo de prÃ©stamo: " + e.getMessage(), e);
         }
         return false;
     }
