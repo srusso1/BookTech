@@ -18,6 +18,13 @@ import java.util.List;
 
 public class PlataformaVirtualController {
 
+    public PlataformaVirtualController(DocentesDAO docentesDAO, EstudiantesDAO estudiantesDAO, MotivosPlataformaDAO motivosPlataformaDAO, RegistroPlataformaDAO registroPlataformaDAO) {
+        this.docentesDAO = docentesDAO;
+        this.estudiantesDAO = estudiantesDAO;
+        this.motivosPlataformaDAO = motivosPlataformaDAO;
+        this.registroPlataformaDAO = registroPlataformaDAO;
+    }
+
     @FXML
     private TextField txtDocente;
 
@@ -36,13 +43,13 @@ public class PlataformaVirtualController {
     @FXML
     private Label lblHorasCalculadas;
 
-    private final DocentesDAO docentesDAO = new DocentesDAO();
-    private final EstudiantesDAO estudiantesDAO = new EstudiantesDAO();
-    private final MotivosPlataformaDAO motivosPlataformaDAO = new MotivosPlataformaDAO();
+    private final DocentesDAO docentesDAO;
+    private final EstudiantesDAO estudiantesDAO;
+    private final MotivosPlataformaDAO motivosPlataformaDAO;
     private final ArrayList<Docente> listaDocentes = new ArrayList<>();
     private final ContextMenu sugerenciasDocente = new ContextMenu();
     private Docente docenteSeleccionado;
-    private final RegistroPlataformaDAO registroPlataformaDAO = new RegistroPlataformaDAO();
+    private final RegistroPlataformaDAO registroPlataformaDAO;
 
     @FXML
     void initialize() {
@@ -52,7 +59,7 @@ public class PlataformaVirtualController {
         comboGrados.getItems().addAll(grados);
         comboMotivoUso.getItems().setAll(motivos);
         if (motivos.isEmpty()) {
-            Alertas.mostrarError("No hay motivos de plataforma activos. Solicite activarlos en ConfiguraciÃ³n.");
+            Alertas.mostrarError("No hay motivos de plataforma activos. Solicite activarlos en ConfiguraciÃƒÂ³n.");
         }
         txtDocente.setContextMenu(sugerenciasDocente);
 
@@ -92,7 +99,7 @@ public class PlataformaVirtualController {
         spinnerFin.setValueFactory(factoryFin);
         spinnerFin.setEditable(false);
 
-        // Listeners para calcular diferencia automÃ¡ticamente
+        // Listeners para calcular diferencia automÃƒÂ¡ticamente
         spinnerInicio.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (obs != null && newVal != null && !newVal.equals(oldVal)) {
                 actualizarDiferencia();

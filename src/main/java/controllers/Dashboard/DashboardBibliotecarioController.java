@@ -16,6 +16,10 @@ import java.util.List;
 
 public class DashboardBibliotecarioController {
 
+    public DashboardBibliotecarioController(PrestamosDAO prestamosDAO) {
+        this.prestamosDAO = prestamosDAO;
+    }
+
     @FXML
     private Button btnConsulta;
 
@@ -37,7 +41,7 @@ public class DashboardBibliotecarioController {
     @FXML
     private Label lblBadgeAlertas;
 
-    private final PrestamosDAO prestamosDAO = new PrestamosDAO();
+    private final PrestamosDAO prestamosDAO;
 
     @FXML
     void clickConsulta(ActionEvent event) {
@@ -89,7 +93,7 @@ public class DashboardBibliotecarioController {
     void clickNotificaciones(ActionEvent event) {
         List<AlertaPrestamo> alertas = prestamosDAO.obtenerAlertasVencimiento();
         if (alertas.isEmpty()) {
-            Alertas.mostrarInfo("No hay préstamos vencidos ni alertas pendientes en este momento.");
+            Alertas.mostrarInfo("No hay prÃ©stamos vencidos ni alertas pendientes en este momento.");
             return;
         }
 
@@ -103,7 +107,7 @@ public class DashboardBibliotecarioController {
 
     @FXML
     void clickSalir(ActionEvent event) {
-        if (Alertas.mostrarConfirmacion("¿Estás seguro que deseas cerrar sesión?")) {
+        if (Alertas.mostrarConfirmacion("Â¿EstÃ¡s seguro que deseas cerrar sesiÃ³n?")) {
             utils.SessionManager.getInstance().logout();
             ManagerView.cargarVista(contenedorPrincipal, Paths.LOGIN);
         }

@@ -23,6 +23,7 @@ public class InventarioViewTest {
     @Start
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(Paths.INVENTARIO_RECTORIA));
+            loader.setControllerFactory(utils.AppDIContainer.getInstance());
         Parent root = loader.load();
         Scene scene = new Scene(root, 1000, 700);
         stage.setScene(scene);

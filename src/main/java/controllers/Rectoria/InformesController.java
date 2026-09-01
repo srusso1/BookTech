@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Controlador para el mÃ³dulo de Informes
+ * Controlador para el mÃƒÂ³dulo de Informes
  */
 public class InformesController {
 
@@ -43,6 +43,12 @@ public class InformesController {
     private static final String REPORTE_PLATAFORMA_DOCENTE = "Reporte plataforma virtual por docente";
     private static final String REPORTE_INVENTARIO = "Reporte de inventario";
     private static final int UMBRAL_STOCK_BAJO = 3;
+
+    public InformesController(InformesDAO informesDAO, EstudiantesDAO estudiantesDAO, DocentesDAO docentesDAO) {
+        this.informesDAO = informesDAO;
+        this.estudiantesDAO = estudiantesDAO;
+        this.docentesDAO = docentesDAO;
+    }
 
     @FXML
     private Label lblTitulo;
@@ -127,9 +133,9 @@ public class InformesController {
     @FXML
     private TableColumn<Object, String> colDiasTardanza;
 
-    private final InformesDAO informesDAO = new InformesDAO();
-    private final EstudiantesDAO estudiantesDAO = new EstudiantesDAO();
-    private final DocentesDAO docentesDAO = new DocentesDAO();
+    private final InformesDAO informesDAO;
+    private final EstudiantesDAO estudiantesDAO;
+    private final DocentesDAO docentesDAO;
 
     private final ContextMenu sugerenciasEstudiante = new ContextMenu();
     private final ContextMenu sugerenciasDocente = new ContextMenu();
@@ -226,7 +232,7 @@ public class InformesController {
         } else if (REPORTE_INVENTARIO.equals(tipo)) {
             lblDatosTabla.setText("Datos de Inventario");
         } else {
-            lblDatosTabla.setText("Datos de PrÃ©stamos");
+            lblDatosTabla.setText("Datos de PrÃƒÂ©stamos");
         }
     }
 
@@ -317,12 +323,12 @@ public class InformesController {
         colEstudiante.setText("Estudiante");
         colDocente.setText("Docente");
         colMotivo.setText("Motivo");
-        colFechaPrestamo.setText("Fecha PrÃ©stamo");
-        colFechaLimite.setText("Fecha LÃ­mite");
-        colFechaDevolucion.setText("Fecha DevoluciÃ³n");
+        colFechaPrestamo.setText("Fecha PrÃƒÂ©stamo");
+        colFechaLimite.setText("Fecha LÃƒÂ­mite");
+        colFechaDevolucion.setText("Fecha DevoluciÃƒÂ³n");
         colEstado.setText("Estado");
         colRegresadoTarde.setText("Regresado tarde");
-        colDiasTardanza.setText("DÃ­as de tardanza");
+        colDiasTardanza.setText("DÃƒÂ­as de tardanza");
 
         colLibro.setCellValueFactory(cellData -> {
             if (!(cellData.getValue() instanceof Prestamo p)) return new SimpleStringProperty("N/A");
@@ -366,7 +372,7 @@ public class InformesController {
 
         colRegresadoTarde.setCellValueFactory(cellData -> {
             if (!(cellData.getValue() instanceof Prestamo p)) return new SimpleStringProperty("--");
-            return new SimpleStringProperty(p.getEstado() == ReportConfig.ESTADO_DEVUELTO ? (p.getDevuelto_tarde() == 1 ? "SÃ­" : "No") : "--");
+            return new SimpleStringProperty(p.getEstado() == ReportConfig.ESTADO_DEVUELTO ? (p.getDevuelto_tarde() == 1 ? "SÃƒÂ­" : "No") : "--");
         });
 
         colDiasTardanza.setCellValueFactory(cellData -> {
@@ -381,7 +387,7 @@ public class InformesController {
         colDocente.setText("Fecha");
         colMotivo.setText("Hora inicio");
         colFechaPrestamo.setText("Hora fin");
-        colFechaLimite.setText("DuraciÃ³n");
+        colFechaLimite.setText("DuraciÃƒÂ³n");
         colFechaDevolucion.setText("Grado");
         colEstado.setText("Tipo");
         colRegresadoTarde.setText("--");
@@ -429,12 +435,12 @@ public class InformesController {
 
     private void configurarTablaInventario() {
         colLibro.setText("Libro");
-        colEstudiante.setText("CategorÃ­a");
+        colEstudiante.setText("CategorÃƒÂ­a");
         colDocente.setText("Autor");
         colMotivo.setText("Editorial");
-        colFechaPrestamo.setText("UbicaciÃ³n");
+        colFechaPrestamo.setText("UbicaciÃƒÂ³n");
         colFechaLimite.setText("Unidades");
-        colFechaDevolucion.setText("PrÃ©stamos activos");
+        colFechaDevolucion.setText("PrÃƒÂ©stamos activos");
         colEstado.setText("Stock objetivo");
         colRegresadoTarde.setText("Comprar");
         colDiasTardanza.setText("Estado");
@@ -606,7 +612,7 @@ public class InformesController {
         dpFechaFin.setValue(hoy);
 
         cargarDatos();
-        Alertas.mostrarExito("Filtro limpiado, mostrando datos sin restricciÃ³n de fechas");
+        Alertas.mostrarExito("Filtro limpiado, mostrando datos sin restricciÃƒÂ³n de fechas");
     }
 
     @FXML

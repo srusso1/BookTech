@@ -28,6 +28,12 @@ public class EditarLibroController {
         cargarDatos();
     }
 
+    public EditarLibroController(LibrosDAO librosDAO, CategoriasDAO categoriasDAO, EditorialesDAO editorialesDAO) {
+        this.librosDAO = librosDAO;
+        this.categoriasDAO = categoriasDAO;
+        this.editorialesDAO = editorialesDAO;
+    }
+
     @FXML
     private ComboBox<String> comboBoxModificar;
 
@@ -58,9 +64,9 @@ public class EditarLibroController {
     @FXML
     private TextField txtEditar;
 
-    LibrosDAO librosDAO = new LibrosDAO();
-    CategoriasDAO categoriasDAO = new CategoriasDAO();
-    EditorialesDAO editorialesDAO = new EditorialesDAO();
+    private final LibrosDAO librosDAO;
+    private final CategoriasDAO categoriasDAO;
+    private final EditorialesDAO editorialesDAO;
 
     @FXML
     void clickRegistrar(ActionEvent event) {

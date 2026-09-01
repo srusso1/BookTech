@@ -22,6 +22,11 @@ import java.util.Map;
 
 public class EstadisticasController {
 
+    public EstadisticasController(PrestamosDAO prestamosDAO, RegistroPlataformaDAO registroPlataformaDAO) {
+        this.prestamosDAO = prestamosDAO;
+        this.registroPlataformaDAO = registroPlataformaDAO;
+    }
+
     @FXML
     private BarChart<String, Number> gfBarraGenero;
     @FXML
@@ -51,8 +56,8 @@ public class EstadisticasController {
     @FXML
     private Button btnLimpiarFiltro;
 
-    private final PrestamosDAO prestamosDAO = new PrestamosDAO();
-    private final RegistroPlataformaDAO registroPlataformaDAO = new RegistroPlataformaDAO();
+    private final PrestamosDAO prestamosDAO;
+    private final RegistroPlataformaDAO registroPlataformaDAO;
 
     private String fechaFiltroInicio = null;
     private String fechaFiltroFin = null;
@@ -103,7 +108,7 @@ public class EstadisticasController {
         dpFechaFin.setValue(hoy);
         
         recargarGraficas();
-        Alertas.mostrarExito("Filtro limpiado, mostrando datos sin restricción de fechas");
+        Alertas.mostrarExito("Filtro limpiado, mostrando datos sin restricciÃ³n de fechas");
     }
 
     private void recargarGraficas() {
@@ -116,7 +121,7 @@ public class EstadisticasController {
     }
 
     private void cargarGraficaGenero() {
-        gfBarraGenero.setTitle("Préstamos por género");
+        gfBarraGenero.setTitle("PrÃ©stamos por gÃ©nero");
         gfBarraGenero.setAnimated(false);
 
         Map<String, Integer> datos = (fechaFiltroInicio != null && fechaFiltroFin != null) ?
@@ -138,7 +143,7 @@ public class EstadisticasController {
                 XYChart.Data<String, Number> data = new XYChart.Data<>("Hombres", total);
                 hombres.getData().add(data);
 
-                // 🔥 Tooltip
+                // ðŸ”¥ Tooltip
                 data.nodeProperty().addListener((obs, oldNode, node) -> {
                     if (node != null) {
                         Tooltip.install(node, new Tooltip("Total: " + total));
@@ -150,7 +155,7 @@ public class EstadisticasController {
                 XYChart.Data<String, Number> data = new XYChart.Data<>("Mujeres", total);
                 mujeres.getData().add(data);
 
-                // 🔥 Tooltip
+                // ðŸ”¥ Tooltip
                 data.nodeProperty().addListener((obs, oldNode, node) -> {
                     if (node != null) {
                         Tooltip.install(node, new Tooltip("Total: " + total));
@@ -168,14 +173,14 @@ public class EstadisticasController {
 
         gfBarraCategoria.setAnimated(true);
         gfBarraCategoria.setLegendVisible(false);
-        gfBarraCategoria.setTitle("Préstamos por categoría");
+        gfBarraCategoria.setTitle("PrÃ©stamos por categorÃ­a");
 
         Map<String, Integer> datos = (fechaFiltroInicio != null && fechaFiltroFin != null) ?
                 prestamosDAO.obtenerPrestamosPorCategoria(fechaFiltroInicio, fechaFiltroFin) :
                 prestamosDAO.obtenerPrestamosPorCategoria();
 
         XYChart.Series<Number, String> serie = new XYChart.Series<>();
-        serie.setName("Categorías");
+        serie.setName("CategorÃ­as");
 
         for (Map.Entry<String, Integer> entry : datos.entrySet()) {
 
@@ -185,14 +190,14 @@ public class EstadisticasController {
             XYChart.Data<Number, String> data = new XYChart.Data<>(total, categoria);
             serie.getData().add(data);
 
-            // 🔥 Tooltip + Color dinámico
+            // ðŸ”¥ Tooltip + Color dinÃ¡mico
             data.nodeProperty().addListener((obs, oldNode, node) -> {
                 if (node != null) {
 
                     // Tooltip
                     Tooltip.install(node, new Tooltip(categoria + ": " + total));
 
-                    // 🎨 Color según cantidad (puedes ajustar rangos)
+                    // ðŸŽ¨ Color segÃºn cantidad (puedes ajustar rangos)
                     String color;
 
                     if (total == 0) {
@@ -216,7 +221,7 @@ public class EstadisticasController {
 
     private void cargarGraficaGrados() {
 
-        gfTortaPrestamosGrado.setTitle("Top 5 grados con más préstamos");
+        gfTortaPrestamosGrado.setTitle("Top 5 grados con mÃ¡s prÃ©stamos");
 
         Map<String, Integer> datos = (fechaFiltroInicio != null && fechaFiltroFin != null) ?
                 prestamosDAO.obtenerPrestamosPorGradoTop(5, fechaFiltroInicio, fechaFiltroFin) :
@@ -224,7 +229,7 @@ public class EstadisticasController {
 
         ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
 
-        // 🔥 Calcular total general
+        // ðŸ”¥ Calcular total general
         int totalGeneral = datos.values().stream().mapToInt(Integer::intValue).sum();
 
         for (Map.Entry<String, Integer> entry : datos.entrySet()) {
@@ -235,7 +240,7 @@ public class EstadisticasController {
             PieChart.Data data = new PieChart.Data(grado, total);
             pieData.add(data);
 
-            // 🔥 Tooltip con valor + porcentaje
+            // ðŸ”¥ Tooltip con valor + porcentaje
             data.nodeProperty().addListener((obs, oldNode, node) -> {
                 if (node != null) {
 
@@ -256,7 +261,7 @@ public class EstadisticasController {
 
         gfBarraDocentes.setAnimated(true);
         gfBarraDocentes.setLegendVisible(false);
-        gfBarraDocentes.setTitle("Top 5 docentes que envian más estudiantes a la biblioteca");
+        gfBarraDocentes.setTitle("Top 5 docentes que envian mÃ¡s estudiantes a la biblioteca");
 
         Map<String, Integer> datos = (fechaFiltroInicio != null && fechaFiltroFin != null) ?
                 prestamosDAO.obtenerPrestamosPorDocenteTop(5, fechaFiltroInicio, fechaFiltroFin) :
@@ -300,7 +305,7 @@ public class EstadisticasController {
 
         gfBarraPlataformaVirtual.setAnimated(true);
         gfBarraPlataformaVirtual.setLegendVisible(false);
-        gfBarraPlataformaVirtual.setTitle("Top 5 docentes con más uso de la plataforma");
+        gfBarraPlataformaVirtual.setTitle("Top 5 docentes con mÃ¡s uso de la plataforma");
         if (gfBarraPlataformaVirtual.getXAxis() instanceof NumberAxis numberAxis) {
             numberAxis.setLabel("Horas acumuladas");
         }
@@ -346,7 +351,7 @@ public class EstadisticasController {
 
     private void cargarGraficaGradosPlataforma() {
 
-        gfTortaGradosPlataforma.setTitle("Top 5 grados con más uso de plataforma");
+        gfTortaGradosPlataforma.setTitle("Top 5 grados con mÃ¡s uso de plataforma");
 
         Map<String, Integer> datos = (fechaFiltroInicio != null && fechaFiltroFin != null) ?
                 registroPlataformaDAO.obtenerTopGradosUsoPlataforma(fechaFiltroInicio, fechaFiltroFin, 5) :
@@ -354,7 +359,7 @@ public class EstadisticasController {
 
         ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
 
-        // 🔥 Calcular total general
+        // ðŸ”¥ Calcular total general
         int totalGeneral = datos.values().stream().mapToInt(Integer::intValue).sum();
 
         for (Map.Entry<String, Integer> entry : datos.entrySet()) {
@@ -365,7 +370,7 @@ public class EstadisticasController {
             PieChart.Data data = new PieChart.Data(grado, totalMinutos);
             pieData.add(data);
 
-            // 🔥 Tooltip con valor + porcentaje + formato de horas
+            // ðŸ”¥ Tooltip con valor + porcentaje + formato de horas
             data.nodeProperty().addListener((obs, oldNode, node) -> {
                 if (node != null) {
 

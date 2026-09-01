@@ -23,6 +23,7 @@ public class ViewsLoadingTest {
     private void assertLoadsSuccessfully(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            loader.setControllerFactory(utils.AppDIContainer.getInstance());
             Parent root = loader.load();
             assertThat(root).as("La vista " + fxmlPath + " debe cargar correctamente").isNotNull();
         } catch (Exception e) {
@@ -31,7 +32,7 @@ public class ViewsLoadingTest {
     }
 
     @Test
-    @DisplayName("Verifica que todas las vistas FXML del sistema carguen sin errores de importación o tipo")
+    @DisplayName("Verifica que todas las vistas FXML del sistema carguen sin errores de importaciÃ³n o tipo")
     void testAllViewsLoadWithoutError() {
         String[] allViews = {
             Paths.LOGIN,

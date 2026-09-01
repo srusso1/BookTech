@@ -9,6 +9,10 @@ import java.util.List;
 
 public class InicioController {
 
+    public InicioController(LibrosDAO librosDAO) {
+        this.librosDAO = librosDAO;
+    }
+
     @FXML
     private Label librosRegistrados;
 
@@ -26,7 +30,7 @@ public class InicioController {
         cargarInfoDashboard();
     }
 
-    LibrosDAO librosDAO = new LibrosDAO();
+    private final LibrosDAO librosDAO;
 
     private void cargarInfoDashboard(){
         List<Integer> info = librosDAO.infoDashboardBibliotecario();

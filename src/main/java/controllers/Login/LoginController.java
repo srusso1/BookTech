@@ -16,6 +16,11 @@ import utils.Validaciones;
 
 public class LoginController {
 
+    public LoginController(UsuariosDAO usuariosDAO, PrestamosDAO prestamosDAO) {
+        this.usuariosDAO = usuariosDAO;
+        this.prestamosDAO = prestamosDAO;
+    }
+
     @FXML
     private Button btnIngresar;
 
@@ -28,8 +33,8 @@ public class LoginController {
     @FXML
     private TextField txtUsuario;
 
-    UsuariosDAO usuariosDAO = new UsuariosDAO();
-    PrestamosDAO prestamosDAO = new PrestamosDAO();
+    private final UsuariosDAO usuariosDAO;
+    private final PrestamosDAO prestamosDAO;
 
     @FXML
     void clickIngresar(ActionEvent event) {
@@ -64,14 +69,14 @@ public class LoginController {
 
         Alertas.mostrarExito("Bienvenido " + user.getClass().getSimpleName().toUpperCase() + " " + user.getNombreCompleto());
         
-        // Guardar sesión global
+        // Guardar sesiÃ³n global
         utils.SessionManager.getInstance().setUsuarioActual(user);
 
         if(user.getRol() == model.enums.RolUsuario.BIBLIOTECARIO.getId()){
             ManagerView.cargarVista(contenedor, Paths.DASHBOARD_BIBLIOTECARIO);
             int vencidos = prestamosDAO.actualizarPrestamosTarde();
             if(vencidos > 0) {
-                Alertas.mostrarInfo("Se actualizaron " + vencidos + " préstamos vencidos. Consulte el módulo 'Préstamos activos'.");
+                Alertas.mostrarInfo("Se actualizaron " + vencidos + " prÃ©stamos vencidos. Consulte el mÃ³dulo 'PrÃ©stamos activos'.");
             }
         }else if(user.getRol() == model.enums.RolUsuario.RECTOR.getId()){
             ManagerView.cargarVista(contenedor, Paths.DASHBOARD_RECTORIA);

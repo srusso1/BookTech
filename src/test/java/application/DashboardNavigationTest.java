@@ -24,6 +24,7 @@ public class DashboardNavigationTest {
     public void start(Stage stage) throws Exception {
         utils.SessionManager.getInstance().setUsuarioActual(new model.Bibliotecario("test", "test", "test", "test"));
         FXMLLoader loader = new FXMLLoader(getClass().getResource(Paths.DASHBOARD_BIBLIOTECARIO));
+            loader.setControllerFactory(utils.AppDIContainer.getInstance());
         Parent root = loader.load();
         Scene scene = new Scene(root, 1280, 800);
         stage.setScene(scene);
@@ -31,7 +32,7 @@ public class DashboardNavigationTest {
     }
 
     @Test
-    @DisplayName("Verifica navegaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n entre los mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³dulos del Dashboard Bibliotecario")
+    @DisplayName("Verifica navegaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³n entre los mÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³dulos del Dashboard Bibliotecario")
     void testNavegacionDashboardBibliotecario(FxRobot robot) {
         FxAssert.verifyThat("#contenedor", NodeMatchers.isVisible());
         BorderPane contenedor = robot.lookup("#contenedor").queryAs(BorderPane.class);
@@ -41,7 +42,7 @@ public class DashboardNavigationTest {
         robot.clickOn("#btnConsulta");
         assertThat(contenedor.getCenter()).isNotNull();
 
-        // Clic en PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©stamos Activos
+        // Clic en PrÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©stamos Activos
         robot.clickOn("#btnPrestamos");
         assertThat(contenedor.getCenter()).isNotNull();
 

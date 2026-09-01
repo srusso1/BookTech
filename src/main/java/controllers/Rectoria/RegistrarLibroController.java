@@ -21,6 +21,12 @@ import java.util.List;
 
 public class RegistrarLibroController {
 
+    public RegistrarLibroController(LibrosDAO librosDAO, CategoriasDAO categoriasDAO, EditorialesDAO editorialesDAO) {
+        this.librosDAO = librosDAO;
+        this.categoriasDAO = categoriasDAO;
+        this.editorialesDAO = editorialesDAO;
+    }
+
     @FXML
     private Label lblLibro;
 
@@ -45,9 +51,9 @@ public class RegistrarLibroController {
     @FXML
     private TextField txtUnidades;
 
-    LibrosDAO librosDAO = new LibrosDAO();
-    CategoriasDAO categoriasDAO = new CategoriasDAO();
-    EditorialesDAO editorialesDAO = new EditorialesDAO();
+    private final LibrosDAO librosDAO;
+    private final CategoriasDAO categoriasDAO;
+    private final EditorialesDAO editorialesDAO;
 
     @FXML
     void clickRegistrar(ActionEvent event) {
@@ -81,7 +87,7 @@ public class RegistrarLibroController {
         }
 
         if(!Validaciones.validarCampoNumerico(txtUnidades)){
-            Alertas.mostrarError("Ãšnicamente se permiten valores numÃ©ricos en el campo de unidades");
+            Alertas.mostrarError("ÃƒÅ¡nicamente se permiten valores numÃƒÂ©ricos en el campo de unidades");
             return;
         }
 

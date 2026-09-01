@@ -24,6 +24,14 @@ import java.util.List;
 
 public class PrestamoController {
 
+    public PrestamoController(PrestamosDAO prestamosDAO, LibrosDAO librosDAO, EstudiantesDAO estudiantesDAO, MotivosPrestamoDAO motivosPrestamoDAO, DocentesDAO docentesDAO) {
+        this.prestamosDAO = prestamosDAO;
+        this.librosDAO = librosDAO;
+        this.estudiantesDAO = estudiantesDAO;
+        this.motivosPrestamoDAO = motivosPrestamoDAO;
+        this.docentesDAO = docentesDAO;
+    }
+
     @FXML private Label lblLibro;
     @FXML private TextField txtEstudiante;
     @FXML private DatePicker dpFechaDevolucion;
@@ -40,17 +48,17 @@ public class PrestamoController {
 
 
     private Libro libro;
-    PrestamosDAO prestamosDAO = new PrestamosDAO();
-    LibrosDAO librosDAO = new LibrosDAO();
-    EstudiantesDAO estudiantesDAO = new EstudiantesDAO();
-    MotivosPrestamoDAO motivosPrestamoDAO = new MotivosPrestamoDAO();
-    DocentesDAO docentesDAO = new DocentesDAO();
+    private final PrestamosDAO prestamosDAO;
+    private final LibrosDAO librosDAO;
+    private final EstudiantesDAO estudiantesDAO;
+    private final MotivosPrestamoDAO motivosPrestamoDAO;
+    private final DocentesDAO docentesDAO;
     List<MotivoPrestamo> motivosPrestamos = new ArrayList<>();
     List<Docente> listaDocentes = new ArrayList<>();
-    // ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¹ mÃƒÆ’Ã‚Â©todo para recibir el libro
+    // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¹ mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©todo para recibir el libro
     public void setLibro(Libro libro) {
         this.libro = libro;
-        lblLibro.setText(libro.getTitulo() + " ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â " + libro.getAutor());
+        lblLibro.setText(libro.getTitulo() + " ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â " + libro.getAutor());
     }
 
     @FXML
@@ -79,7 +87,7 @@ public class PrestamoController {
         motivosPrestamos = motivosPrestamoDAO.obtenerMotivosPrestamoActivos();
         comboMotivosPrestamos.getItems().addAll(motivosPrestamos);
         if (motivosPrestamos.isEmpty()) {
-            Alertas.mostrarError("No hay motivos de prÃƒÆ’Ã‚Â©stamo activos. Solicite activarlos en ConfiguraciÃƒÆ’Ã‚Â³n.");
+            Alertas.mostrarError("No hay motivos de prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©stamo activos. Solicite activarlos en ConfiguraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n.");
         }
 
         listaDocentes = docentesDAO.obtenerDocentes();
@@ -112,7 +120,7 @@ public class PrestamoController {
 
 
         if(dpFechaDevolucion.getValue() == null){
-            Alertas.mostrarError("Es necesario establecer una fecha lÃƒÆ’Ã‚Â­mite de devoluciÃƒÆ’Ã‚Â³n");
+            Alertas.mostrarError("Es necesario establecer una fecha lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­mite de devoluciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n");
             return;
         }
 

@@ -11,6 +11,10 @@ import utils.Fechas;
 
 public class PrestamosActivosController {
 
+    public PrestamosActivosController(PrestamosDAO prestamosDAO) {
+        this.prestamosDAO = prestamosDAO;
+    }
+
     @FXML
     private TableView<Prestamo> tabla;
 
@@ -38,7 +42,7 @@ public class PrestamosActivosController {
     @FXML
     private TableColumn<Prestamo, String> tbEstado;
 
-    private final PrestamosDAO prestamosDAO = new PrestamosDAO();
+    private final PrestamosDAO prestamosDAO;
 
     @FXML
     public void initialize() {

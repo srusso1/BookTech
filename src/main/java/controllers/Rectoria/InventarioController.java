@@ -18,6 +18,10 @@ import java.util.Objects;
 
 public class InventarioController {
 
+    public InventarioController(LibrosDAO librosDAO) {
+        this.librosDAO = librosDAO;
+    }
+
     @FXML
     private TableView<Libro> tabla;
 
@@ -44,7 +48,7 @@ public class InventarioController {
 
 
     List<Libro> inventarioLibros = new ArrayList<Libro>();
-    LibrosDAO librosDAO = new LibrosDAO();
+    private final LibrosDAO librosDAO;
     Libro libroSeleccionado;
 
     @FXML
@@ -60,20 +64,20 @@ public class InventarioController {
                     getClass().getResource(Paths.EDITAR_LIBRO_RECTORIA)
             );
 
-            // ðŸ”¹ El root ES un VBox
+            // Ã°Å¸â€Â¹ El root ES un VBox
             VBox root = loader.load();
 
-            // ðŸ”¹ Controller del prÃ©stamo
+            // Ã°Å¸â€Â¹ Controller del prÃƒÂ©stamo
             EditarLibroController controller = loader.getController();
             controller.setLibro(libroSeleccionado);
 
-            // ðŸ”¹ DiÃ¡logo
+            // Ã°Å¸â€Â¹ DiÃƒÂ¡logo
             Dialog<Void> dialog = new Dialog<>();
             dialog.setTitle("Editar libro");
             dialog.getDialogPane().setContent(root);
             aplicarEstilosDialogo(dialog);
 
-            // ðŸ”¹ BotÃ³n cerrar (el formulario maneja registrar/cancelar)
+            // Ã°Å¸â€Â¹ BotÃƒÂ³n cerrar (el formulario maneja registrar/cancelar)
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
             dialog.showAndWait();
@@ -92,16 +96,16 @@ public class InventarioController {
                     getClass().getResource(Paths.REGISTRAR_LIBRO_RECTORIA)
             );
 
-            // ðŸ”¹ El root ES un VBox
+            // Ã°Å¸â€Â¹ El root ES un VBox
             VBox root = loader.load();
 
-            // ðŸ”¹ DiÃ¡logo
+            // Ã°Å¸â€Â¹ DiÃƒÂ¡logo
             Dialog<Void> dialog = new Dialog<>();
             dialog.setTitle("Libro nuevo");
             dialog.getDialogPane().setContent(root);
             aplicarEstilosDialogo(dialog);
 
-            // ðŸ”¹ BotÃ³n cerrar (el formulario maneja registrar/cancelar)
+            // Ã°Å¸â€Â¹ BotÃƒÂ³n cerrar (el formulario maneja registrar/cancelar)
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
             dialog.showAndWait();
@@ -119,14 +123,14 @@ public class InventarioController {
             Alertas.mostrarError("Seleccione un libro para eliminar");
             return;
         }
-        boolean ok = Alertas.mostrarConfirmacion("Â¿EstÃ¡s seguro de eliminar el libro: '" + libroSeleccionado.getTitulo() +"'? EstÃ¡ acciÃ³n no se puede deshacer");
+        boolean ok = Alertas.mostrarConfirmacion("Ã‚Â¿EstÃƒÂ¡s seguro de eliminar el libro: '" + libroSeleccionado.getTitulo() +"'? EstÃƒÂ¡ acciÃƒÂ³n no se puede deshacer");
         if(ok){
             if(librosDAO.eliminarLibro(libroSeleccionado.getId())){
                 Alertas.mostrarExito("Se eliminado correctamente el libro: '" + libroSeleccionado.getTitulo() + "' del inventario.");
                 cargarLibros();
             }
         }else{
-            Alertas.mostrarInfo("AcciÃ³n cancelada por el usuario");
+            Alertas.mostrarInfo("AcciÃƒÂ³n cancelada por el usuario");
         }
         cargarLibros();
     }
@@ -142,7 +146,7 @@ public class InventarioController {
     private void configurarBusquedaTitulo(){
         txtBuscarLibro.textProperty().addListener((obs, oldText, newText) -> {
 
-            // Si estÃ¡ vacÃ­o â†’ mostrar todos
+            // Si estÃƒÂ¡ vacÃƒÂ­o Ã¢â€ â€™ mostrar todos
             if (newText == null || newText.isBlank()) {
                 tabla.getItems().setAll(inventarioLibros);
                 return;

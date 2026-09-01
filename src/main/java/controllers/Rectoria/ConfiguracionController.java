@@ -29,6 +29,15 @@ import java.util.List;
 
 public class ConfiguracionController {
 
+    public ConfiguracionController(EstudiantesDAO estudiantesDAO, DocentesDAO docentesDAO, MotivosPrestamoDAO motivosPrestamoDAO, MotivosPlataformaDAO motivosPlataformaDAO, EditorialesDAO editorialesDAO, CategoriasDAO categoriasDAO) {
+        this.estudiantesDAO = estudiantesDAO;
+        this.docentesDAO = docentesDAO;
+        this.motivosPrestamoDAO = motivosPrestamoDAO;
+        this.motivosPlataformaDAO = motivosPlataformaDAO;
+        this.editorialesDAO = editorialesDAO;
+        this.categoriasDAO = categoriasDAO;
+    }
+
     @FXML
     private TableView<Estudiante> tblEstudiantes;
     @FXML
@@ -124,12 +133,12 @@ public class ConfiguracionController {
     @FXML
     private TextField txtNuevoMotivoPlataforma;
 
-    private final EstudiantesDAO estudiantesDAO = new EstudiantesDAO();
-    private final DocentesDAO docentesDAO = new DocentesDAO();
-    private final MotivosPrestamoDAO motivosPrestamoDAO = new MotivosPrestamoDAO();
-    private final MotivosPlataformaDAO motivosPlataformaDAO = new MotivosPlataformaDAO();
-    private final EditorialesDAO editorialesDAO = new EditorialesDAO();
-    private final CategoriasDAO categoriasDAO = new CategoriasDAO();
+    private final EstudiantesDAO estudiantesDAO;
+    private final DocentesDAO docentesDAO;
+    private final MotivosPrestamoDAO motivosPrestamoDAO;
+    private final MotivosPlataformaDAO motivosPlataformaDAO;
+    private final EditorialesDAO editorialesDAO;
+    private final CategoriasDAO categoriasDAO;
 
     @FXML private TableView<Editorial> tblEditoriales;
     @FXML private TableColumn<Editorial, String> colEditorialId;
@@ -308,7 +317,7 @@ public class ConfiguracionController {
             }
 
             if (estudiantesDAO.existeIdentificacionEnOtroRegistro(identificacion, estudianteSeleccionado.getId())) {
-                Alertas.mostrarError("Ya existe otro estudiante con esa identificaciÃ³n");
+                Alertas.mostrarError("Ya existe otro estudiante con esa identificaciÃƒÂ³n");
                 return;
             }
 
@@ -328,7 +337,7 @@ public class ConfiguracionController {
                 lblResumenCsv.setText("Cambios manuales aplicados correctamente.");
             }
         } catch (NumberFormatException e) {
-            Alertas.mostrarError("IdentificaciÃ³n y grado deben ser numÃ©ricos");
+            Alertas.mostrarError("IdentificaciÃƒÂ³n y grado deben ser numÃƒÂ©ricos");
         }
     }
 
@@ -374,7 +383,7 @@ public class ConfiguracionController {
             if (estudiantesPendientesCsv.isEmpty()) {
                 hayCsvPendiente = false;
                 actualizarEstadoBotonGuardado();
-                Alertas.mostrarError("No se encontraron filas válidas para vista previa.");
+                Alertas.mostrarError("No se encontraron filas vÃ¡lidas para vista previa.");
                 return;
             }
 
@@ -385,7 +394,7 @@ public class ConfiguracionController {
             actualizarBaseTablaEstudiantes(estudiantesPendientesCsv);
 
             String resumen = "Vista previa CSV cargada: " + estudiantesPendientesCsv.size()
-                    + " filas válidas, " + result.errores + " errores. Revise/filtre la tabla y pulse Guardar registro CSV.";
+                    + " filas vÃ¡lidas, " + result.errores + " errores. Revise/filtre la tabla y pulse Guardar registro CSV.";
             lblResumenCsv.setText(resumen);
             Alertas.mostrarExito("Vista previa cargada. Confirme con Guardar registro CSV.");
 
@@ -429,7 +438,7 @@ public class ConfiguracionController {
                 Alertas.mostrarExito(resumen);
             } else {
                 lblResumenCsv.setText("Error al guardar CSV.");
-                Alertas.mostrarError("OcurriÃ³ un error grave al guardar el CSV. Se cancelÃ³ la operaciÃ³n (Rollback).");
+                Alertas.mostrarError("OcurriÃƒÂ³ un error grave al guardar el CSV. Se cancelÃƒÂ³ la operaciÃƒÂ³n (Rollback).");
             }
         });
 
@@ -437,8 +446,8 @@ public class ConfiguracionController {
             btnGuardarCambiosEstudiante.setDisable(false);
             btnDescartarCsv.setDisable(false);
             actualizarEstadoBotonGuardado();
-            lblResumenCsv.setText("Fallo crÃ­tico en el proceso.");
-            Alertas.mostrarError("Error crÃ­tico al procesar el lote: " + tarea.getException().getMessage());
+            lblResumenCsv.setText("Fallo crÃƒÂ­tico en el proceso.");
+            Alertas.mostrarError("Error crÃƒÂ­tico al procesar el lote: " + tarea.getException().getMessage());
         });
 
         new Thread(tarea).start();
@@ -448,20 +457,20 @@ public class ConfiguracionController {
     void clickAgregarMotivoPrestamo() {
         String nombre = txtNuevoMotivoPrestamo.getText();
         if (nombre == null || nombre.trim().isEmpty()) {
-            Alertas.mostrarError("Debe ingresar el nombre del motivo de prÃ©stamo");
+            Alertas.mostrarError("Debe ingresar el nombre del motivo de prÃƒÂ©stamo");
             return;
         }
         if (motivosPrestamoDAO.agregarMotivoPrestamo(nombre)) {
             txtNuevoMotivoPrestamo.clear();
             cargarMotivosPrestamo();
-            Alertas.mostrarExito("Motivo de prÃ©stamo registrado");
+            Alertas.mostrarExito("Motivo de prÃƒÂ©stamo registrado");
         }
     }
 
     @FXML
     void clickAlternarEstadoMotivoPrestamo() {
         if (motivoPrestamoSeleccionado == null) {
-            Alertas.mostrarError("Seleccione un motivo de prÃ©stamo");
+            Alertas.mostrarError("Seleccione un motivo de prÃƒÂ©stamo");
             return;
         }
 
@@ -631,11 +640,11 @@ public class ConfiguracionController {
 
         if (docentesDAO.docenteTieneRegistros(docenteSeleccionado.getId())) {
             Alertas.mostrarWarning("No es posible eliminar al docente '" + docenteSeleccionado.getNombreCompleto() +
-                    "' porque tiene prÃ©stamos o sesiones de biblioteca virtual vinculadas.");
+                    "' porque tiene prÃƒÂ©stamos o sesiones de biblioteca virtual vinculadas.");
             return;
         }
 
-        boolean confirma = Alertas.mostrarConfirmacion("Â¿EstÃ¡ seguro de eliminar al docente '" +
+        boolean confirma = Alertas.mostrarConfirmacion("Ã‚Â¿EstÃƒÂ¡ seguro de eliminar al docente '" +
                 docenteSeleccionado.getNombreCompleto() + "'?");
         if (!confirma)
             return;
@@ -669,7 +678,7 @@ public class ConfiguracionController {
         if (txtDocApellido2 != null)
             txtDocApellido2.clear();
         if (lblTituloFormDocente != null)
-            lblTituloFormDocente.setText("GestiÃ³n de Docente");
+            lblTituloFormDocente.setText("GestiÃƒÂ³n de Docente");
         if (lblEstadoEdicionDocente != null)
             lblEstadoEdicionDocente
                     .setText("Complete los datos para registrar o seleccione uno de la tabla para editar.");

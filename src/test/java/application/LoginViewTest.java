@@ -24,6 +24,7 @@ public class LoginViewTest {
     @Start
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(Paths.LOGIN));
+            loader.setControllerFactory(utils.AppDIContainer.getInstance());
         Parent root = loader.load();
         Scene scene = new Scene(root);
         stage.setScene(scene);
