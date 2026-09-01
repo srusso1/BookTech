@@ -92,15 +92,18 @@ public class DevolucionController {
         }
 
         prestamoSeleccionado = tabla.getSelectionModel().getSelectedItem();
-        if(prestamosDAO.registrarDevolucion(prestamoSeleccionado)){
+        services.PrestamoService prestamoService = new services.PrestamoService();
+
+        if(prestamoService.registrarDevolucion(prestamoSeleccionado, libro.getId())){
             if (Fechas.esDespues(Fechas.fechaActualISO(), prestamoSeleccionado.getFecha_limite())) {
                 String fechaLimiteUI = Fechas.convertirAUI(prestamoSeleccionado.getFecha_limite());
                 Alertas.mostrarInfo("Se registro la devolución correctamente. Sin embargo, fue devuelto fuera de tiempo, la fecha límite era hasta: " + (fechaLimiteUI != null ? fechaLimiteUI : prestamoSeleccionado.getFecha_limite()));
             }else{
                 Alertas.mostrarExito("Se registro correctamente la devolución y fue dentro de la fecha establecida.");
             }
-            librosDAO.aumentarUnidadLibro(libro.getId());
             cerrar();
+        } else {
+            Alertas.mostrarError("Ocurrió un error al registrar la devolución.");
         }
     }
 

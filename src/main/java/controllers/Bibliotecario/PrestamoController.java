@@ -136,17 +136,12 @@ public class PrestamoController {
         int id_motivo = motivoPrestamo.getId();
         int id_docente = docenteSeleccionado.getId();
 
-        if(prestamosDAO.validarPrestamo(idLibro, id_estudiante)){
-            Alertas.mostrarError("El estudiante ya tiene un prestamo activo/pendiente para este libro");
-            return;
-        }
+        services.PrestamoService prestamoService = new services.PrestamoService();
 
-
-        if(prestamosDAO.registrarPrestamo(idLibro, id_estudiante, id_motivo, id_docente, fechaHoy, fechaDevolucion)){
-            librosDAO.disminuirUnidadLibro(idLibro);
+        if(prestamoService.registrarPrestamo(idLibro, id_estudiante, id_motivo, id_docente, fechaHoy, fechaDevolucion)){
             Alertas.mostrarExito("Se registro el prestamo del libro: '" + libro.getTitulo() + "' al estudiante: " + estudianteSeleccionado.getNombreCompleto());
         }else{
-            Alertas.mostrarError("Error al registrar el prestamo");
+            Alertas.mostrarError("Error al registrar el prestamo o el estudiante ya tiene un prestamo activo/pendiente para este libro");
         }
         cerrar();
     }
