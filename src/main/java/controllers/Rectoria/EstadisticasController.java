@@ -108,7 +108,7 @@ public class EstadisticasController {
         dpFechaFin.setValue(hoy);
         
         recargarGraficas();
-        Alertas.mostrarExito("Filtro limpiado, mostrando datos sin restricciÃ³n de fechas");
+        Alertas.mostrarExito("Filtro limpiado, mostrando datos sin restricción de fechas");
     }
 
     private void recargarGraficas() {
@@ -121,7 +121,7 @@ public class EstadisticasController {
     }
 
     private void cargarGraficaGenero() {
-        gfBarraGenero.setTitle("PrÃ©stamos por gÃ©nero");
+        gfBarraGenero.setTitle("Préstamos por género");
         gfBarraGenero.setAnimated(false);
 
         Map<String, Integer> datos = (fechaFiltroInicio != null && fechaFiltroFin != null) ?
@@ -143,7 +143,7 @@ public class EstadisticasController {
                 XYChart.Data<String, Number> data = new XYChart.Data<>("Hombres", total);
                 hombres.getData().add(data);
 
-                // ðŸ”¥ Tooltip
+                // 🔥 Tooltip
                 data.nodeProperty().addListener((obs, oldNode, node) -> {
                     if (node != null) {
                         Tooltip.install(node, new Tooltip("Total: " + total));
@@ -155,7 +155,7 @@ public class EstadisticasController {
                 XYChart.Data<String, Number> data = new XYChart.Data<>("Mujeres", total);
                 mujeres.getData().add(data);
 
-                // ðŸ”¥ Tooltip
+                // 🔥 Tooltip
                 data.nodeProperty().addListener((obs, oldNode, node) -> {
                     if (node != null) {
                         Tooltip.install(node, new Tooltip("Total: " + total));
@@ -173,14 +173,14 @@ public class EstadisticasController {
 
         gfBarraCategoria.setAnimated(true);
         gfBarraCategoria.setLegendVisible(false);
-        gfBarraCategoria.setTitle("PrÃ©stamos por categorÃ­a");
+        gfBarraCategoria.setTitle("Préstamos por categoría");
 
         Map<String, Integer> datos = (fechaFiltroInicio != null && fechaFiltroFin != null) ?
                 prestamosDAO.obtenerPrestamosPorCategoria(fechaFiltroInicio, fechaFiltroFin) :
                 prestamosDAO.obtenerPrestamosPorCategoria();
 
         XYChart.Series<Number, String> serie = new XYChart.Series<>();
-        serie.setName("CategorÃ­as");
+        serie.setName("Categorías");
 
         for (Map.Entry<String, Integer> entry : datos.entrySet()) {
 
@@ -190,14 +190,14 @@ public class EstadisticasController {
             XYChart.Data<Number, String> data = new XYChart.Data<>(total, categoria);
             serie.getData().add(data);
 
-            // ðŸ”¥ Tooltip + Color dinÃ¡mico
+            // 🔥 Tooltip + Color dinámico
             data.nodeProperty().addListener((obs, oldNode, node) -> {
                 if (node != null) {
 
                     // Tooltip
                     Tooltip.install(node, new Tooltip(categoria + ": " + total));
 
-                    // ðŸŽ¨ Color segÃºn cantidad (puedes ajustar rangos)
+                    // 🎨 Color según cantidad (puedes ajustar rangos)
                     String color;
 
                     if (total == 0) {
@@ -221,7 +221,7 @@ public class EstadisticasController {
 
     private void cargarGraficaGrados() {
 
-        gfTortaPrestamosGrado.setTitle("Top 5 grados con mÃ¡s prÃ©stamos");
+        gfTortaPrestamosGrado.setTitle("Top 5 grados con más préstamos");
 
         Map<String, Integer> datos = (fechaFiltroInicio != null && fechaFiltroFin != null) ?
                 prestamosDAO.obtenerPrestamosPorGradoTop(5, fechaFiltroInicio, fechaFiltroFin) :
@@ -229,7 +229,7 @@ public class EstadisticasController {
 
         ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
 
-        // ðŸ”¥ Calcular total general
+        // 🔥 Calcular total general
         int totalGeneral = datos.values().stream().mapToInt(Integer::intValue).sum();
 
         for (Map.Entry<String, Integer> entry : datos.entrySet()) {
@@ -240,7 +240,7 @@ public class EstadisticasController {
             PieChart.Data data = new PieChart.Data(grado, total);
             pieData.add(data);
 
-            // ðŸ”¥ Tooltip con valor + porcentaje
+            // 🔥 Tooltip con valor + porcentaje
             data.nodeProperty().addListener((obs, oldNode, node) -> {
                 if (node != null) {
 
@@ -261,7 +261,7 @@ public class EstadisticasController {
 
         gfBarraDocentes.setAnimated(true);
         gfBarraDocentes.setLegendVisible(false);
-        gfBarraDocentes.setTitle("Top 5 docentes que envian mÃ¡s estudiantes a la biblioteca");
+        gfBarraDocentes.setTitle("Top 5 docentes que envian más estudiantes a la biblioteca");
 
         Map<String, Integer> datos = (fechaFiltroInicio != null && fechaFiltroFin != null) ?
                 prestamosDAO.obtenerPrestamosPorDocenteTop(5, fechaFiltroInicio, fechaFiltroFin) :
@@ -305,7 +305,7 @@ public class EstadisticasController {
 
         gfBarraPlataformaVirtual.setAnimated(true);
         gfBarraPlataformaVirtual.setLegendVisible(false);
-        gfBarraPlataformaVirtual.setTitle("Top 5 docentes con mÃ¡s uso de la plataforma");
+        gfBarraPlataformaVirtual.setTitle("Top 5 docentes con más uso de la plataforma");
         if (gfBarraPlataformaVirtual.getXAxis() instanceof NumberAxis numberAxis) {
             numberAxis.setLabel("Horas acumuladas");
         }
@@ -351,7 +351,7 @@ public class EstadisticasController {
 
     private void cargarGraficaGradosPlataforma() {
 
-        gfTortaGradosPlataforma.setTitle("Top 5 grados con mÃ¡s uso de plataforma");
+        gfTortaGradosPlataforma.setTitle("Top 5 grados con más uso de plataforma");
 
         Map<String, Integer> datos = (fechaFiltroInicio != null && fechaFiltroFin != null) ?
                 registroPlataformaDAO.obtenerTopGradosUsoPlataforma(fechaFiltroInicio, fechaFiltroFin, 5) :
@@ -359,7 +359,7 @@ public class EstadisticasController {
 
         ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
 
-        // ðŸ”¥ Calcular total general
+        // 🔥 Calcular total general
         int totalGeneral = datos.values().stream().mapToInt(Integer::intValue).sum();
 
         for (Map.Entry<String, Integer> entry : datos.entrySet()) {
@@ -370,7 +370,7 @@ public class EstadisticasController {
             PieChart.Data data = new PieChart.Data(grado, totalMinutos);
             pieData.add(data);
 
-            // ðŸ”¥ Tooltip con valor + porcentaje + formato de horas
+            // 🔥 Tooltip con valor + porcentaje + formato de horas
             data.nodeProperty().addListener((obs, oldNode, node) -> {
                 if (node != null) {
 
