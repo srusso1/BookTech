@@ -25,13 +25,13 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        // ConfiguraciÃƒÂ³n global del tema moderno AtlantaFX PrimerLight
+        // ConfiguraciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n global del tema moderno AtlantaFX PrimerLight
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
 
-        // Iniciamos la bÃƒÂºsqueda de actualizaciones una vez que el toolkit de JavaFX estÃƒÂ¡ listo.
+        // Iniciamos la bÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºsqueda de actualizaciones una vez que el toolkit de JavaFX estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ listo.
         new Thread(() -> {
             try {
-                // PequeÃƒÂ±a espera para asegurar que la ventana principal sea visible antes de la alerta
+                // PequeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â±a espera para asegurar que la ventana principal sea visible antes de la alerta
                 Thread.sleep(1000);
                 UpdateService.notificarActualizacionSiExiste();
             } catch (Exception e) {
@@ -42,6 +42,7 @@ public class App extends Application {
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource(Paths.LOGIN)
         );
+        loader.setControllerFactory(utils.AppDIContainer.getInstance());
 
         Parent root = loader.load();
         Scene scene = new Scene(root);
