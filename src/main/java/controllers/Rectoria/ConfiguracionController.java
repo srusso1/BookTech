@@ -29,9 +29,6 @@ import java.util.List;
 
 public class ConfiguracionController {
 
-    private static final List<String> ESTRUCTURA_CSV = List.of(
-            "identificacion", "grado", "apellido_1", "apellido_2", "nombre_1", "nombre_2", "genero");
-
     @FXML
     private TableView<Estudiante> tblEstudiantes;
     @FXML
@@ -311,7 +308,7 @@ public class ConfiguracionController {
             }
 
             if (estudiantesDAO.existeIdentificacionEnOtroRegistro(identificacion, estudianteSeleccionado.getId())) {
-                Alertas.mostrarError("Ya existe otro estudiante con esa identificación");
+                Alertas.mostrarError("Ya existe otro estudiante con esa identificaciÃ³n");
                 return;
             }
 
@@ -331,7 +328,7 @@ public class ConfiguracionController {
                 lblResumenCsv.setText("Cambios manuales aplicados correctamente.");
             }
         } catch (NumberFormatException e) {
-            Alertas.mostrarError("Identificación y grado deben ser numéricos");
+            Alertas.mostrarError("IdentificaciÃ³n y grado deben ser numÃ©ricos");
         }
     }
 
@@ -366,66 +363,13 @@ public class ConfiguracionController {
         Alertas.mostrarExito("Vista previa CSV descartada correctamente");
     }
 
-    private void procesarCsvEstudiantes(File file) {
+        private void procesarCsvEstudiantes(File file) {
         try {
-            List<String> lineas = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
-            if (lineas.isEmpty()) {
-                Alertas.mostrarError("El archivo CSV está vacío");
-                return;
-            }
-
-            int indiceEncabezado = -1;
-            List<String> encabezado = List.of();
-            for (int i = 0; i < lineas.size(); i++) {
-                String linea = lineas.get(i).trim();
-                if (linea.isEmpty()) {
-                    continue;
-                }
-                encabezado = normalizarEncabezados(parseCsvLine(linea));
-                indiceEncabezado = i;
-                break;
-            }
-
-            if (indiceEncabezado < 0 || !estructuraValida(encabezado)) {
-                Alertas.mostrarError(
-                        "Estructura CSV inválida. Debe ser exactamente:\n" + String.join(", ", ESTRUCTURA_CSV));
-                return;
-            }
-
+            EstudianteService service = new EstudianteService();
+            EstudianteService.ParseResult result = service.parsearArchivoCsv(file);
+            
             estudiantesPendientesCsv.clear();
-            int errores = 0;
-
-            for (int i = indiceEncabezado + 1; i < lineas.size(); i++) {
-                String linea = lineas.get(i).trim();
-                if (linea.isEmpty()) {
-                    continue;
-                }
-
-                try {
-                    List<String> columnas = parseCsvLine(linea);
-                    if (columnas.size() != ESTRUCTURA_CSV.size()) {
-                        errores++;
-                        continue;
-                    }
-
-                    long identificacion = Long.parseLong(columnas.get(0).trim());
-                    int grado = Integer.parseInt(columnas.get(1).trim());
-                    String nombre2 = columnas.get(5) == null ? "" : columnas.get(5).trim(); // nombre_2 vacío es válido
-
-                    Estudiante estudiante = new Estudiante(
-                            identificacion,
-                            grado,
-                            columnas.get(2),
-                            columnas.get(3),
-                            columnas.get(4),
-                            nombre2,
-                            columnas.get(6));
-
-                    estudiantesPendientesCsv.add(estudiante);
-                } catch (Exception ex) {
-                    errores++;
-                }
-            }
+            estudiantesPendientesCsv.addAll(result.estudiantes);
 
             if (estudiantesPendientesCsv.isEmpty()) {
                 hayCsvPendiente = false;
@@ -441,10 +385,12 @@ public class ConfiguracionController {
             actualizarBaseTablaEstudiantes(estudiantesPendientesCsv);
 
             String resumen = "Vista previa CSV cargada: " + estudiantesPendientesCsv.size()
-                    + " filas válidas, " + errores + " errores. Revise/filtre la tabla y pulse Guardar registro CSV.";
+                    + " filas válidas, " + result.errores + " errores. Revise/filtre la tabla y pulse Guardar registro CSV.";
             lblResumenCsv.setText(resumen);
             Alertas.mostrarExito("Vista previa cargada. Confirme con Guardar registro CSV.");
 
+        } catch (IllegalArgumentException e) {
+            Alertas.mostrarError(e.getMessage());
         } catch (Exception e) {
             Alertas.mostrarError("Error al leer el CSV: " + e.getMessage());
         }
@@ -483,7 +429,7 @@ public class ConfiguracionController {
                 Alertas.mostrarExito(resumen);
             } else {
                 lblResumenCsv.setText("Error al guardar CSV.");
-                Alertas.mostrarError("Ocurrió un error grave al guardar el CSV. Se canceló la operación (Rollback).");
+                Alertas.mostrarError("OcurriÃ³ un error grave al guardar el CSV. Se cancelÃ³ la operaciÃ³n (Rollback).");
             }
         });
 
@@ -491,8 +437,8 @@ public class ConfiguracionController {
             btnGuardarCambiosEstudiante.setDisable(false);
             btnDescartarCsv.setDisable(false);
             actualizarEstadoBotonGuardado();
-            lblResumenCsv.setText("Fallo crítico en el proceso.");
-            Alertas.mostrarError("Error crítico al procesar el lote: " + tarea.getException().getMessage());
+            lblResumenCsv.setText("Fallo crÃ­tico en el proceso.");
+            Alertas.mostrarError("Error crÃ­tico al procesar el lote: " + tarea.getException().getMessage());
         });
 
         new Thread(tarea).start();
@@ -502,20 +448,20 @@ public class ConfiguracionController {
     void clickAgregarMotivoPrestamo() {
         String nombre = txtNuevoMotivoPrestamo.getText();
         if (nombre == null || nombre.trim().isEmpty()) {
-            Alertas.mostrarError("Debe ingresar el nombre del motivo de préstamo");
+            Alertas.mostrarError("Debe ingresar el nombre del motivo de prÃ©stamo");
             return;
         }
         if (motivosPrestamoDAO.agregarMotivoPrestamo(nombre)) {
             txtNuevoMotivoPrestamo.clear();
             cargarMotivosPrestamo();
-            Alertas.mostrarExito("Motivo de préstamo registrado");
+            Alertas.mostrarExito("Motivo de prÃ©stamo registrado");
         }
     }
 
     @FXML
     void clickAlternarEstadoMotivoPrestamo() {
         if (motivoPrestamoSeleccionado == null) {
-            Alertas.mostrarError("Seleccione un motivo de préstamo");
+            Alertas.mostrarError("Seleccione un motivo de prÃ©stamo");
             return;
         }
 
@@ -552,52 +498,6 @@ public class ConfiguracionController {
             cargarMotivosPlataforma();
             Alertas.mostrarExito("Estado actualizado correctamente");
         }
-    }
-
-    private List<String> normalizarEncabezados(List<String> encabezados) {
-        List<String> salida = new ArrayList<>();
-        for (int i = 0; i < encabezados.size(); i++) {
-            String valor = encabezados.get(i);
-            if (i == 0) {
-                valor = valor.replace("\uFEFF", "");
-            }
-            salida.add(valor.trim().toLowerCase());
-        }
-        return salida;
-    }
-
-    private boolean estructuraValida(List<String> encabezados) {
-        if (encabezados.size() != ESTRUCTURA_CSV.size()) {
-            return false;
-        }
-        for (int i = 0; i < ESTRUCTURA_CSV.size(); i++) {
-            if (!ESTRUCTURA_CSV.get(i).equals(encabezados.get(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private List<String> parseCsvLine(String line) {
-        List<String> result = new ArrayList<>();
-        StringBuilder current = new StringBuilder();
-        boolean inQuotes = false;
-
-        for (int i = 0; i < line.length(); i++) {
-            char c = line.charAt(i);
-            if (c == '"') {
-                inQuotes = !inQuotes;
-                continue;
-            }
-            if (c == ',' && !inQuotes) {
-                result.add(current.toString());
-                current.setLength(0);
-            } else {
-                current.append(c);
-            }
-        }
-        result.add(current.toString());
-        return result;
     }
 
     private void limpiarFormularioEstudiante() {
@@ -731,11 +631,11 @@ public class ConfiguracionController {
 
         if (docentesDAO.docenteTieneRegistros(docenteSeleccionado.getId())) {
             Alertas.mostrarWarning("No es posible eliminar al docente '" + docenteSeleccionado.getNombreCompleto() +
-                    "' porque tiene préstamos o sesiones de biblioteca virtual vinculadas.");
+                    "' porque tiene prÃ©stamos o sesiones de biblioteca virtual vinculadas.");
             return;
         }
 
-        boolean confirma = Alertas.mostrarConfirmacion("¿Está seguro de eliminar al docente '" +
+        boolean confirma = Alertas.mostrarConfirmacion("Â¿EstÃ¡ seguro de eliminar al docente '" +
                 docenteSeleccionado.getNombreCompleto() + "'?");
         if (!confirma)
             return;
@@ -769,7 +669,7 @@ public class ConfiguracionController {
         if (txtDocApellido2 != null)
             txtDocApellido2.clear();
         if (lblTituloFormDocente != null)
-            lblTituloFormDocente.setText("Gestión de Docente");
+            lblTituloFormDocente.setText("GestiÃ³n de Docente");
         if (lblEstadoEdicionDocente != null)
             lblEstadoEdicionDocente
                     .setText("Complete los datos para registrar o seleccione uno de la tabla para editar.");
