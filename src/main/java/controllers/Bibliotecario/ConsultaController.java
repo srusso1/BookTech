@@ -75,20 +75,20 @@ public class ConsultaController {
                     getClass().getResource(Paths.PRESTAMO_BIBLIOTECARIO)
             );
 
-            // 🔹 El root ES un VBox
+            // ðŸ”¹ El root ES un VBox
             VBox root = loader.load();
 
-            // 🔹 Controller del préstamo
+            // ðŸ”¹ Controller del prÃ©stamo
             PrestamoController controller = loader.getController();
             controller.setLibro(libroSeleccionado);
 
-            // 🔹 Diálogo
+            // ðŸ”¹ DiÃ¡logo
             Dialog<Void> dialog = new Dialog<>();
-            dialog.setTitle("Registrar préstamo");
+            dialog.setTitle("Registrar prÃ©stamo");
             dialog.getDialogPane().setContent(root);
             aplicarEstilosDialogo(dialog);
 
-            // 🔹 Botón cerrar (el formulario maneja registrar/cancelar)
+            // ðŸ”¹ BotÃ³n cerrar (el formulario maneja registrar/cancelar)
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
             dialog.showAndWait();
@@ -110,7 +110,7 @@ public class ConsultaController {
             return;
         }
 
-        System.out.println("Prestamos activos: " + prestamosActivos.size() + " para el libro: " + prestamosActivos.getFirst().getEstudiante());
+        // Log eliminado para limpieza
 
 
         try {
@@ -118,27 +118,27 @@ public class ConsultaController {
                     getClass().getResource(Paths.DEVOLUCION_BIBLIOTECARIO)
             );
 
-            // 🔹 El root ES un VBox
+            // ðŸ”¹ El root ES un VBox
             VBox root = loader.load();
 
-            // 🔹 Controller del préstamo
+            // ðŸ”¹ Controller del prÃ©stamo
             DevolucionController controller = loader.getController();
             controller.setLibro(libroSeleccionado);
             controller.setPrestamos(prestamosActivos);
 
-            // 🔹 Diálogo
+            // ðŸ”¹ DiÃ¡logo
             Dialog<Void> dialog = new Dialog<>();
-            dialog.setTitle("Registrar devolución");
+            dialog.setTitle("Registrar devoluciÃ³n");
             dialog.getDialogPane().setContent(root);
             aplicarEstilosDialogo(dialog);
 
-            // 🔹 Botón cerrar (el formulario maneja registrar/cancelar)
+            // ðŸ”¹ BotÃ³n cerrar (el formulario maneja registrar/cancelar)
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
             dialog.showAndWait();
 
         } catch (Exception e) {
-            System.out.println(Arrays.toString(e.getStackTrace()));
+            e.printStackTrace(); // TODO: Use Logger
         }
 
         txtBuscarLibro.clear();
@@ -192,14 +192,14 @@ public class ConsultaController {
 
         for (Libro libro : resultados) {
             MenuItem item = new MenuItem(
-                    libro.getTitulo() + " — " + libro.getAutor()
+                    libro.getTitulo() + " â€” " + libro.getAutor()
             );
 
             item.setOnAction(e -> {
                 txtBuscarLibro.setText(libro.getTitulo());
                 sugerenciasMenu.hide();
 
-                // Aquí ya tienes el libro seleccionado
+                // AquÃ­ ya tienes el libro seleccionado
                 libroSeleccionado = libro;
                 mostrarElementos();
                 mostrarInformacionLibro();
