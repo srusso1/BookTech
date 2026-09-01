@@ -1,4 +1,4 @@
-package controllers.Rectoria;
+﻿package controllers.Rectoria;
 
 
 import database.LibrosDAO;
@@ -66,14 +66,14 @@ public class InventarioController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(Paths.EDITAR_LIBRO_RECTORIA));
             loader.setControllerFactory(utils.AppDIContainer.getInstance());
 
-            // í°Å¸â€Â¹ El root ES un VBox
+            // 🔹 El root ES un VBox
             VBox root = loader.load();
 
-            // í°Å¸â€Â¹ Controller del préstamo
+            // 🔹 Controller del préstamo
             EditarLibroController controller = loader.getController();
             controller.setLibro(libroSeleccionado);
 
-            // í°Å¸â€Â¹ Diíƒ¡logo
+            // 🔹 Diálogo
             Stage modal = new Stage();
             modal.setTitle("Editar libro");
             modal.initModality(Modality.WINDOW_MODAL);
@@ -99,10 +99,10 @@ public class InventarioController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(Paths.REGISTRAR_LIBRO_RECTORIA));
             loader.setControllerFactory(utils.AppDIContainer.getInstance());
 
-            // í°Å¸â€Â¹ El root ES un VBox
+            // 🔹 El root ES un VBox
             VBox root = loader.load();
 
-            // í°Å¸â€Â¹ Diíƒ¡logo
+            // 🔹 Diálogo
             Stage modal = new Stage();
             modal.setTitle("Libro nuevo");
             modal.initModality(Modality.WINDOW_MODAL);

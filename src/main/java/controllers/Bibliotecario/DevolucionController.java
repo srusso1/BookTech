@@ -24,10 +24,10 @@ public class DevolucionController {
     private final PrestamosDAO prestamosDAO;
     private final LibrosDAO librosDAO;
 
-    // í°Å¸â€Â¹ método para recibir el libro
+    // 🔹 método para recibir el libro
     public void setLibro(Libro libro) {
         this.libro = libro;
-        lblLibro.setText(libro.getTitulo() + " í¢â‚¬â€ " + libro.getAutor());
+        lblLibro.setText(libro.getTitulo() + " - " + libro.getAutor());
     }
 
     public void setPrestamos(List<Prestamo> prestamos) {

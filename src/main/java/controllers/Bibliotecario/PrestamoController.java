@@ -55,10 +55,10 @@ public class PrestamoController {
     private final DocentesDAO docentesDAO;
     List<MotivoPrestamo> motivosPrestamos = new ArrayList<>();
     List<Docente> listaDocentes = new ArrayList<>();
-    // íƒÆ’í‚Â°íƒâ€¦í‚Â¸íƒÂ¢í¢â€šÂ¬í‚Âíƒâ€ší‚Â¹ método para recibir el libro
+    // 📖 método para recibir el libro
     public void setLibro(Libro libro) {
         this.libro = libro;
-        lblLibro.setText(libro.getTitulo() + " íƒÆ’í‚Â¢íƒÂ¢í¢â‚¬Å¡í‚Â¬íƒÂ¢í¢â€šÂ¬í‚Â " + libro.getAutor());
+        lblLibro.setText(libro.getTitulo() + " - " + libro.getAutor());
     }
 
     @FXML
