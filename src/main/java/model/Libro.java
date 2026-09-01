@@ -60,6 +60,10 @@ public class Libro {
     public void setAutor(String autor) { this.autor = autor; }
     public int getUnidades() { return unidades; }
     public void setUnidades(int unidades) { this.unidades = unidades; }
+
+    public boolean isDisponibleParaPrestamo() {
+        return this.unidades >= 3;
+    }
     public int getId_editorial() { return id_editorial; }
     public void setId_editorial(int id_editorial) { this.id_editorial = id_editorial; }
     public Editorial getEditorialObj() { return editorialObj; }

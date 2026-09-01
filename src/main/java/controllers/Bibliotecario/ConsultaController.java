@@ -19,7 +19,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class ConsultaController {
+
+    private static final Logger LOGGER = Logger.getLogger(ConsultaController.class.getName());
 
     @FXML
     private Button btnConsulta;
@@ -65,7 +70,7 @@ public class ConsultaController {
 
         if (libroSeleccionado == null) return;
 
-        if(libroSeleccionado.getUnidades() < 3){
+        if(!libroSeleccionado.isDisponibleParaPrestamo()){
             Alertas.mostrarError("No hay suficientes unidades disponibles para realizar un prestamo");
             return;
         }
@@ -75,20 +80,20 @@ public class ConsultaController {
                     getClass().getResource(Paths.PRESTAMO_BIBLIOTECARIO)
             );
 
-            // ðŸ”¹ El root ES un VBox
+            // ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¹ El root ES un VBox
             VBox root = loader.load();
 
-            // ðŸ”¹ Controller del prÃ©stamo
+            // ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¹ Controller del prÃƒÆ’Ã‚Â©stamo
             PrestamoController controller = loader.getController();
             controller.setLibro(libroSeleccionado);
 
-            // ðŸ”¹ DiÃ¡logo
+            // ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¹ DiÃƒÆ’Ã‚Â¡logo
             Dialog<Void> dialog = new Dialog<>();
-            dialog.setTitle("Registrar prÃ©stamo");
+            dialog.setTitle("Registrar prÃƒÆ’Ã‚Â©stamo");
             dialog.getDialogPane().setContent(root);
             aplicarEstilosDialogo(dialog);
 
-            // ðŸ”¹ BotÃ³n cerrar (el formulario maneja registrar/cancelar)
+            // ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¹ BotÃƒÆ’Ã‚Â³n cerrar (el formulario maneja registrar/cancelar)
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
             dialog.showAndWait();
@@ -118,27 +123,27 @@ public class ConsultaController {
                     getClass().getResource(Paths.DEVOLUCION_BIBLIOTECARIO)
             );
 
-            // ðŸ”¹ El root ES un VBox
+            // ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¹ El root ES un VBox
             VBox root = loader.load();
 
-            // ðŸ”¹ Controller del prÃ©stamo
+            // ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¹ Controller del prÃƒÆ’Ã‚Â©stamo
             DevolucionController controller = loader.getController();
             controller.setLibro(libroSeleccionado);
             controller.setPrestamos(prestamosActivos);
 
-            // ðŸ”¹ DiÃ¡logo
+            // ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¹ DiÃƒÆ’Ã‚Â¡logo
             Dialog<Void> dialog = new Dialog<>();
-            dialog.setTitle("Registrar devoluciÃ³n");
+            dialog.setTitle("Registrar devoluciÃƒÆ’Ã‚Â³n");
             dialog.getDialogPane().setContent(root);
             aplicarEstilosDialogo(dialog);
 
-            // ðŸ”¹ BotÃ³n cerrar (el formulario maneja registrar/cancelar)
+            // ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¹ BotÃƒÆ’Ã‚Â³n cerrar (el formulario maneja registrar/cancelar)
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
             dialog.showAndWait();
 
         } catch (Exception e) {
-            e.printStackTrace(); // TODO: Use Logger
+            LOGGER.log(Level.SEVERE, "Error al cargar la vista lateral", e);
         }
 
         txtBuscarLibro.clear();
@@ -192,14 +197,14 @@ public class ConsultaController {
 
         for (Libro libro : resultados) {
             MenuItem item = new MenuItem(
-                    libro.getTitulo() + " â€” " + libro.getAutor()
+                    libro.getTitulo() + " ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â " + libro.getAutor()
             );
 
             item.setOnAction(e -> {
                 txtBuscarLibro.setText(libro.getTitulo());
                 sugerenciasMenu.hide();
 
-                // AquÃ­ ya tienes el libro seleccionado
+                // AquÃƒÆ’Ã‚Â­ ya tienes el libro seleccionado
                 libroSeleccionado = libro;
                 mostrarElementos();
                 mostrarInformacionLibro();

@@ -15,22 +15,27 @@ import java.awt.Taskbar;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class App extends Application {
+
+    private static final Logger LOGGER = Logger.getLogger(App.class.getName());
 
     @Override
     public void start(Stage stage) throws Exception {
 
-        // Configuración global del tema moderno AtlantaFX PrimerLight
+        // ConfiguraciÃƒÂ³n global del tema moderno AtlantaFX PrimerLight
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
 
-        // Iniciamos la búsqueda de actualizaciones una vez que el toolkit de JavaFX está listo.
+        // Iniciamos la bÃƒÂºsqueda de actualizaciones una vez que el toolkit de JavaFX estÃƒÂ¡ listo.
         new Thread(() -> {
             try {
-                // Pequeña espera para asegurar que la ventana principal sea visible antes de la alerta
+                // PequeÃƒÂ±a espera para asegurar que la ventana principal sea visible antes de la alerta
                 Thread.sleep(1000);
                 UpdateService.notificarActualizacionSiExiste();
             } catch (Exception e) {
-                System.err.println("[Update] Error al buscar actualizaciones: " + e.getMessage());
+                LOGGER.log(Level.SEVERE, "Error al buscar actualizaciones: " + e.getMessage(), e);
             }
         }).start();
 

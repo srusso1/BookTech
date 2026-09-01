@@ -9,7 +9,12 @@ import javafx.scene.layout.Pane;
 import java.io.IOException;
 import java.util.Objects;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class ManagerView {
+
+    private static final Logger LOGGER = Logger.getLogger(ManagerView.class.getName());
     public static void cargarVista(Pane contenedor, String fxml) {
         try {
             Parent vista = FXMLLoader.load(
@@ -42,7 +47,7 @@ public class ManagerView {
 
         } catch (IOException e) {
             Alertas.mostrarError("Error al cargar vista central: " + e.getMessage());
-            System.out.println(e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error al cargar vista: " + fxml, e);
         }
     }
 
