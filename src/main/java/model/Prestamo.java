@@ -145,6 +145,21 @@ public class Prestamo {
         this.dias_atraso = dias_atraso;
     }
 
+        public boolean isVencido() {
+        if (this.estado == 1) return false; // Ya devuelto
+        if (this.fecha_limite == null || this.fecha_limite.isEmpty()) return false;
+        try {
+            java.time.LocalDate limite = java.time.LocalDate.parse(this.fecha_limite);
+            return java.time.LocalDate.now().isAfter(limite);
+        } catch (Exception e) {
+            return false; // Error parseando fecha
+        }
+    }
+
+    public boolean isActivo() {
+        return this.estado == 0;
+    }
+
     public int getEstado() {
         return estado;
     }
