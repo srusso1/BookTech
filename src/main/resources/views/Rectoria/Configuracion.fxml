@@ -62,19 +62,19 @@
                                                     <Label styleClass="label-filtro" text="Grado:" />
                                                     <ComboBox fx:id="cbFiltroGrado" prefWidth="110.0" styleClass="combo-filtro" />
                                                     <Label styleClass="label-filtro" text="Buscar:" />
-                                                    <TextField fx:id="txtBuscarEstudiante" promptText="Buscar por nombre o identificación..." styleClass="combo-filtro" HBox.hgrow="ALWAYS" />
+                                                    <TextField fx:id="txtBuscarEstudiante" promptText="Buscar por nombre o identificaciÃ³n..." styleClass="combo-filtro" HBox.hgrow="ALWAYS" />
                                                 </children>
                                             </HBox>
 
                                             <TableView fx:id="tblEstudiantes" minHeight="320.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
                                                 <columns>
-                                                    <TableColumn fx:id="colEstIdentificacion" prefWidth="120.0" text="Identificación" />
+                                                    <TableColumn fx:id="colEstIdentificacion" prefWidth="120.0" text="IdentificaciÃ³n" />
                                                     <TableColumn fx:id="colEstGrado" prefWidth="70.0" text="Grado" />
                                                     <TableColumn fx:id="colEstApellido1" prefWidth="120.0" text="Apellido 1" />
                                                     <TableColumn fx:id="colEstApellido2" prefWidth="120.0" text="Apellido 2" />
                                                     <TableColumn fx:id="colEstNombre1" prefWidth="120.0" text="Nombre 1" />
                                                     <TableColumn fx:id="colEstNombre2" prefWidth="120.0" text="Nombre 2" />
-                                                    <TableColumn fx:id="colEstGenero" prefWidth="80.0" text="Género" />
+                                                    <TableColumn fx:id="colEstGenero" prefWidth="80.0" text="GÃ©nero" />
                                                 </columns>
                                                 <columnResizePolicy>
                                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -83,7 +83,7 @@
                                         </children>
                                     </VBox>
 
-                                    <!-- Columna Derecha: Detail (Panel de Edición) -->
+                                    <!-- Columna Derecha: Detail (Panel de EdiciÃ³n) -->
                                     <VBox maxWidth="360.0" minWidth="310.0" prefWidth="330.0" spacing="10.0" styleClass="containerInfo">
                                         <padding>
                                             <Insets bottom="16.0" left="16.0" right="16.0" top="14.0" />
@@ -106,8 +106,8 @@
                                                 <children>
                                                     <VBox spacing="3.0">
                                                         <children>
-                                                            <Label styleClass="label-filtro" text="Identificación:" />
-                                                            <TextField fx:id="txtIdentificacion" promptText="Número de documento" />
+                                                            <Label styleClass="label-filtro" text="IdentificaciÃ³n:" />
+                                                            <TextField fx:id="txtIdentificacion" promptText="NÃºmero de documento" />
                                                         </children>
                                                     </VBox>
 
@@ -121,7 +121,7 @@
                                                             </VBox>
                                                             <VBox spacing="3.0" HBox.hgrow="ALWAYS">
                                                                 <children>
-                                                                    <Label styleClass="label-filtro" text="Género:" />
+                                                                    <Label styleClass="label-filtro" text="GÃ©nero:" />
                                                                     <TextField fx:id="txtGenero" promptText="M / F" />
                                                                 </children>
                                                             </VBox>
@@ -212,7 +212,7 @@
                                         </children>
                                     </VBox>
 
-                                    <!-- Columna Derecha: Detail (Panel de Edición / Creación de Docente) -->
+                                    <!-- Columna Derecha: Detail (Panel de EdiciÃ³n / CreaciÃ³n de Docente) -->
                                     <VBox maxWidth="360.0" minWidth="310.0" prefWidth="330.0" spacing="10.0" styleClass="containerInfo">
                                         <padding>
                                             <Insets bottom="16.0" left="16.0" right="16.0" top="14.0" />
@@ -220,7 +220,7 @@
                                         <children>
                                             <VBox spacing="3.0">
                                                 <children>
-                                                    <Label fx:id="lblTituloFormDocente" styleClass="subtitulo-seccion" text="Gestión de Docente" />
+                                                    <Label fx:id="lblTituloFormDocente" styleClass="subtitulo-seccion" text="GestiÃ³n de Docente" />
                                                     <Label fx:id="lblEstadoEdicionDocente" styleClass="descripcion-seccion" text="Complete los datos para registrar o seleccione uno de la tabla para editar." wrapText="true">
                                                         <font>
                                                             <Font size="12.0" />
@@ -293,7 +293,7 @@
                                 </padding>
                                 <children>
                                     <VBox spacing="10.0" HBox.hgrow="ALWAYS">
-                                        <Label styleClass="subtitulo-seccion" text="Motivos de préstamo" />
+                                        <Label styleClass="subtitulo-seccion" text="Motivos de prÃ©stamo" />
                                         <TableView fx:id="tblMotivosPrestamo" minHeight="320.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
                                             <columns>
                                                 <TableColumn fx:id="colPrestamoNombre" prefWidth="220.0" text="Motivo" />
@@ -306,7 +306,7 @@
 
                                         <HBox alignment="CENTER" prefHeight="45.0" spacing="8.0">
                                             <children>
-                                                <TextField fx:id="txtNuevoMotivoPrestamo" promptText="Nuevo motivo de préstamo..." HBox.hgrow="ALWAYS" />
+                                                <TextField fx:id="txtNuevoMotivoPrestamo" promptText="Nuevo motivo de prÃ©stamo..." HBox.hgrow="ALWAYS" />
                                                 <Button onAction="#clickAgregarMotivoPrestamo" styleClass="btn-primary" text="Agregar" />
                                                 <Button onAction="#clickAlternarEstadoMotivoPrestamo" styleClass="btn-secondary" text="Activar / Inactivar" />
                                             </children>
@@ -337,7 +337,74 @@
                             </HBox>
                         </content>
                     </Tab>
-                </tabs>
+                
+<Tab text="Editoriales">
+<content>
+<HBox spacing="20.0" HBox.hgrow="ALWAYS">
+                            <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                <Label styleClass="subtitulo" text="Lista de Editoriales" />
+                                <TextField fx:id="txtBuscarEditorial" promptText="Buscar editorial..." styleClass="combo-filtro" />
+                                <TableView fx:id="tblEditoriales" minHeight="320.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                                    <columns>
+                                        <TableColumn fx:id="colEditorialId" prefWidth="60.0" text="ID" />
+                                        <TableColumn fx:id="colEditorialNombre" prefWidth="250.0" text="Nombre" />
+                                        <TableColumn fx:id="colEditorialEstado" prefWidth="100.0" text="Estado" />
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                    </columnResizePolicy>
+                                </TableView>
+                            </VBox>
+                            <VBox spacing="15.0" styleClass="panel-formulario" HBox.hgrow="NEVER" prefWidth="350.0">
+                                <VBox spacing="5.0">
+                                    <Label styleClass="subtitulo" text="Detalles de Editorial" />
+                                    <Label fx:id="lblEstadoEdicionEditorial" styleClass="descripcion-seccion" text="Seleccione una editorial para editar o limpie para crear." wrapText="true" />
+                                </VBox>
+                                <TextField fx:id="txtEditorialNombre" promptText="Nombre de la Editorial" styleClass="input-text" />
+                                <ComboBox fx:id="cbEditorialEstado" maxWidth="Infinity" promptText="Estado" styleClass="combo-filtro" />
+                                <HBox spacing="10.0" alignment="CENTER_RIGHT">
+                                    <Button mnemonicParsing="false" onAction="#limpiarFormularioEditorial" styleClass="btn-secundario" text="Limpiar" />
+                                    <Button mnemonicParsing="false" onAction="#guardarEditorial" styleClass="btn-principal" text="Guardar" />
+                                </HBox>
+                            </VBox>
+                        </HBox>
+</content>
+</Tab>
+
+  <Tab text="Categorias">
+  <content>
+  <HBox spacing="20.0" HBox.hgrow="ALWAYS">
+                              <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                  <Label styleClass="subtitulo" text="Lista de Categorias" />
+                                  <TextField fx:id="txtBuscarCategoria" promptText="Buscar categoria..." styleClass="combo-filtro" />
+                                  <TableView fx:id="tblCategorias" minHeight="320.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                                      <columns>
+                                          <TableColumn fx:id="colCategoriaId" prefWidth="60.0" text="ID" />
+                                          <TableColumn fx:id="colCategoriaNombre" prefWidth="250.0" text="Nombre" />
+                                          <TableColumn fx:id="colCategoriaEstado" prefWidth="100.0" text="Estado" />
+                                      </columns>
+                                      <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                      </columnResizePolicy>
+                                  </TableView>
+                              </VBox>
+                              <VBox spacing="15.0" styleClass="panel-formulario" HBox.hgrow="NEVER" prefWidth="350.0">
+                                  <VBox spacing="5.0">
+                                      <Label styleClass="subtitulo" text="Detalles de Categoria" />
+                                      <Label fx:id="lblEstadoEdicionCategoria" styleClass="descripcion-seccion" text="Seleccione una categoria para editar o limpie para crear." wrapText="true" />
+                                  </VBox>
+                                  <TextField fx:id="txtCategoriaNombre" promptText="Nombre de la Categoria" styleClass="input-text" />
+                                  <ComboBox fx:id="cbCategoriaEstado" maxWidth="Infinity" promptText="Estado" styleClass="combo-filtro" />
+                                  <HBox spacing="10.0" alignment="CENTER_RIGHT">
+                                      <Button mnemonicParsing="false" onAction="#limpiarFormularioCategoria" styleClass="btn-secundario" text="Limpiar" />
+                                      <Button mnemonicParsing="false" onAction="#guardarCategoria" styleClass="btn-principal" text="Guardar" />
+                                  </HBox>
+                              </VBox>
+                          </HBox>
+  </content>
+  </Tab>
+  
+  </tabs>
             </TabPane>
         </VBox>
     </children>

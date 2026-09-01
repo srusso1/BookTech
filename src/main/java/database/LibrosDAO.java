@@ -18,10 +18,11 @@ public class LibrosDAO {
     public List<Libro> buscarSimilares(String texto) {
         List<Libro> lista = new ArrayList<>();
         String sql = """
-            SELECT l.id, l.titulo, l.ubicacion, l.id_categoria, l.editorial, l.autor, l.unidades,
-                   c.nombre_categoria
+            SELECT l.id, l.titulo, l.ubicacion, l.id_categoria, l.id_editorial, l.autor, l.unidades,
+                   c.nombre_categoria, e.nombre AS editorial_nombre
             FROM libros l
             JOIN categorias c ON c.id = l.id_categoria
+            LEFT JOIN editoriales e ON e.id = l.id_editorial
             WHERE UPPER(l.titulo) LIKE ?
             ORDER BY l.titulo
             LIMIT 5
@@ -133,10 +134,11 @@ public class LibrosDAO {
     public ArrayList<Libro> inventarioLibros() {
         ArrayList<Libro> libros = new ArrayList<>();
         String query = """
-                SELECT l.id, l.titulo, l.ubicacion, l.id_categoria, l.editorial, l.autor, l.unidades,
-                       c.nombre_categoria
+                SELECT l.id, l.titulo, l.ubicacion, l.id_categoria, l.id_editorial, l.autor, l.unidades,
+                       c.nombre_categoria, e.nombre AS editorial_nombre
                 FROM libros l
                 JOIN categorias c ON c.id = l.id_categoria
+                LEFT JOIN editoriales e ON e.id = l.id_editorial
                 """;
         try (Connection conexion = ConexionSQLite.conectar();
              PreparedStatement ps = conexion.prepareStatement(query);
@@ -155,10 +157,12 @@ public class LibrosDAO {
         switch (campo.toLowerCase()) {
             case "titulo":
             case "autor":
-            case "editorial":
             case "ubicacion":
             case "unidades":
                 columna = campo.toLowerCase();
+                break;
+            case "editorial":
+                columna = "id_editorial";
                 break;
             case "categoria":
                 columna = "id_categoria";
@@ -188,6 +192,15 @@ public class LibrosDAO {
                 }
 
                 ps.setInt(1, idCategoria);
+            } else if ("id_editorial".equals(columna)) {
+                int idEditorial;
+                try {
+                    idEditorial = Integer.parseInt(nuevoValor);
+                } catch (NumberFormatException e) {
+                    LOGGER.warning("Para editar editorial debes enviar el ID numerico de la editorial");
+                    return false;
+                }
+                ps.setInt(1, idEditorial);
             } else if ("unidades".equals(columna)) {
                 int unidades;
                 try {
@@ -218,13 +231,18 @@ public class LibrosDAO {
     }
 
     private Libro mapLibroConCategoria(ResultSet rs) throws SQLException {
+        model.Editorial editorialObj = new model.Editorial(
+            rs.getInt("id_editorial"),
+            rs.getString("editorial_nombre"),
+            1
+        );
         return new Libro(
                 rs.getInt("id"),
                 rs.getString("titulo"),
                 rs.getString("ubicacion"),
                 rs.getInt("id_categoria"),
                 rs.getString("nombre_categoria"),
-                rs.getString("editorial"),
+                editorialObj,
                 rs.getString("autor"),
                 rs.getInt("unidades")
         );
@@ -241,13 +259,13 @@ public class LibrosDAO {
     }
 
     public boolean registrarLibro(Libro libro) {
-        String query = "INSERT INTO libros (titulo, ubicacion, id_categoria, editorial, autor, unidades) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO libros (titulo, ubicacion, id_categoria, id_editorial, autor, unidades) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conexion = ConexionSQLite.conectar();
              PreparedStatement ps = conexion.prepareStatement(query)) {
             ps.setString(1, libro.getTitulo());
             ps.setString(2, libro.getUbicacion());
             ps.setInt(3, libro.getId_categoria());
-            ps.setString(4, libro.getEditorial());
+            ps.setInt(4, libro.getId_editorial());
             ps.setString(5, libro.getAutor());
             ps.setInt(6, libro.getUnidades());
 

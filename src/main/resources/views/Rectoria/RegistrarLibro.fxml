@@ -19,22 +19,18 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="txtTitulo" maxWidth="Infinity" prefHeight="45.0" promptText="Título del libro" styleClass="combo-filtro">
+      <TextField fx:id="txtTitulo" maxWidth="Infinity" prefHeight="45.0" promptText="TÃƒÂ­tulo del libro" styleClass="combo-filtro">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <TextField fx:id="txtUbicacion" maxWidth="Infinity" prefHeight="45.0" promptText="Ubicación (ej: Estante A-1)" styleClass="combo-filtro">
+      <TextField fx:id="txtUbicacion" maxWidth="Infinity" prefHeight="45.0" promptText="UbicaciÃƒÂ³n (ej: Estante A-1)" styleClass="combo-filtro">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <ComboBox fx:id="comboBoxCategoria" maxWidth="Infinity" prefHeight="45.0" promptText="Elige una categoría" styleClass="combo-filtro" />
-      <TextField fx:id="txtEditorial" maxWidth="Infinity" prefHeight="45.0" promptText="Editorial" styleClass="combo-filtro">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </TextField>
+      <ComboBox fx:id="comboBoxCategoria" maxWidth="Infinity" prefHeight="45.0" promptText="Elige una categorÃƒÂ­a" styleClass="combo-filtro" />
+      <ComboBox fx:id="comboBoxEditorial" maxWidth="Infinity" prefHeight="45.0" promptText="Editorial" styleClass="combo-filtro" />
       <TextField fx:id="txtAutor" maxWidth="Infinity" prefHeight="45.0" promptText="Autor" styleClass="combo-filtro">
          <font>
             <Font size="14.0" />
@@ -45,7 +41,7 @@
             <Font size="14.0" />
          </font>
       </TextField>
-      <Label styleClass="descripcion-seccion" text="Complete todos los campos para añadir el ejemplar al catálogo." wrapText="true">
+      <Label styleClass="descripcion-seccion" text="Complete todos los campos para aÃƒÂ±adir el ejemplar al catÃƒÂ¡logo." wrapText="true">
          <font>
             <Font size="12.0" />
          </font>
@@ -64,3 +60,5 @@
       </HBox>
    </children>
 </VBox>
+
+

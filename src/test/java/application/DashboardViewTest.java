@@ -19,6 +19,7 @@ public class DashboardViewTest {
 
     @Start
     public void start(Stage stage) throws Exception {
+        utils.SessionManager.getInstance().setUsuarioActual(new model.Bibliotecario("test", "test", "test", "test"));
         FXMLLoader loader = new FXMLLoader(getClass().getResource(Paths.DASHBOARD_BIBLIOTECARIO));
         Parent root = loader.load();
         Scene scene = new Scene(root, 1200, 800);
@@ -27,7 +28,7 @@ public class DashboardViewTest {
     }
 
     @Test
-    @DisplayName("Verifica que los botones del menú lateral y el contenedor central del Dashboard carguen correctamente")
+    @DisplayName("Verifica que los botones del menÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âº lateral y el contenedor central del Dashboard carguen correctamente")
     void testDashboardElementos(FxRobot robot) {
         FxAssert.verifyThat("#btnInicio", NodeMatchers.isVisible());
         FxAssert.verifyThat("#btnConsulta", NodeMatchers.isVisible());
@@ -36,3 +37,7 @@ public class DashboardViewTest {
         FxAssert.verifyThat("#contenedor", NodeMatchers.isVisible());
     }
 }
+
+
+
+

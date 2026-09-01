@@ -11,6 +11,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.Categoria;
 import model.Libro;
+import model.Editorial;
+import database.EditorialesDAO;
 import utils.Alertas;
 import utils.Validaciones;
 
@@ -31,7 +33,7 @@ public class RegistrarLibroController {
     private TextField txtCategoria;
 
     @FXML
-    private TextField txtEditorial;
+    private ComboBox<Editorial> comboBoxEditorial;
 
     @FXML
     private TextField txtTitulo;
@@ -44,6 +46,7 @@ public class RegistrarLibroController {
 
     LibrosDAO librosDAO = new LibrosDAO();
     CategoriasDAO categoriasDAO = new CategoriasDAO();
+    EditorialesDAO editorialesDAO = new EditorialesDAO();
 
     @FXML
     void clickRegistrar(ActionEvent event) {
@@ -63,7 +66,8 @@ public class RegistrarLibroController {
             return;
         }
 
-        if(!Validaciones.campoRequerido(txtEditorial)){
+        if(comboBoxEditorial.getSelectionModel().getSelectedItem() == null){
+            Alertas.mostrarError("Es obligatorio elegir una editorial");
             return;
         }
 
@@ -82,13 +86,13 @@ public class RegistrarLibroController {
 
         String titulo = txtTitulo.getText().toUpperCase();
         String autor = txtAutor.getText().toUpperCase();
-        String editorial = txtEditorial.getText().toUpperCase();
+        Editorial editorialObj = comboBoxEditorial.getSelectionModel().getSelectedItem();
         Categoria categoria = comboBoxCategoria.getSelectionModel().getSelectedItem();
         int id_categoria = categoria.getId();
         String ubicacion = txtUbicacion.getText().toUpperCase();
         int unidades = Integer.parseInt(txtUnidades.getText());
 
-        Libro libro = new Libro(titulo, ubicacion, id_categoria, editorial, autor, unidades);
+        Libro libro = new Libro(titulo, ubicacion, id_categoria, editorialObj.getId(), autor, unidades);
         if(librosDAO.registrarLibro(libro)){
             Alertas.mostrarExito("Se registro correctamente el libro");
         }
@@ -104,7 +108,6 @@ public class RegistrarLibroController {
     private void ocultarAlertas(){
         Validaciones.ocultarPopOver(txtTitulo);
         Validaciones.ocultarPopOver(txtAutor);
-        Validaciones.ocultarPopOver(txtEditorial);
         Validaciones.ocultarPopOver(txtCategoria);
         Validaciones.ocultarPopOver(txtUbicacion);
         Validaciones.ocultarPopOver(txtUnidades);
@@ -114,6 +117,9 @@ public class RegistrarLibroController {
     void initialize() {
         ArrayList<Categoria> listaCategorias = categoriasDAO.obtenerCategorias();
         comboBoxCategoria.getItems().addAll(listaCategorias);
+        
+        ArrayList<Editorial> listaEditoriales = editorialesDAO.obtenerEditorialesActivas();
+        comboBoxEditorial.getItems().addAll(listaEditoriales);
     }
 
 }

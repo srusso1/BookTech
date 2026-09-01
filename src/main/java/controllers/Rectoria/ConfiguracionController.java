@@ -1,5 +1,9 @@
 package controllers.Rectoria;
 
+import database.EditorialesDAO;
+import model.Editorial;
+import database.CategoriasDAO;
+import model.Categoria;
 import database.DocentesDAO;
 import database.EstudiantesDAO;
 import database.MotivosPlataformaDAO;
@@ -127,6 +131,28 @@ public class ConfiguracionController {
     private final DocentesDAO docentesDAO = new DocentesDAO();
     private final MotivosPrestamoDAO motivosPrestamoDAO = new MotivosPrestamoDAO();
     private final MotivosPlataformaDAO motivosPlataformaDAO = new MotivosPlataformaDAO();
+    private final EditorialesDAO editorialesDAO = new EditorialesDAO();
+    private final CategoriasDAO categoriasDAO = new CategoriasDAO();
+
+    @FXML private TableView<Editorial> tblEditoriales;
+    @FXML private TableColumn<Editorial, String> colEditorialId;
+    @FXML private TableColumn<Editorial, String> colEditorialNombre;
+    @FXML private TableColumn<Editorial, String> colEditorialEstado;
+    @FXML private TextField txtBuscarEditorial;
+    @FXML private TextField txtEditorialNombre;
+    @FXML private ComboBox<String> cbEditorialEstado;
+    @FXML private Label lblEstadoEdicionEditorial;
+    private Editorial editorialSeleccionada = null;
+
+    @FXML private TableView<Categoria> tblCategorias;
+    @FXML private TableColumn<Categoria, String> colCategoriaId;
+    @FXML private TableColumn<Categoria, String> colCategoriaNombre;
+    @FXML private TableColumn<Categoria, String> colCategoriaEstado;
+    @FXML private TextField txtBuscarCategoria;
+    @FXML private TextField txtCategoriaNombre;
+    @FXML private ComboBox<String> cbCategoriaEstado;
+    @FXML private Label lblEstadoEdicionCategoria;
+    private Categoria categoriaSeleccionada = null;
 
     private final ArrayList<Estudiante> estudiantesPendientesCsv = new ArrayList<>();
     private final ArrayList<Estudiante> estudiantesBaseTabla = new ArrayList<>();
@@ -149,6 +175,14 @@ public class ConfiguracionController {
         cargarDocentes();
         cargarMotivosPrestamo();
         cargarMotivosPlataforma();
+        if (tblEditoriales != null) {
+            configurarTablaEditoriales();
+            cargarEditoriales();
+        }
+        if (tblCategorias != null) {
+            configurarTablaCategorias();
+            cargarCategorias();
+        }
         actualizarEstadoBotonGuardado();
     }
 
@@ -744,4 +778,154 @@ public class ConfiguracionController {
         if (btnEliminarDocente != null)
             btnEliminarDocente.setDisable(true);
     }
+
+    private void configurarTablaEditoriales() {
+        colEditorialId.setCellValueFactory(cd -> Bindings.createStringBinding(() -> String.valueOf(cd.getValue().getId())));
+        colEditorialNombre.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getNombre));
+        colEditorialEstado.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getEstado() == 1 ? "Activo" : "Inactivo"));
+
+        tblEditoriales.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, nuevo) -> {
+            if (nuevo != null) {
+                editorialSeleccionada = nuevo;
+                txtEditorialNombre.setText(nuevo.getNombre());
+                cbEditorialEstado.setValue(nuevo.getEstado() == 1 ? "Activo" : "Inactivo");
+                lblEstadoEdicionEditorial.setText("Editando editorial seleccionada.");
+            }
+        });
+
+        cbEditorialEstado.setItems(FXCollections.observableArrayList("Activo", "Inactivo"));
+        cbEditorialEstado.setValue("Activo");
+
+        txtBuscarEditorial.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == null || newVal.trim().isEmpty()) {
+                cargarEditoriales();
+            } else {
+                String lowerCaseFilter = newVal.toLowerCase();
+                java.util.List<Editorial> filtradas = editorialesDAO.obtenerTodas().stream()
+                        .filter(e -> e.getNombre().toLowerCase().contains(lowerCaseFilter))
+                        .toList();
+                tblEditoriales.setItems(FXCollections.observableArrayList(filtradas));
+            }
+        });
+    }
+
+    private void cargarEditoriales() {
+        tblEditoriales.setItems(FXCollections.observableArrayList(editorialesDAO.obtenerTodas()));
+    }
+
+    @FXML
+    void limpiarFormularioEditorial() {
+        editorialSeleccionada = null;
+        txtEditorialNombre.clear();
+        cbEditorialEstado.setValue("Activo");
+        lblEstadoEdicionEditorial.setText("Creando nueva editorial.");
+        tblEditoriales.getSelectionModel().clearSelection();
+    }
+
+    @FXML
+    void guardarEditorial() {
+        String nombre = txtEditorialNombre.getText();
+        if (nombre == null || nombre.trim().isEmpty()) {
+            Alertas.mostrarError("El nombre de la editorial es obligatorio.");
+            return;
+        }
+        int estado = "Activo".equals(cbEditorialEstado.getValue()) ? 1 : 0;
+
+        if (editorialSeleccionada == null) {
+            Editorial nueva = new Editorial(0, nombre.trim().toUpperCase(), estado);
+            if (editorialesDAO.insertarEditorial(nueva)) {
+                Alertas.mostrarExito("Editorial creada exitosamente.");
+                limpiarFormularioEditorial();
+                cargarEditoriales();
+            } else {
+                Alertas.mostrarError("No se pudo crear la editorial (puede que ya exista).");
+            }
+        } else {
+            editorialSeleccionada.setNombre(nombre.trim().toUpperCase());
+            editorialSeleccionada.setEstado(estado);
+            if (editorialesDAO.actualizarEditorial(editorialSeleccionada)) {
+                Alertas.mostrarExito("Editorial actualizada exitosamente.");
+                limpiarFormularioEditorial();
+                cargarEditoriales();
+            } else {
+                Alertas.mostrarError("No se pudo actualizar la editorial.");
+            }
+        }
+    }
+
+    private void configurarTablaCategorias() {
+        colCategoriaId.setCellValueFactory(cd -> Bindings.createStringBinding(() -> String.valueOf(cd.getValue().getId())));
+        colCategoriaNombre.setCellValueFactory(cd -> Bindings.createStringBinding(cd.getValue()::getNombreCategoria));
+        colCategoriaEstado.setCellValueFactory(cd -> Bindings.createStringBinding(() -> cd.getValue().getEstado() == 1 ? "Activo" : "Inactivo"));
+
+        tblCategorias.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, nuevo) -> {
+            if (nuevo != null) {
+                categoriaSeleccionada = nuevo;
+                txtCategoriaNombre.setText(nuevo.getNombreCategoria());
+                cbCategoriaEstado.setValue(nuevo.getEstado() == 1 ? "Activo" : "Inactivo");
+                lblEstadoEdicionCategoria.setText("Editando categoria seleccionada.");
+            }
+        });
+
+        cbCategoriaEstado.setItems(FXCollections.observableArrayList("Activo", "Inactivo"));
+        cbCategoriaEstado.setValue("Activo");
+
+        txtBuscarCategoria.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == null || newVal.trim().isEmpty()) {
+                cargarCategorias();
+            } else {
+                String lowerCaseFilter = newVal.toLowerCase();
+                java.util.List<Categoria> filtradas = categoriasDAO.obtenerTodas().stream()
+                        .filter(c -> c.getNombreCategoria().toLowerCase().contains(lowerCaseFilter))
+                        .toList();
+                tblCategorias.setItems(FXCollections.observableArrayList(filtradas));
+            }
+        });
+    }
+
+    private void cargarCategorias() {
+        tblCategorias.setItems(FXCollections.observableArrayList(categoriasDAO.obtenerTodas()));
+    }
+
+    @FXML
+    void limpiarFormularioCategoria() {
+        categoriaSeleccionada = null;
+        txtCategoriaNombre.clear();
+        cbCategoriaEstado.setValue("Activo");
+        lblEstadoEdicionCategoria.setText("Creando nueva categoria.");
+        tblCategorias.getSelectionModel().clearSelection();
+    }
+
+    @FXML
+    void guardarCategoria() {
+        String nombre = txtCategoriaNombre.getText();
+        if (nombre == null || nombre.trim().isEmpty()) {
+            Alertas.mostrarError("El nombre de la categoria es obligatorio.");
+            return;
+        }
+        int estado = "Activo".equals(cbCategoriaEstado.getValue()) ? 1 : 0;
+
+        if (categoriaSeleccionada == null) {
+            Categoria nueva = new Categoria(0, nombre.trim().toUpperCase(), estado);
+            if (categoriasDAO.insertarCategoria(nueva)) {
+                Alertas.mostrarExito("Categoria creada exitosamente.");
+                limpiarFormularioCategoria();
+                cargarCategorias();
+            } else {
+                Alertas.mostrarError("No se pudo crear la categoria.");
+            }
+        } else {
+            categoriaSeleccionada.setNombreCategoria(nombre.trim().toUpperCase());
+            categoriaSeleccionada.setEstado(estado);
+            if (categoriasDAO.actualizarCategoria(categoriaSeleccionada)) {
+                Alertas.mostrarExito("Categoria actualizada exitosamente.");
+                limpiarFormularioCategoria();
+                cargarCategorias();
+            } else {
+                Alertas.mostrarError("No se pudo actualizar la categoria.");
+            }
+        }
+    }
+
+
 }

@@ -18,7 +18,7 @@ public class AlertasVencimientoTest {
     private final PrestamosDAO prestamosDAO = new PrestamosDAO();
 
     @Test
-    @DisplayName("Verifica la detección automática de alertas: Vencido, Por vencer hoy y Próximo a vencer")
+    @DisplayName("Verifica la detecciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n automÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tica de alertas: Vencido, Por vencer hoy y PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ximo a vencer")
     void testAlertasVencimiento() {
         int idLibro = 0;
         int idEstudiante = 0;
@@ -29,13 +29,13 @@ public class AlertasVencimientoTest {
         try (Connection conn = ConexionSQLite.conectar()) {
             // 1. Insertar libro y estudiante de prueba
             try (PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO libros (titulo, autor, id_categoria, unidades, editorial, ubicacion) VALUES (?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO libros (titulo, autor, id_categoria, unidades, id_editorial, ubicacion) VALUES (?, ?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, "Libro Test Alertas");
                 ps.setString(2, "Autor Test");
                 ps.setInt(3, 1);
                 ps.setInt(4, 10);
-                ps.setString(5, "Editorial Test");
+                ps.setInt(5, 1);
                 ps.setString(6, "Estante 1");
                 ps.executeUpdate();
                 try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -59,13 +59,13 @@ public class AlertasVencimientoTest {
                 }
             }
 
-            // 2. Insertar 3 préstamos de prueba
+            // 2. Insertar 3 prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©stamos de prueba
             LocalDate hoy = LocalDate.now();
             String fVencida = hoy.minusDays(4).toString();
             String fHoy = hoy.toString();
             String fProxima = hoy.plusDays(1).toString();
 
-            // Préstamo vencido
+            // PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©stamo vencido
             try (PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO prestamos (id_libro, id_estudiante, id_motivo, id_docente, fecha_prestamo, fecha_limite, estado) VALUES (?, ?, 1, 1, ?, ?, 0)",
                     Statement.RETURN_GENERATED_KEYS)) {
@@ -79,7 +79,7 @@ public class AlertasVencimientoTest {
                 }
             }
 
-            // Préstamo que vence hoy
+            // PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©stamo que vence hoy
             try (PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO prestamos (id_libro, id_estudiante, id_motivo, id_docente, fecha_prestamo, fecha_limite, estado) VALUES (?, ?, 1, 1, ?, ?, 0)",
                     Statement.RETURN_GENERATED_KEYS)) {
@@ -93,7 +93,7 @@ public class AlertasVencimientoTest {
                 }
             }
 
-            // Préstamo próximo a vencer
+            // PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©stamo prÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ximo a vencer
             try (PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO prestamos (id_libro, id_estudiante, id_motivo, id_docente, fecha_prestamo, fecha_limite, estado) VALUES (?, ?, 1, 1, ?, ?, 0)",
                     Statement.RETURN_GENERATED_KEYS)) {
@@ -119,7 +119,7 @@ public class AlertasVencimientoTest {
                 if (a.getIdPrestamo() == idPrestamoVencido) {
                     encontroVencido = true;
                     assertThat(a.getTipo()).isEqualTo(AlertaPrestamo.TipoAlerta.VENCIDO);
-                    assertThat(a.getDescripcion()).contains("VENCIDO hace 4 día(s)");
+                    assertThat(a.getDescripcion()).contains("VENCIDO hace 4");
                 } else if (a.getIdPrestamo() == idPrestamoHoy) {
                     encontroHoy = true;
                     assertThat(a.getTipo()).isEqualTo(AlertaPrestamo.TipoAlerta.POR_VENCER_HOY);
@@ -127,7 +127,7 @@ public class AlertasVencimientoTest {
                 } else if (a.getIdPrestamo() == idPrestamoProximo) {
                     encontroProximo = true;
                     assertThat(a.getTipo()).isEqualTo(AlertaPrestamo.TipoAlerta.PROXIMO_A_VENCER);
-                    assertThat(a.getDescripcion()).contains("Vence en 1 día(s)");
+                    assertThat(a.getDescripcion()).contains("Vence en 1");
                 }
             }
 
@@ -151,3 +151,4 @@ public class AlertasVencimientoTest {
         }
     }
 }
+

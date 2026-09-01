@@ -3,10 +3,18 @@ package model;
 public class Categoria {
     private int id;
     private String nombre_categoria;
+    private int estado;
 
     public Categoria(int id, String nombre_categoria) {
         this.id = id;
         this.nombre_categoria = nombre_categoria;
+        this.estado = 1;
+    }
+
+    public Categoria(int id, String nombre_categoria, int estado) {
+        this.id = id;
+        this.nombre_categoria = nombre_categoria;
+        this.estado = estado;
     }
 
     public int getId() {
@@ -23,6 +31,14 @@ public class Categoria {
 
     public void setNombreCategoria(String nombre_categoria) {
         this.nombre_categoria = nombre_categoria;
+    }
+
+    public int getEstado() {
+        return estado;
+    }
+
+    public void setEstado(int estado) {
+        this.estado = estado;
     }
 
     @Override

@@ -1091,13 +1091,14 @@ public class InformesDAO {
                 l.titulo,
                 COALESCE(c.nombre_categoria, 'Sin categoria') AS categoria,
                 COALESCE(l.autor, 'N/A') AS autor,
-                COALESCE(l.editorial, 'N/A') AS editorial,
+                COALESCE(e.nombre, 'N/A') AS editorial,
                 COALESCE(l.ubicacion, 'N/A') AS ubicacion,
                 COALESCE(l.unidades, 0) AS unidades,
                 COALESCE(pa.prestamos_activos, 0) AS prestamos_activos,
                 COALESCE(ph.prestamos_historicos, 0) AS prestamos_historicos
             FROM libros l
             LEFT JOIN categorias c ON c.id = l.id_categoria
+            LEFT JOIN editoriales e ON e.id = l.id_editorial
             LEFT JOIN (
                 SELECT p.id_libro, COUNT(*) AS prestamos_activos
                 FROM prestamos p

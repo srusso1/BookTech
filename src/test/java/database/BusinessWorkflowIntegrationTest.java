@@ -26,7 +26,7 @@ public class BusinessWorkflowIntegrationTest {
     void testFlujoCompletoPrestamoYDevolucion() {
         // 1. Crear libro de prueba
         String tituloUnico = "LIBRO TEST E2E " + System.currentTimeMillis();
-        Libro libro = new Libro(tituloUnico, "ESTANTE A1", 1, "EDITORIAL TEST", "AUTOR TEST", 5);
+        Libro libro = new Libro(tituloUnico, "ESTANTE A1", 1, 1, "AUTOR TEST", 5);
         boolean libroRegistrado = librosDAO.registrarLibro(libro);
         assertThat(libroRegistrado).isTrue();
 
