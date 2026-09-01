@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<HBox spacing="16.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Rectoria.ConfigMotivosController">
+    <padding><Insets bottom="10.0" left="10.0" right="10.0" top="12.0" /></padding>
+    <children>
+        <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+            <Label styleClass="subtitulo-seccion" text="Motivos de prestamo" />
+            <TableView fx:id="tblMotivosPrestamo" minHeight="320.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colPrestamoNombre" prefWidth="220.0" text="Motivo" />
+                    <TableColumn fx:id="colPrestamoEstado" prefWidth="100.0" text="Estado" />
+                </columns>
+                <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY" /></columnResizePolicy>
+            </TableView>
+            <HBox alignment="CENTER" prefHeight="45.0" spacing="8.0"><children>
+                <TextField fx:id="txtNuevoMotivoPrestamo" promptText="Nuevo motivo de prestamo..." HBox.hgrow="ALWAYS" />
+                <Button onAction="#clickAgregarMotivoPrestamo" styleClass="btn-primary" text="Agregar" />
+                <Button onAction="#clickAlternarEstadoMotivoPrestamo" styleClass="btn-secondary" text="Activar / Inactivar" />
+            </children></HBox>
+        </VBox>
+        <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+            <Label styleClass="subtitulo-seccion" text="Motivos de plataforma" />
+            <TableView fx:id="tblMotivosPlataforma" minHeight="320.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colPlataformaNombre" prefWidth="220.0" text="Motivo" />
+                    <TableColumn fx:id="colPlataformaEstado" prefWidth="100.0" text="Estado" />
+                </columns>
+                <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY" /></columnResizePolicy>
+            </TableView>
+            <HBox alignment="CENTER" prefHeight="45.0" spacing="8.0"><children>
+                <TextField fx:id="txtNuevoMotivoPlataforma" promptText="Nuevo motivo de plataforma..." HBox.hgrow="ALWAYS" />
+                <Button onAction="#clickAgregarMotivoPlataforma" styleClass="btn-primary" text="Agregar" />
+                <Button onAction="#clickAlternarEstadoMotivoPlataforma" styleClass="btn-secondary" text="Activar / Inactivar" />
+            </children></HBox>
+        </VBox>
+    </children>
+</HBox>
