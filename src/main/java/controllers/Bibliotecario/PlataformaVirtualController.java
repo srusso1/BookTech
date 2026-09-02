@@ -12,6 +12,7 @@ import model.MotivoPlataforma;
 import utils.Alertas;
 import utils.BusquedaSugerencias;
 import utils.GeneradorHoras;
+import java.util.concurrent.CompletableFuture;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,30 +47,31 @@ public class PlataformaVirtualController {
     private final DocentesDAO docentesDAO;
     private final EstudiantesDAO estudiantesDAO;
     private final MotivosPlataformaDAO motivosPlataformaDAO;
-    private final ArrayList<Docente> listaDocentes = new ArrayList<>();
     private final ContextMenu sugerenciasDocente = new ContextMenu();
     private Docente docenteSeleccionado;
     private final RegistroPlataformaDAO registroPlataformaDAO;
 
     @FXML
     void initialize() {
-        listaDocentes.addAll(docentesDAO.obtenerDocentes());
-        List<Integer> grados = estudiantesDAO.obtenerGrados();
-        List<MotivoPlataforma> motivos = motivosPlataformaDAO.obtenerMotivosPlataformaActivos();
-        comboGrados.getItems().addAll(grados);
-        comboMotivoUso.getItems().setAll(motivos);
-        if (motivos.isEmpty()) {
-            Alertas.mostrarError("No hay motivos de plataforma activos. Solicite activarlos en Configuración.");
-        }
+        CompletableFuture.runAsync(() -> {
+            List<Integer> grados = estudiantesDAO.obtenerGrados();
+            List<MotivoPlataforma> motivos = motivosPlataformaDAO.obtenerMotivosPlataformaActivos();
+            javafx.application.Platform.runLater(() -> {
+                comboGrados.getItems().addAll(grados);
+                comboMotivoUso.getItems().setAll(motivos);
+                if (motivos.isEmpty()) {
+                    Alertas.mostrarError("No hay motivos de plataforma activos. Solicite activarlos en Configuración.");
+                }
+            });
+        });
+
         txtDocente.setContextMenu(sugerenciasDocente);
 
         BusquedaSugerencias.configurar(
                 txtDocente,
                 sugerenciasDocente,
-                listaDocentes,
+                busqueda -> docentesDAO.obtenerPaginados(5, 0, busqueda),
                 2,
-                5,
-                Docente::getNombreCompleto,
                 Docente::getNombreCompleto,
                 Docente::getNombreCompleto,
                 doc -> docenteSeleccionado = doc,

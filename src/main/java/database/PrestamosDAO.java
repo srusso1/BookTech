@@ -342,142 +342,47 @@ public class PrestamosDAO {
     }
 
     public Map<String, Integer> obtenerPrestamosPorGenero() {
-        String query = """
-        SELECT 
-            e.genero,
-            COUNT(p.id) AS total_prestamos
-        FROM prestamos p
-        JOIN estudiantes e ON e.id = p.id_estudiante
-        GROUP BY e.genero
-        """;
-
-        Map<String, Integer> datos = new HashMap<>();
-
-        try (Connection conexion = ConexionSQLite.conectar();
-             PreparedStatement ps = conexion.prepareStatement(query);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                datos.put(rs.getString("genero"), rs.getInt("total_prestamos"));
-            }
-
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener estadísticas por género: " + e.getMessage(), e);
-        }
-
-        return datos;
+        return obtenerPrestamosPorGenero(null, null);
     }
 
     public Map<String, Integer> obtenerPrestamosPorCategoria() {
-        String query = """
-        SELECT c.nombre_categoria, COUNT(p.id) AS total
-        FROM libros l
-        JOIN categorias c ON c.id = l.id_categoria
-        LEFT JOIN prestamos p ON l.id = p.id_libro
-        GROUP BY c.nombre_categoria
-        ORDER BY total DESC
-        """;
-
-        Map<String, Integer> datos = new LinkedHashMap<>();
-
-        try (Connection conexion = ConexionSQLite.conectar();
-             PreparedStatement ps = conexion.prepareStatement(query);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                datos.put(rs.getString("nombre_categoria"), rs.getInt("total"));
-            }
-
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por categoría: " + e.getMessage(), e);
-        }
-
-        return datos;
+        return obtenerPrestamosPorCategoria(null, null);
     }
 
     public Map<String, Integer> obtenerPrestamosPorDocenteTop(int limite) {
-        String query = """
-        SELECT 
-            d.id,
-            d.nombre_1 || ' ' || d.nombre_2 || ' ' || d.apellido_1 || ' ' || d.apellido_2 AS docente,
-            COUNT(p.id) AS total
-        FROM prestamos p
-        JOIN docentes d ON d.id = p.id_docente
-        GROUP BY d.id, d.apellido_1, d.apellido_2, d.nombre_1, d.nombre_2
-        ORDER BY total DESC
-        LIMIT ?
-        """;
-
-        Map<String, Integer> datos = new LinkedHashMap<>();
-
-        try (Connection conexion = ConexionSQLite.conectar();
-             PreparedStatement ps = conexion.prepareStatement(query)) {
-
-            ps.setInt(1, limite);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    datos.put(rs.getString("docente"), rs.getInt("total"));
-                }
-            }
-
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por docente: " + e.getMessage(), e);
-        }
-
-        return datos;
+        return obtenerPrestamosPorDocenteTop(limite, null, null);
     }
 
     public Map<String, Integer> obtenerPrestamosPorGradoTop(int limite) {
-        String query = """
-        SELECT COALESCE(p.grado_historico, e.grado) AS grado, COUNT(p.id) AS total
-        FROM prestamos p
-        JOIN estudiantes e ON e.id = p.id_estudiante
-        GROUP BY COALESCE(p.grado_historico, e.grado)
-        ORDER BY total DESC
-        LIMIT ?
-        """;
-
-        Map<String, Integer> datos = new LinkedHashMap<>();
-
-        try (Connection conn = ConexionSQLite.conectar();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-
-            ps.setInt(1, limite);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    datos.put("Grado " + rs.getInt("grado"), rs.getInt("total"));
-                }
-            }
-
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por grado: " + e.getMessage(), e);
-        }
-
-        return datos;
+        return obtenerPrestamosPorGradoTop(limite, null, null);
     }
 
     // ==================== MÉTODOS CON FILTRO DE FECHAS ====================
 
     public Map<String, Integer> obtenerPrestamosPorGenero(String fechaInicio, String fechaFin) {
-        String query = """
+        StringBuilder query = new StringBuilder("""
         SELECT 
             e.genero,
             COUNT(p.id) AS total_prestamos
         FROM prestamos p
         JOIN estudiantes e ON e.id = p.id_estudiante
-        WHERE p.fecha_prestamo >= ? AND p.fecha_prestamo <= ?
-        GROUP BY e.genero
-        """;
+        """);
+        
+        if (fechaInicio != null && fechaFin != null) {
+            query.append(" WHERE p.fecha_prestamo >= ? AND p.fecha_prestamo <= ?\n");
+        }
+        
+        query.append(" GROUP BY e.genero");
 
         Map<String, Integer> datos = new HashMap<>();
 
         try (Connection conexion = ConexionSQLite.conectar();
-             PreparedStatement ps = conexion.prepareStatement(query)) {
+             PreparedStatement ps = conexion.prepareStatement(query.toString())) {
 
-            ps.setString(1, fechaInicio);
-            ps.setString(2, fechaFin);
+            if (fechaInicio != null && fechaFin != null) {
+                ps.setString(1, fechaInicio);
+                ps.setString(2, fechaFin + " 23:59:59");
+            }
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -493,22 +398,31 @@ public class PrestamosDAO {
     }
 
     public Map<String, Integer> obtenerPrestamosPorCategoria(String fechaInicio, String fechaFin) {
-        String query = """
+        StringBuilder query = new StringBuilder("""
         SELECT c.nombre_categoria, COUNT(p.id) AS total
         FROM libros l
         JOIN categorias c ON c.id = l.id_categoria
-        LEFT JOIN prestamos p ON l.id = p.id_libro AND p.fecha_prestamo >= ? AND p.fecha_prestamo <= ?
+        LEFT JOIN prestamos p ON l.id = p.id_libro
+        """);
+
+        if (fechaInicio != null && fechaFin != null) {
+            query.append(" AND p.fecha_prestamo >= ? AND p.fecha_prestamo <= ?\n");
+        }
+        
+        query.append("""
         GROUP BY c.nombre_categoria
         ORDER BY total DESC
-        """;
+        """);
 
         Map<String, Integer> datos = new LinkedHashMap<>();
 
         try (Connection conexion = ConexionSQLite.conectar();
-             PreparedStatement ps = conexion.prepareStatement(query)) {
+             PreparedStatement ps = conexion.prepareStatement(query.toString())) {
 
-            ps.setString(1, fechaInicio);
-            ps.setString(2, fechaFin);
+            if (fechaInicio != null && fechaFin != null) {
+                ps.setString(1, fechaInicio);
+                ps.setString(2, fechaFin + " 23:59:59");
+            }
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -517,34 +431,48 @@ public class PrestamosDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por categoría con fechas: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por categoría: " + e.getMessage(), e);
         }
 
         return datos;
     }
 
     public Map<String, Integer> obtenerPrestamosPorDocenteTop(int limite, String fechaInicio, String fechaFin) {
-        String query = """
+        StringBuilder query = new StringBuilder("""
         SELECT 
             d.id,
-            d.nombre_1 || ' ' || d.nombre_2 || ' ' || d.apellido_1 || ' ' || d.apellido_2 AS docente,
+            TRIM(REPLACE(
+                COALESCE(d.nombre_1, '') || ' ' || 
+                COALESCE(d.nombre_2, '') || ' ' || 
+                COALESCE(d.apellido_1, '') || ' ' || 
+                COALESCE(d.apellido_2, ''), 
+            '  ', ' ')) AS docente,
             COUNT(p.id) AS total
         FROM prestamos p
         JOIN docentes d ON d.id = p.id_docente
-        WHERE p.fecha_prestamo >= ? AND p.fecha_prestamo <= ?
+        """);
+
+        if (fechaInicio != null && fechaFin != null) {
+            query.append(" WHERE p.fecha_prestamo >= ? AND p.fecha_prestamo <= ?\n");
+        }
+        
+        query.append("""
         GROUP BY d.id, d.apellido_1, d.apellido_2, d.nombre_1, d.nombre_2
         ORDER BY total DESC
         LIMIT ?
-        """;
+        """);
 
         Map<String, Integer> datos = new LinkedHashMap<>();
 
         try (Connection conexion = ConexionSQLite.conectar();
-             PreparedStatement ps = conexion.prepareStatement(query)) {
+             PreparedStatement ps = conexion.prepareStatement(query.toString())) {
 
-            ps.setString(1, fechaInicio);
-            ps.setString(2, fechaFin);
-            ps.setInt(3, limite);
+            int paramIndex = 1;
+            if (fechaInicio != null && fechaFin != null) {
+                ps.setString(paramIndex++, fechaInicio);
+                ps.setString(paramIndex++, fechaFin + " 23:59:59");
+            }
+            ps.setInt(paramIndex, limite);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -553,31 +481,40 @@ public class PrestamosDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por docente con fechas: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por docente: " + e.getMessage(), e);
         }
 
         return datos;
     }
 
     public Map<String, Integer> obtenerPrestamosPorGradoTop(int limite, String fechaInicio, String fechaFin) {
-        String query = """
+        StringBuilder query = new StringBuilder("""
         SELECT COALESCE(p.grado_historico, e.grado) AS grado, COUNT(p.id) AS total
         FROM prestamos p
         JOIN estudiantes e ON e.id = p.id_estudiante
-        WHERE p.fecha_prestamo >= ? AND p.fecha_prestamo <= ?
+        """);
+
+        if (fechaInicio != null && fechaFin != null) {
+            query.append(" WHERE p.fecha_prestamo >= ? AND p.fecha_prestamo <= ?\n");
+        }
+        
+        query.append("""
         GROUP BY COALESCE(p.grado_historico, e.grado)
         ORDER BY total DESC
         LIMIT ?
-        """;
+        """);
 
         Map<String, Integer> datos = new LinkedHashMap<>();
 
         try (Connection conn = ConexionSQLite.conectar();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+             PreparedStatement ps = conn.prepareStatement(query.toString())) {
 
-            ps.setString(1, fechaInicio);
-            ps.setString(2, fechaFin);
-            ps.setInt(3, limite);
+            int paramIndex = 1;
+            if (fechaInicio != null && fechaFin != null) {
+                ps.setString(paramIndex++, fechaInicio);
+                ps.setString(paramIndex++, fechaFin + " 23:59:59");
+            }
+            ps.setInt(paramIndex, limite);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -586,7 +523,7 @@ public class PrestamosDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por grado con fechas: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener préstamos por grado: " + e.getMessage(), e);
         }
 
         return datos;

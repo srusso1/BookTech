@@ -9,7 +9,9 @@ import javafx.scene.control.TableView;
 import model.Prestamo;
 import utils.Fechas;
 
-public class PrestamosActivosController {
+import utils.Refrescable;
+
+public class PrestamosActivosController implements Refrescable {
 
     public PrestamosActivosController(PrestamosDAO prestamosDAO) {
         this.prestamosDAO = prestamosDAO;
@@ -95,11 +97,21 @@ public class PrestamosActivosController {
     }
 
     private void cargarPrestamos() {
-        tabla.getItems().setAll(prestamosDAO.buscarPrestamosActivos());
+        tabla.setPlaceholder(new Label("Cargando préstamos..."));
+        java.util.concurrent.CompletableFuture.supplyAsync(prestamosDAO::buscarPrestamosActivos)
+                .thenAcceptAsync(prestamos -> {
+                    tabla.getItems().setAll(prestamos);
+                    tabla.setPlaceholder(new Label("No hay prestamos activos"));
+                }, javafx.application.Platform::runLater);
     }
 
     private String formatearFechaUI(String fechaBD) {
         String fechaUI = Fechas.convertirAUI(fechaBD);
         return fechaUI != null ? fechaUI : fechaBD;
+    }
+
+    @Override
+    public void refresh() {
+        cargarPrestamos();
     }
 }

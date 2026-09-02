@@ -47,6 +47,7 @@ public class DashboardRectorController {
     @FXML
     private Button btnNotificaciones;
 
+
     @FXML
     private Label lblBadgeAlertas;
 
@@ -54,32 +55,38 @@ public class DashboardRectorController {
 
     @FXML
     void clickConfig(ActionEvent event) {
+        setActiveButton(btnConfig);
         ManagerView.cargarCentro(contenedor, Paths.CONFIGURACION_RECTORIA);
     }
 
     @FXML
     void clickAyuda(ActionEvent event) {
+        setActiveButton(btnAyuda);
         ManagerView.cargarCentro(contenedor, Paths.AYUDA_RECTORIA);
     }
 
     @FXML
     void clickEstadisticas(ActionEvent event) {
+        setActiveButton(btnPrestamos);
         ManagerView.cargarCentro(contenedor, Paths.ESTADISTICAS_RECTORIA);
     }
 
     @FXML
     void clickInformes(ActionEvent event) {
+        setActiveButton(btnInformes);
         ManagerView.cargarCentro(contenedor, Paths.INFORMES_RECTORIA);
     }
 
     @FXML
     void clickInicio(ActionEvent event) {
+        setActiveButton(btnInicio);
         ManagerView.cargarCentro(contenedor, Paths.INICIO_RECTORIA);
         actualizarAlertas();
     }
 
     @FXML
     void clickInventario(ActionEvent event) {
+        setActiveButton(btnConsulta);
         ManagerView.cargarCentro(contenedor, Paths.INVENTARIO_RECTORIA);
     }
 
@@ -90,6 +97,7 @@ public class DashboardRectorController {
             return;
         }
         ManagerView.cargarCentro(contenedor, Paths.INICIO_RECTORIA);
+        setActiveButton(btnInicio);
         
         utils.DashboardNotifier.setActualizarNotificacionesCallback(this::actualizarAlertas);
         
@@ -128,7 +136,22 @@ public class DashboardRectorController {
     void clickSalir(ActionEvent event) {
         if (Alertas.mostrarConfirmacion("¿Estás seguro que deseas cerrar sesión?")) {
             utils.SessionManager.getInstance().logout();
+            ManagerView.clearCache();
             ManagerView.cargarVista(contenedorPrincipal, Paths.LOGIN);
+        }
+    }
+
+    private void setActiveButton(Button activeButton) {
+        Button[] buttons = {btnInicio, btnConsulta, btnPrestamos, btnInformes, btnConfig, btnAyuda};
+        for (Button btn : buttons) {
+            if (btn != null) {
+                btn.getStyleClass().remove("active");
+            }
+        }
+        if (activeButton != null) {
+            if (!activeButton.getStyleClass().contains("active")) {
+                activeButton.getStyleClass().add("active");
+            }
         }
     }
 }

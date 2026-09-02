@@ -42,7 +42,6 @@ public class PrestamoController {
     @FXML private Label infoIdentificacion;
     @FXML private VBox contenedorInfoEstudiante;
     private final ContextMenu sugerenciasMenu = new ContextMenu();
-    private List<Estudiante> listaEstudiantes = new ArrayList<>();
     private Estudiante estudianteSeleccionado;
     private Docente docenteSeleccionado;
 
@@ -54,7 +53,6 @@ public class PrestamoController {
     private final MotivosPrestamoDAO motivosPrestamoDAO;
     private final DocentesDAO docentesDAO;
     List<MotivoPrestamo> motivosPrestamos = new ArrayList<>();
-    List<Docente> listaDocentes = new ArrayList<>();
     // 📖 método para recibir el libro
     public void setLibro(Libro libro) {
         this.libro = libro;
@@ -80,17 +78,16 @@ public class PrestamoController {
     void initialize() {
         dpFechaDevolucion.setEditable(false);
 
-        listaEstudiantes = estudiantesDAO.obtenerEstudiantes();
-
         configurarBusquedaEstudiantes();
 
-        motivosPrestamos = motivosPrestamoDAO.obtenerMotivosPrestamoActivos();
-        comboMotivosPrestamos.getItems().addAll(motivosPrestamos);
-        if (motivosPrestamos.isEmpty()) {
-            Alertas.mostrarError("No hay motivos de préstamo activos. Solicite activarlos en Configuración.");
-        }
-
-        listaDocentes = docentesDAO.obtenerDocentes();
+        java.util.concurrent.CompletableFuture.supplyAsync(motivosPrestamoDAO::obtenerMotivosPrestamoActivos)
+                .thenAcceptAsync(motivos -> {
+                    motivosPrestamos = motivos;
+                    comboMotivosPrestamos.getItems().addAll(motivosPrestamos);
+                    if (motivosPrestamos.isEmpty()) {
+                        Alertas.mostrarError("No hay motivos de préstamo activos. Solicite activarlos en Configuración.");
+                    }
+                }, javafx.application.Platform::runLater);
 
         configurarBusquedaDocentes();
     }
@@ -159,10 +156,8 @@ public class PrestamoController {
         BusquedaSugerencias.configurar(
                 txtDocente,
                 sugerenciasDocente,
-                listaDocentes,
+                busqueda -> docentesDAO.obtenerPaginados(5, 0, busqueda),
                 2,
-                5,
-                Docente::getNombreCompleto,
                 Docente::getNombreCompleto,
                 Docente::getNombreCompleto,
                 doc -> docenteSeleccionado = doc,
@@ -171,16 +166,13 @@ public class PrestamoController {
     }
 
     private void configurarBusquedaEstudiantes() {
-
         ocultarInfoEstudiante();
 
         BusquedaSugerencias.configurar(
                 txtEstudiante,
                 sugerenciasMenu,
-                listaEstudiantes,
+                busqueda -> estudiantesDAO.obtenerPaginados(5, 0, busqueda),
                 2,
-                5,
-                Estudiante::getNombreCompleto,
                 Estudiante::getNombreCompletoYGrado,
                 Estudiante::getNombreCompleto,
                 est -> {

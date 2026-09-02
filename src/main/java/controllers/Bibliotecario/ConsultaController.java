@@ -12,8 +12,10 @@ import javafx.stage.Stage;
 import model.Libro;
 import model.Prestamo;
 import utils.Alertas;
+import utils.BusquedaSugerencias;
 import utils.Paths;
 import utils.Validaciones;
+import java.util.concurrent.CompletableFuture;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,8 +34,6 @@ public class ConsultaController {
         this.librosDAO = librosDAO;
     }
 
-    @FXML
-    private Button btnConsulta;
 
     @FXML
     private TextField txtBuscarLibro;
@@ -117,48 +117,48 @@ public class ConsultaController {
     void clickRegistrarDevolucion(ActionEvent event) {
         if (libroSeleccionado == null) return;
 
-        prestamosActivos = prestamosDAO.buscarPrestamosLibro(libroSeleccionado.getId());
+        CompletableFuture.supplyAsync(() -> prestamosDAO.buscarPrestamosLibro(libroSeleccionado.getId()))
+                .thenAcceptAsync(prestamos -> {
+                    prestamosActivos = prestamos;
 
-        if(prestamosActivos.isEmpty()){
-            Alertas.mostrarError("No hay prestamos activos para este libro");
-            return;
-        }
+                    if(prestamosActivos.isEmpty()){
+                        Alertas.mostrarError("No hay prestamos activos para este libro");
+                        return;
+                    }
 
-        // Log eliminado para limpieza
+                    try {
+                        FXMLLoader loader = new FXMLLoader(
+                                getClass().getResource(Paths.DEVOLUCION_BIBLIOTECARIO)
+                        );
+                        loader.setControllerFactory(utils.AppDIContainer.getInstance());
 
+                        // 🔹 El root ES un VBox
+                        VBox root = loader.load();
 
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource(Paths.DEVOLUCION_BIBLIOTECARIO)
-            );
-            loader.setControllerFactory(utils.AppDIContainer.getInstance());
+                        // 🔹 Controller del préstamo
+                        DevolucionController controller = loader.getController();
+                        controller.setLibro(libroSeleccionado);
+                        controller.setPrestamos(prestamosActivos);
 
-            // 🔹 El root ES un VBox
-            VBox root = loader.load();
+                        // 🔹 Crear un Stage real en lugar de un Dialog para evitar botones duplicados
+                        Stage modal = new Stage();
+                        modal.setTitle("Registrar devolución");
+                        modal.initModality(javafx.stage.Modality.WINDOW_MODAL);
+                        modal.initOwner(txtBuscarLibro.getScene().getWindow());
+                        
+                        javafx.scene.Scene scene = new javafx.scene.Scene(root);
+                        scene.getStylesheets().add(java.util.Objects.requireNonNull(getClass().getResource("/styles/style.css")).toExternalForm());
+                        modal.setScene(scene);
+                        modal.setResizable(false);
+                        
+                        modal.showAndWait();
 
-            // 🔹 Controller del préstamo
-            DevolucionController controller = loader.getController();
-            controller.setLibro(libroSeleccionado);
-            controller.setPrestamos(prestamosActivos);
+                    } catch (Exception e) {
+                        LOGGER.log(Level.SEVERE, "Error al cargar la vista lateral", e);
+                    }
 
-            // 🔹 Crear un Stage real en lugar de un Dialog para evitar botones duplicados
-            Stage modal = new Stage();
-            modal.setTitle("Registrar devolución");
-            modal.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            modal.initOwner(txtBuscarLibro.getScene().getWindow());
-            
-            javafx.scene.Scene scene = new javafx.scene.Scene(root);
-            scene.getStylesheets().add(java.util.Objects.requireNonNull(getClass().getResource("/styles/style.css")).toExternalForm());
-            modal.setScene(scene);
-            modal.setResizable(false);
-            
-            modal.showAndWait();
-
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error al cargar la vista lateral", e);
-        }
-
-        txtBuscarLibro.clear();
+                    txtBuscarLibro.clear();
+                }, javafx.application.Platform::runLater);
     }
 
 
@@ -167,64 +167,20 @@ public class ConsultaController {
 
         ocultarElementos();
 
-        txtBuscarLibro.textProperty().addListener((obs, oldText, newText) -> {
-
-            if (newText.length() < 3) {
-                sugerenciasMenu.hide();
-                ocultarElementos();
-                return;
-            }
-
-            List<Libro> resultados = librosDAO.buscarSimilares(newText);
-
-            if (resultados.isEmpty()) {
-                sugerenciasMenu.hide();
-                Validaciones.agregarPopOver(txtBuscarLibro, "No hay coincidencias");
-                ocultarElementos();
-                return;
-            }
-
-            Validaciones.ocultarPopOver(txtBuscarLibro);
-
-            List<MenuItem> items = getMenuItems(resultados);
-
-            sugerenciasMenu.getItems().setAll(items);
-
-            if (!sugerenciasMenu.isShowing()) {
-                sugerenciasMenu.show(txtBuscarLibro, Side.BOTTOM, 0, 0);
-            }
-        });
-
-        // Ocultar si pierde foco
-        txtBuscarLibro.focusedProperty().addListener((obs, old, focused) -> {
-            if (!focused) {
-                sugerenciasMenu.hide();
-                Validaciones.ocultarPopOver(txtBuscarLibro);
-            }
-        });
-    }
-
-    private List<MenuItem> getMenuItems(List<Libro> resultados) {
-        List<MenuItem> items = new ArrayList<>();
-
-        for (Libro libro : resultados) {
-            MenuItem item = new MenuItem(
-                    libro.getTitulo() + " - " + libro.getAutor()
-            );
-
-            item.setOnAction(e -> {
-                txtBuscarLibro.setText(libro.getTitulo());
-                sugerenciasMenu.hide();
-
-                // Aquí ya tienes el libro seleccionado
-                libroSeleccionado = libro;
-                mostrarElementos();
-                mostrarInformacionLibro();
-            });
-
-            items.add(item);
-        }
-        return items;
+        BusquedaSugerencias.configurar(
+                txtBuscarLibro,
+                sugerenciasMenu,
+                librosDAO::buscarSimilares,
+                3,
+                l -> l.getTitulo() + " - " + l.getAutor(),
+                Libro::getTitulo,
+                l -> {
+                    libroSeleccionado = l;
+                    mostrarElementos();
+                    mostrarInformacionLibro();
+                },
+                this::ocultarElementos
+        );
     }
 
     private void mostrarInformacionLibro(){

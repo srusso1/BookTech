@@ -6,8 +6,9 @@ import javafx.scene.control.Label;
 
 import java.util.ArrayList;
 import java.util.List;
+import utils.Refrescable;
 
-public class InicioController {
+public class InicioController implements Refrescable {
 
     public InicioController(LibrosDAO librosDAO) {
         this.librosDAO = librosDAO;
@@ -33,11 +34,17 @@ public class InicioController {
     private final LibrosDAO librosDAO;
 
     private void cargarInfoDashboard(){
-        List<Integer> info = librosDAO.infoDashboardBibliotecario();
-        librosRegistrados.setText(String.valueOf(info.get(0)));
-        unidadesRegistradas.setText(String.valueOf(info.get(1)));
-        prestamosActivos.setText(String.valueOf(info.get(2)));
-        prestamosRealizados.setText(String.valueOf(info.get(3)));
+        java.util.concurrent.CompletableFuture.supplyAsync(librosDAO::infoDashboardBibliotecario)
+                .thenAcceptAsync(info -> {
+                    librosRegistrados.setText(String.valueOf(info.get(0)));
+                    unidadesRegistradas.setText(String.valueOf(info.get(1)));
+                    prestamosActivos.setText(String.valueOf(info.get(2)));
+                    prestamosRealizados.setText(String.valueOf(info.get(3)));
+                }, javafx.application.Platform::runLater);
     }
 
+    @Override
+    public void refresh() {
+        cargarInfoDashboard();
+    }
 }

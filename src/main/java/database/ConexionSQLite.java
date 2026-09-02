@@ -104,6 +104,24 @@ public class ConexionSQLite {
                     LOGGER.log(Level.WARNING, "Advertencia en migración categorias: " + e.getMessage());
                 }
             }
+
+            // Migración 5: Columnas faltantes en prestamos (devuelto_tarde, dias_atraso)
+            try {
+                stmt.execute("ALTER TABLE prestamos ADD COLUMN devuelto_tarde INTEGER DEFAULT 0;");
+                LOGGER.info("Columna 'devuelto_tarde' añadida a la tabla prestamos.");
+            } catch (SQLException e) {
+                if (!e.getMessage().contains("duplicate column name")) {
+                    LOGGER.log(Level.WARNING, "Advertencia en migración prestamos (devuelto_tarde): " + e.getMessage());
+                }
+            }
+            try {
+                stmt.execute("ALTER TABLE prestamos ADD COLUMN dias_atraso INTEGER DEFAULT 0;");
+                LOGGER.info("Columna 'dias_atraso' añadida a la tabla prestamos.");
+            } catch (SQLException e) {
+                if (!e.getMessage().contains("duplicate column name")) {
+                    LOGGER.log(Level.WARNING, "Advertencia en migración prestamos (dias_atraso): " + e.getMessage());
+                }
+            }
             
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error crítico ejecutando migraciones: " + e.getMessage(), e);

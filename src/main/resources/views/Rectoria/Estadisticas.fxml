@@ -11,6 +11,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -34,7 +35,7 @@
                               <Font name="Roboto Regular" size="15.0" />
                           </font>
                       </Label>
-                       <HBox alignment="CENTER_LEFT" spacing="15.0">
+                       <FlowPane alignment="CENTER_LEFT" hgap="15.0" vgap="15.0">
                            <children>
                                <Label text="Desde:" />
                                <DatePicker fx:id="dpFechaInicio" prefWidth="150.0" />
@@ -46,13 +47,13 @@
                            <padding>
                                <Insets bottom="5.0" top="5.0" />
                            </padding>
-                       </HBox>
+                       </FlowPane>
                       <Separator maxWidth="Infinity" />
                       
-                      <!-- Fila 1: Género y Categoría -->
-                      <HBox minHeight="300.0" spacing="30.0">
+                      <!-- Gráficas Responsivas -->
+                      <FlowPane alignment="CENTER" hgap="30.0" vgap="30.0">
                           <children>
-                              <BarChart fx:id="gfBarraGenero" maxWidth="Infinity" styleClass="graficaBarrasGenero" HBox.hgrow="ALWAYS">
+                              <BarChart fx:id="gfBarraGenero" minWidth="400.0" prefWidth="500.0" prefHeight="350.0" styleClass="graficaBarrasGenero">
                                   <xAxis>
                                       <CategoryAxis side="BOTTOM" />
                                   </xAxis>
@@ -60,7 +61,7 @@
                                       <NumberAxis side="LEFT" />
                                   </yAxis>
                               </BarChart>
-                              <BarChart fx:id="gfBarraCategoria" maxWidth="Infinity" styleClass="graficaBarrasCategoria" HBox.hgrow="ALWAYS">
+                              <BarChart fx:id="gfBarraCategoria" minWidth="400.0" prefWidth="500.0" prefHeight="350.0" styleClass="graficaBarrasCategoria">
                                   <xAxis>
                                       <NumberAxis side="BOTTOM" />
                                   </xAxis>
@@ -68,42 +69,26 @@
                                       <CategoryAxis side="LEFT" />
                                   </yAxis>
                               </BarChart>
+                              <PieChart fx:id="gfTortaPrestamosGrado" minWidth="400.0" prefWidth="500.0" prefHeight="350.0" />
+                              <BarChart fx:id="gfBarraDocentes" minWidth="400.0" prefWidth="500.0" prefHeight="350.0">
+                                <xAxis>
+                                   <NumberAxis side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                   <CategoryAxis side="LEFT" />
+                                </yAxis>
+                              </BarChart>
+                              <PieChart fx:id="gfTortaGradosPlataforma" minWidth="400.0" prefWidth="500.0" prefHeight="350.0" />
+                              <BarChart fx:id="gfBarraPlataformaVirtual" animated="false" legendVisible="false" minWidth="400.0" prefWidth="500.0" prefHeight="350.0">
+                                <xAxis>
+                                   <NumberAxis side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                   <CategoryAxis side="LEFT" />
+                                </yAxis>
+                              </BarChart>
                           </children>
-                      </HBox>
-                      
-                      <Separator maxWidth="Infinity" />
-                      
-                      <!-- Fila 2: Grado y Docentes -->
-                      <HBox minHeight="300.0" spacing="30.0">
-                         <children>
-                            <PieChart fx:id="gfTortaPrestamosGrado" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
-                            <BarChart fx:id="gfBarraDocentes" maxWidth="Infinity" HBox.hgrow="ALWAYS">
-                              <xAxis>
-                                 <NumberAxis side="BOTTOM" />
-                              </xAxis>
-                              <yAxis>
-                                 <CategoryAxis side="LEFT" />
-                              </yAxis>
-                            </BarChart>
-                         </children>
-                      </HBox>
-                      
-                      <Separator maxWidth="Infinity" />
-                      
-                      <!-- Fila 3: Plataforma Virtual -->
-                      <HBox minHeight="300.0" spacing="30.0">
-                         <children>
-                            <PieChart fx:id="gfTortaGradosPlataforma" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
-                            <BarChart fx:id="gfBarraPlataformaVirtual" animated="false" legendVisible="false" maxWidth="Infinity" HBox.hgrow="ALWAYS">
-                              <xAxis>
-                                 <NumberAxis side="BOTTOM" />
-                              </xAxis>
-                              <yAxis>
-                                 <CategoryAxis side="LEFT" />
-                              </yAxis>
-                            </BarChart>
-                         </children>
-                      </HBox>
+                      </FlowPane>
                   </children>
               </VBox>
          </content>

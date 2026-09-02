@@ -131,6 +131,65 @@ public class LibrosDAO {
         return info;
     }
 
+    
+
+    public List<Libro> obtenerLibrosPaginados(int limit, int offset, String busqueda) {
+        List<Libro> libros = new ArrayList<>();
+        String param = "%" + (busqueda == null ? "" : busqueda) + "%";
+        String sql = """
+                SELECT l.id, l.titulo, l.ubicacion, l.id_categoria, l.id_editorial, l.autor, l.unidades,
+                       c.nombre_categoria, e.nombre AS editorial_nombre
+                FROM libros l
+                JOIN categorias c ON c.id = l.id_categoria
+                LEFT JOIN editoriales e ON e.id = l.id_editorial
+                WHERE l.titulo LIKE ? OR l.autor LIKE ? OR c.nombre_categoria LIKE ?
+                   OR e.nombre LIKE ? OR l.ubicacion LIKE ?
+                ORDER BY l.titulo
+                LIMIT ? OFFSET ?
+                """;
+        try (Connection conn = ConexionSQLite.conectar();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, param);
+            ps.setString(2, param);
+            ps.setString(3, param);
+            ps.setString(4, param);
+            ps.setString(5, param);
+            ps.setInt(6, limit);
+            ps.setInt(7, offset);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) { libros.add(mapLibroConCategoria(rs)); }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al obtener libros paginados", e);
+        }
+        return libros;
+    }
+
+    public int contarTotalLibros(String busqueda) {
+        String param = "%" + (busqueda == null ? "" : busqueda) + "%";
+        String sql = """
+                SELECT COUNT(*) FROM libros l
+                JOIN categorias c ON c.id = l.id_categoria
+                LEFT JOIN editoriales e ON e.id = l.id_editorial
+                WHERE l.titulo LIKE ? OR l.autor LIKE ? OR c.nombre_categoria LIKE ?
+                   OR e.nombre LIKE ? OR l.ubicacion LIKE ?
+                """;
+        try (Connection conn = ConexionSQLite.conectar();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, param);
+            ps.setString(2, param);
+            ps.setString(3, param);
+            ps.setString(4, param);
+            ps.setString(5, param);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al contar libros", e);
+        }
+        return 0;
+    }
+
     public List<Libro> inventarioLibros() {
         List<Libro> libros = new ArrayList<>();
         String query = """

@@ -14,6 +14,7 @@ import utils.Paths;
 
 import java.util.List;
 
+
 public class DashboardBibliotecarioController {
 
     public DashboardBibliotecarioController(PrestamosDAO prestamosDAO) {
@@ -22,6 +23,9 @@ public class DashboardBibliotecarioController {
 
     @FXML
     private Button btnConsulta;
+
+    @FXML
+    private Button btnBibliotecaVirtual;
 
     @FXML
     private Button btnInicio;
@@ -45,17 +49,20 @@ public class DashboardBibliotecarioController {
 
     @FXML
     void clickConsulta(ActionEvent event) {
+        setActiveButton(btnConsulta);
         ManagerView.cargarCentro(contenedor, Paths.CONSULTA_BIBLIOTECARIO);
     }
 
     @FXML
     void clickInicio(ActionEvent event) {
+        setActiveButton(btnInicio);
         ManagerView.cargarCentro(contenedor, Paths.INICIO_BIBLIOTECARIO);
         actualizarAlertas();
     }
 
     @FXML
     void clickPrestamos(ActionEvent event) {
+        setActiveButton(btnPrestamos);
         ManagerView.cargarCentro(contenedor, Paths.PRESTAMOS_ACTIVOS);
     }
 
@@ -66,6 +73,7 @@ public class DashboardBibliotecarioController {
             return;
         }
         ManagerView.cargarCentro(contenedor, Paths.INICIO_BIBLIOTECARIO);
+        setActiveButton(btnInicio);
         
         utils.DashboardNotifier.setActualizarNotificacionesCallback(this::actualizarAlertas);
         
@@ -102,6 +110,7 @@ public class DashboardBibliotecarioController {
 
     @FXML
     void clickBibliotecaVirtual(ActionEvent event) {
+        setActiveButton(btnBibliotecaVirtual);
         ManagerView.cargarCentro(contenedor, Paths.BIBLIOTECA_VIRTUAL);
     }
 
@@ -109,7 +118,22 @@ public class DashboardBibliotecarioController {
     void clickSalir(ActionEvent event) {
         if (Alertas.mostrarConfirmacion("¿Estás seguro que deseas cerrar sesión?")) {
             utils.SessionManager.getInstance().logout();
+            ManagerView.clearCache();
             ManagerView.cargarVista(contenedorPrincipal, Paths.LOGIN);
+        }
+    }
+
+    private void setActiveButton(Button activeButton) {
+        Button[] buttons = {btnInicio, btnConsulta, btnBibliotecaVirtual, btnPrestamos};
+        for (Button btn : buttons) {
+            if (btn != null) {
+                btn.getStyleClass().remove("active");
+            }
+        }
+        if (activeButton != null) {
+            if (!activeButton.getStyleClass().contains("active")) {
+                activeButton.getStyleClass().add("active");
+            }
         }
     }
 }

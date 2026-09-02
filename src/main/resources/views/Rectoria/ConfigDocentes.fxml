@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.Font?>
 <VBox spacing="12.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Rectoria.ConfigDocentesController">
     <padding><Insets bottom="10.0" left="10.0" right="10.0" top="12.0" /></padding>
@@ -13,7 +14,7 @@
                 <TextField fx:id="txtBuscarDocente" promptText="Buscar docente por nombre o apellido..." styleClass="combo-filtro" HBox.hgrow="ALWAYS" />
                 <Button onAction="#clickNuevoDocente" styleClass="btn-secondary" text="+ Nuevo docente" />
             </children></HBox>
-            <TableView fx:id="tblDocentes" minHeight="320.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tblDocentes" minHeight="200.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="colDocId" prefWidth="60.0" text="ID" />
                     <TableColumn fx:id="colDocNombre1" prefWidth="140.0" text="Primer Nombre" />
@@ -23,9 +24,21 @@
                 </columns>
                 <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY" /></columnResizePolicy>
             </TableView>
+            <FlowPane alignment="CENTER_RIGHT" hgap="10.0" vgap="6.0">
+                <children>
+                    <ComboBox fx:id="cbTamanioPagina" prefWidth="80.0" />
+                    <Label text="por página" style="-fx-text-fill: #64748b;" />
+                    <HBox HBox.hgrow="ALWAYS" />
+                    <Button fx:id="btnAnterior" text="&lt;" onAction="#clickPaginaAnterior" styleClass="btn-secondary" />
+                    <Label fx:id="lblInfoPaginacion" text="Página 1 de 1" style="-fx-font-weight: bold; -fx-padding: 5 0 0 0;" />
+                    <Button fx:id="btnSiguiente" text="&gt;" onAction="#clickPaginaSiguiente" styleClass="btn-secondary" />
+                </children>
+            </FlowPane>
         </children></VBox>
-        <VBox maxWidth="360.0" minWidth="310.0" prefWidth="330.0" spacing="10.0" styleClass="containerInfo">
-            <padding><Insets bottom="16.0" left="16.0" right="16.0" top="14.0" /></padding>
+        <javafx.scene.control.ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" maxWidth="360.0" minWidth="310.0" prefWidth="330.0" style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0;">
+            <content>
+                <VBox spacing="10.0" styleClass="containerInfo">
+                    <padding><Insets bottom="16.0" left="16.0" right="16.0" top="14.0" /></padding>
             <children>
                 <VBox spacing="3.0"><children>
                     <Label fx:id="lblTituloFormDocente" styleClass="subtitulo-seccion" text="Gestion de Docente" />
@@ -47,5 +60,7 @@
                 </children><VBox.margin><Insets top="6.0" /></VBox.margin></VBox>
             </children>
         </VBox>
+            </content>
+        </javafx.scene.control.ScrollPane>
     </HBox>
 </VBox>

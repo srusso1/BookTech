@@ -19,6 +19,19 @@ public class EstudiantesDAO {
     public static final int RESULTADO_ACTUALIZADO = 2;
     public static final int RESULTADO_SIN_CAMBIOS = 3;
 
+    
+    public boolean eliminarEstudiante(int id) {
+        String sql = "DELETE FROM estudiantes WHERE id = ?";
+        try (Connection conexion = ConexionSQLite.conectar();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al eliminar estudiante con ID: " + id, e);
+            return false;
+        }
+    }
+
     public List<Estudiante> obtenerEstudiantes() {
         List<Estudiante> lista = new ArrayList<>();
         String sql = "SELECT * FROM estudiantes ORDER BY apellido_1, nombre_1";
@@ -45,6 +58,62 @@ public class EstudiantesDAO {
         }
 
         return lista;
+    }
+
+    
+
+    public List<Estudiante> obtenerPaginados(int limit, int offset, String busqueda) {
+        List<Estudiante> lista = new ArrayList<>();
+        String sql = "SELECT * FROM estudiantes WHERE nombre_1 LIKE ? OR apellido_1 LIKE ? OR identificacion LIKE ? ORDER BY apellido_1, nombre_1 LIMIT ? OFFSET ?";
+        String param = "%" + (busqueda == null ? "" : busqueda) + "%";
+
+        try (Connection conn = ConexionSQLite.conectar();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, param);
+            ps.setString(2, param);
+            ps.setString(3, param);
+            ps.setInt(4, limit);
+            ps.setInt(5, offset);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(new Estudiante(
+                            rs.getInt("id"),
+                            rs.getInt("identificacion"),
+                            rs.getInt("grado"),
+                            rs.getString("apellido_1"),
+                            rs.getString("apellido_2"),
+                            rs.getString("nombre_1"),
+                            rs.getString("nombre_2"),
+                            rs.getString("genero")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al obtener estudiantes paginados", e);
+        }
+        return lista;
+    }
+
+    public int contarTotal(String busqueda) {
+        String sql = "SELECT COUNT(*) FROM estudiantes WHERE nombre_1 LIKE ? OR apellido_1 LIKE ? OR identificacion LIKE ?";
+        String param = "%" + (busqueda == null ? "" : busqueda) + "%";
+        
+        try (Connection conn = ConexionSQLite.conectar();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, param);
+            ps.setString(2, param);
+            ps.setString(3, param);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al contar estudiantes", e);
+        }
+        return 0;
     }
 
     public Estudiante obtenerEstudiante(int id) {

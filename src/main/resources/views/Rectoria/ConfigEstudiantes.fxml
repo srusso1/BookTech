@@ -2,14 +2,17 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.Font?>
 
 <VBox spacing="12.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Rectoria.ConfigEstudiantesController">
@@ -19,11 +22,34 @@
     <HBox alignment="CENTER_LEFT" spacing="10.0">
         <children>
             <Button onAction="#clickCargarCsvEstudiantes" styleClass="btn-primary" text="Cargar CSV" />
+            <Button fx:id="btnDescargarPlantillaCsv" onAction="#clickDescargarPlantillaCsv" styleClass="btn-secondary" text="Descargar plantilla CSV" />
             <Button fx:id="btnDescartarCsv" disable="true" onAction="#clickDescartarCsv" styleClass="btn-secondary" text="Descartar vista previa CSV" />
             <Label fx:id="lblResumenCsv" style="-fx-text-fill: #64748b; -fx-font-size: 12px;" text="Estructura esperada CSV: identificacion, grado, apellido_1, apellido_2, nombre_1, nombre_2, genero" wrapText="true" />
         </children>
     </HBox>
-    <HBox spacing="16.0" VBox.vgrow="ALWAYS">
+    <VBox fx:id="vboxPreviewCsv" spacing="10.0" visible="false" managed="false" styleClass="alerta-warning">
+        <padding><Insets bottom="10.0" left="10.0" right="10.0" top="10.0" /></padding>
+        <children>
+            <Label fx:id="lblResumenPreviewCsv" style="-fx-font-weight: bold; -fx-text-fill: #92400e;" text="Vista Previa de CSV" />
+            <TableView fx:id="tblPreviewCsv" minHeight="140.0" prefHeight="160.0" styleClass="tabla-datos">
+                <columns>
+                    <TableColumn fx:id="colPrevIdentificacion" text="Identificacion" prefWidth="120.0" />
+                    <TableColumn fx:id="colPrevGrado" text="Grado" prefWidth="70.0" />
+                    <TableColumn fx:id="colPrevApellido1" text="Apellido 1" prefWidth="110.0" />
+                    <TableColumn fx:id="colPrevApellido2" text="Apellido 2" prefWidth="110.0" />
+                    <TableColumn fx:id="colPrevNombre1" text="Nombre 1" prefWidth="110.0" />
+                    <TableColumn fx:id="colPrevNombre2" text="Nombre 2" prefWidth="110.0" />
+                </columns>
+            </TableView>
+            <HBox spacing="10.0" alignment="CENTER_RIGHT">
+                <children>
+                    <Button fx:id="btnCancelarImportacionCsv" onAction="#clickCancelarImportacionCsv" styleClass="btn-secondary" text="Cancelar" />
+                    <Button fx:id="btnConfirmarImportacionCsv" onAction="#clickConfirmarImportacionCsv" styleClass="btn-success" text="Confirmar Importación" />
+                </children>
+            </HBox>
+        </children>
+    </VBox>
+    <HBox fx:id="hboxContenidoPrincipal" spacing="16.0" VBox.vgrow="ALWAYS">
         <VBox spacing="10.0" HBox.hgrow="ALWAYS">
             <children>
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -34,33 +60,54 @@
                         <TextField fx:id="txtBuscarEstudiante" promptText="Buscar por nombre o identificacion..." styleClass="combo-filtro" HBox.hgrow="ALWAYS" />
                     </children>
                 </HBox>
-                <TableView fx:id="tblEstudiantes" minHeight="320.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                <HBox fx:id="hboxChipsFiltro" alignment="CENTER_LEFT" spacing="8.0" visible="false" managed="false">
+                    <children>
+                        <Label fx:id="lblChipGrado" styleClass="chip-filtro" />
+                        <Button fx:id="btnLimpiarFiltros" onAction="#clickLimpiarFiltros" styleClass="btn-secondary" text="Limpiar filtros" visible="false" managed="false" />
+                    </children>
+                </HBox>
+                <TableView fx:id="tblEstudiantes" minHeight="200.0" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="colEstIdentificacion" prefWidth="120.0" text="Identificacion" />
-                        <TableColumn fx:id="colEstGrado" prefWidth="70.0" text="Grado" />
-                        <TableColumn fx:id="colEstApellido1" prefWidth="120.0" text="Apellido 1" />
-                        <TableColumn fx:id="colEstApellido2" prefWidth="120.0" text="Apellido 2" />
-                        <TableColumn fx:id="colEstNombre1" prefWidth="120.0" text="Nombre 1" />
-                        <TableColumn fx:id="colEstNombre2" prefWidth="120.0" text="Nombre 2" />
-                        <TableColumn fx:id="colEstGenero" prefWidth="80.0" text="Genero" />
+                        <TableColumn fx:id="colEstIdentificacion" minWidth="130.0" prefWidth="140.0" text="Identificacion" />
+                        <TableColumn fx:id="colEstGrado" minWidth="70.0" prefWidth="70.0" text="Grado" />
+                        <TableColumn fx:id="colEstApellido1" minWidth="110.0" prefWidth="130.0" text="Apellido 1" />
+                        <TableColumn fx:id="colEstApellido2" minWidth="110.0" prefWidth="130.0" text="Apellido 2" />
+                        <TableColumn fx:id="colEstNombre1" minWidth="110.0" prefWidth="130.0" text="Nombre 1" />
+                        <TableColumn fx:id="colEstNombre2" minWidth="110.0" prefWidth="130.0" text="Nombre 2" />
                     </columns>
                     <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY" /></columnResizePolicy>
                 </TableView>
+                <FlowPane alignment="CENTER_RIGHT" hgap="10.0" vgap="6.0">
+                    <children>
+                        <ComboBox fx:id="cbTamanioPagina" prefWidth="80.0" />
+                        <Label text="por página" style="-fx-text-fill: #64748b;" />
+                        <HBox HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnPrimeraPagina" onAction="#clickPrimeraPagina" styleClass="btn-secondary" text="&lt;&lt;" />
+                        <Button fx:id="btnAnterior" onAction="#clickPaginaAnterior" styleClass="btn-secondary" text="&lt;" />
+                        <Label fx:id="lblInfoPaginacion" style="-fx-font-weight: bold; -fx-padding: 5 0 0 0;" text="Página 1 de 1" />
+                        <Button fx:id="btnSiguiente" onAction="#clickPaginaSiguiente" styleClass="btn-secondary" text="&gt;" />
+                        <Button fx:id="btnUltimaPagina" onAction="#clickUltimaPagina" styleClass="btn-secondary" text="&gt;&gt;" />
+                        <TextField fx:id="txtIrAPagina" onAction="#clickIrAPagina" prefWidth="75.0" promptText="Ir a página" />
+                    </children>
+                </FlowPane>
             </children>
         </VBox>
-        <VBox maxWidth="360.0" minWidth="310.0" prefWidth="330.0" spacing="10.0" styleClass="containerInfo">
-            <padding><Insets bottom="16.0" left="16.0" right="16.0" top="14.0" /></padding>
+        <javafx.scene.control.ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" maxWidth="360.0" minWidth="310.0" prefWidth="330.0" style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0;">
+            <content>
+                <VBox spacing="10.0" styleClass="containerInfo">
+                    <padding><Insets bottom="16.0" left="16.0" right="16.0" top="14.0" /></padding>
             <children>
+                <Button fx:id="btnNuevoEstudiante" maxWidth="Infinity" onAction="#clickNuevoEstudiante" styleClass="btn-secondary" text="+ Nuevo estudiante" />
                 <VBox spacing="3.0">
                     <children>
-                        <Label styleClass="subtitulo-seccion" text="Detalle y Edicion" />
-                        <Label styleClass="descripcion-seccion" text="Selecciona un estudiante de la tabla para modificar sus datos." wrapText="true"><font><Font size="12.0" /></font></Label>
+                        <Label fx:id="lblTituloFormEstudiante" styleClass="subtitulo-seccion" text="Detalle y Edicion" />
+                        <Label fx:id="lblEstadoEdicionEstudiante" styleClass="descripcion-seccion" text="Selecciona un estudiante de la tabla para modificar sus datos." wrapText="true"><font><Font size="12.0" /></font></Label>
                     </children>
                 </VBox>
                 <Separator maxWidth="Infinity" />
                 <VBox spacing="8.0" VBox.vgrow="ALWAYS">
                     <children>
-                        <VBox spacing="3.0"><children><Label styleClass="label-filtro" text="Identificacion:" /><TextField fx:id="txtIdentificacion" promptText="Numero de documento" /></children></VBox>
+                        <VBox spacing="3.0"><children><Label styleClass="label-filtro" text="Identificacion:" /><TextField fx:id="txtIdentificacion" promptText="Numero de documento" /><Label fx:id="lblErrorIdentificacion" style="-fx-text-fill: red; -fx-font-size: 11px;" visible="false" managed="false" /></children></VBox>
                         <HBox spacing="10.0"><children>
                             <VBox spacing="3.0" HBox.hgrow="ALWAYS"><children><Label styleClass="label-filtro" text="Grado:" /><TextField fx:id="txtGrado" promptText="Ej: 11" /></children></VBox>
                             <VBox spacing="3.0" HBox.hgrow="ALWAYS"><children><Label styleClass="label-filtro" text="Genero:" /><TextField fx:id="txtGenero" promptText="Masculino / Femenino" /></children></VBox>
@@ -76,7 +123,11 @@
                     </children>
                 </VBox>
                 <Button fx:id="btnGuardarCambiosEstudiante" maxWidth="Infinity" onAction="#clickGuardarCambiosEstudiante" styleClass="btn-success" text="Guardar cambios"><VBox.margin><Insets top="6.0" /></VBox.margin></Button>
-            </children>
-        </VBox>
+                    <Button fx:id="btnCancelarEdicionEstudiante" maxWidth="Infinity" onAction="#clickCancelarEdicionEstudiante" styleClass="btn-secondary" text="Cancelar" />
+                    <Button fx:id="btnEliminarEstudiante" disable="true" managed="false" maxWidth="Infinity" onAction="#clickEliminarEstudiante" styleClass="btn-danger" text="Eliminar estudiante" visible="false" />
+                </children>
+                </VBox>
+            </content>
+        </javafx.scene.control.ScrollPane>
     </HBox>
 </VBox>

@@ -1,4 +1,4 @@
-﻿package controllers.Rectoria;
+package controllers.Rectoria;
 
 
 import database.LibrosDAO;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class InventarioController {
+public class InventarioController implements utils.Refrescable {
 
     public InventarioController(LibrosDAO librosDAO) {
         this.librosDAO = librosDAO;
@@ -53,6 +53,20 @@ public class InventarioController {
     List<Libro> inventarioLibros = new ArrayList<Libro>();
     private final LibrosDAO librosDAO;
     Libro libroSeleccionado;
+
+    @FXML private ComboBox<Integer> cbTamanioPagina;
+    @FXML private Label lblInfoPaginacion;
+    @FXML private Button btnAnterior, btnSiguiente;
+
+    private int paginaActual = 1;
+    private int totalPaginas = 1;
+    private int registrosPorPagina = 20;
+    private final utils.Debouncer debouncer = new utils.Debouncer(300);
+
+    @Override
+    public void refresh() {
+        cargarLibros();
+    }
 
     @FXML
     void clickEditar(ActionEvent event) {
@@ -142,39 +156,45 @@ public class InventarioController {
 
     @FXML
     void initialize() {
-        inventarioLibros = librosDAO.inventarioLibros();
         configurarTabla();
+        configurarPaginacion();
         tabla.setPlaceholder(new Label("No hay libros que coincidan"));
         configurarBusquedaTitulo();
+        cargarLibros();
+    }
+
+    @FXML
+    void clickPaginaAnterior() {
+        if (paginaActual > 1) {
+            paginaActual--;
+            cargarLibros();
+        }
+    }
+
+    @FXML
+    void clickPaginaSiguiente() {
+        if (paginaActual < totalPaginas) {
+            paginaActual++;
+            cargarLibros();
+        }
+    }
+
+    private void configurarPaginacion() {
+        cbTamanioPagina.setItems(javafx.collections.FXCollections.observableArrayList(20, 50, 100));
+        cbTamanioPagina.setValue(registrosPorPagina);
+        cbTamanioPagina.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                registrosPorPagina = newVal;
+                paginaActual = 1;
+                cargarLibros();
+            }
+        });
     }
 
     private void configurarBusquedaTitulo(){
         txtBuscarLibro.textProperty().addListener((obs, oldText, newText) -> {
-
-            // Si está vacío → mostrar todos
-            if (newText == null || newText.isBlank()) {
-                tabla.getItems().setAll(inventarioLibros);
-                return;
-            }
-
-            String texto = newText.toLowerCase();
-
-            List<Libro> filtrados = new ArrayList<>();
-
-            for (Libro libro : inventarioLibros) {
-
-                if (
-                        libro.getTitulo().toLowerCase().contains(texto) ||
-                                libro.getAutor().toLowerCase().contains(texto) ||
-                                libro.getCategoria().toLowerCase().contains(texto) ||
-                                libro.getEditorial().toLowerCase().contains(texto) ||
-                                libro.getUbicacion().toLowerCase().contains(texto)
-                ) {
-                    filtrados.add(libro);
-                }
-            }
-
-            tabla.getItems().setAll(filtrados);
+            paginaActual = 1;
+            debouncer.debounce(this::cargarLibros);
         });
     }
 
@@ -192,13 +212,36 @@ public class InventarioController {
         tbUnidades.setCellValueFactory(data ->
                 new SimpleStringProperty(String.valueOf(data.getValue().getUnidades())));
         tabla.getColumns().forEach(col -> col.setReorderable(false));
-
-        cargarLibros();
     }
 
     private void cargarLibros(){
-        inventarioLibros = librosDAO.inventarioLibros();
-        tabla.getItems().setAll(inventarioLibros);
+        String busqueda = txtBuscarLibro.getText();
+        int offset = (paginaActual - 1) * registrosPorPagina;
+        int registros = registrosPorPagina;
+        
+        tabla.setPlaceholder(new Label("Cargando..."));
+
+        java.util.concurrent.CompletableFuture.supplyAsync(() -> {
+            List<Libro> libros = librosDAO.obtenerLibrosPaginados(registros, offset, busqueda);
+            int totalRegistros = librosDAO.contarTotalLibros(busqueda);
+            return new Object[]{libros, totalRegistros};
+        }).thenAcceptAsync(result -> {
+            @SuppressWarnings("unchecked")
+            List<Libro> libros = (List<Libro>) result[0];
+            int totalRegistros = (int) result[1];
+            
+            totalPaginas = (int) Math.ceil((double) totalRegistros / registros);
+            if (totalPaginas == 0) totalPaginas = 1;
+
+            lblInfoPaginacion.setText("Página " + paginaActual + " de " + totalPaginas + " (Total: " + totalRegistros + ")");
+            btnAnterior.setDisable(paginaActual <= 1);
+            btnSiguiente.setDisable(paginaActual >= totalPaginas);
+
+            tabla.getItems().setAll(libros);
+            if (libros.isEmpty()) {
+                tabla.setPlaceholder(new Label("No hay libros que coincidan"));
+            }
+        }, javafx.application.Platform::runLater);
     }
 
     private void aplicarEstilosDialogo(Dialog<?> dialog) {

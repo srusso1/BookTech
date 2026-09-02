@@ -40,6 +40,30 @@ public class DocentesDAO {
         return lista;
     }
 
+    
+    public List<Docente> obtenerPaginados(int limit, int offset, String busqueda) {
+        List<Docente> lista = new ArrayList<>();
+        String sql = "SELECT * FROM docentes WHERE nombre_1 LIKE ? OR apellido_1 LIKE ? ORDER BY apellido_1, nombre_1 LIMIT ? OFFSET ?";
+        String param = "%" + (busqueda == null ? "" : busqueda) + "%";
+        try (Connection conn = ConexionSQLite.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, param); ps.setString(2, param); ps.setInt(3, limit); ps.setInt(4, offset);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) { lista.add(new Docente(rs.getInt("id"), rs.getString("nombre_1"), rs.getString("nombre_2"), rs.getString("apellido_1"), rs.getString("apellido_2"))); }
+            }
+        } catch (SQLException e) { LOGGER.log(Level.SEVERE, "Error paginados", e); }
+        return lista;
+    }
+
+    public int contarTotal(String busqueda) {
+        String sql = "SELECT COUNT(*) FROM docentes WHERE nombre_1 LIKE ? OR apellido_1 LIKE ?";
+        String param = "%" + (busqueda == null ? "" : busqueda) + "%";
+        try (Connection conn = ConexionSQLite.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, param); ps.setString(2, param);
+            try (ResultSet rs = ps.executeQuery()) { if (rs.next()) return rs.getInt(1); }
+        } catch (SQLException e) { LOGGER.log(Level.SEVERE, "Error conteo", e); }
+        return 0;
+    }
+
     public boolean insertarDocente(Docente docente) {
         String sql = "INSERT INTO docentes (nombre_1, nombre_2, apellido_1, apellido_2) VALUES (?, ?, ?, ?)";
 

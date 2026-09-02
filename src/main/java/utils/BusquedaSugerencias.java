@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
+import java.util.concurrent.CompletableFuture;
+import javafx.application.Platform;
 
 public class BusquedaSugerencias {
 
@@ -75,6 +79,70 @@ public class BusquedaSugerencias {
             if (!menu.isShowing()) {
                 menu.show(campo, Side.BOTTOM, 0, 0);
             }
+        });
+
+        campo.focusedProperty().addListener((obs, old, focused) -> {
+            if (!focused) {
+                menu.hide();
+                Validaciones.ocultarPopOver(campo);
+            }
+        });
+    }
+    public static <T> void configurar(
+            TextField campo,
+            ContextMenu menu,
+            Function<String, List<T>> fetcher,
+            int minimoCaracteres,
+            Function<T, String> textoMenu,
+            Function<T, String> textoSeleccion,
+            Consumer<T> onSelect,
+            Runnable onTextoCorto
+    ) {
+        PauseTransition debounce = new PauseTransition(Duration.millis(300));
+
+        campo.textProperty().addListener((obs, oldText, newText) -> {
+            String entrada = newText == null ? "" : newText.trim();
+
+            if (entrada.length() < minimoCaracteres) {
+                menu.hide();
+                if (onTextoCorto != null) {
+                    onTextoCorto.run();
+                }
+                return;
+            }
+
+            debounce.setOnFinished(event -> {
+                CompletableFuture.supplyAsync(() -> fetcher.apply(entrada))
+                        .thenAcceptAsync(resultados -> {
+                            if (resultados.isEmpty()) {
+                                menu.hide();
+                                Validaciones.agregarPopOver(campo, "No hay coincidencias");
+                                return;
+                            }
+
+                            Validaciones.ocultarPopOver(campo);
+                            List<MenuItem> items = new ArrayList<>();
+
+                            for (T item : resultados) {
+                                MenuItem opcion = new MenuItem(textoMenu.apply(item));
+                                opcion.setOnAction(e -> {
+                                    campo.setText(textoSeleccion.apply(item));
+                                    if (onSelect != null) {
+                                        onSelect.accept(item);
+                                    }
+                                    menu.hide();
+                                });
+                                items.add(opcion);
+                            }
+
+                            menu.getItems().setAll(items);
+                            if (!menu.isShowing()) {
+                                menu.show(campo, Side.BOTTOM, 0, 0);
+                            }
+                        }, Platform::runLater);
+            });
+            
+            debounce.playFromStart();
         });
 
         campo.focusedProperty().addListener((obs, old, focused) -> {

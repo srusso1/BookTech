@@ -9,7 +9,13 @@ import javafx.scene.control.*;
 import utils.Alertas;
 import java.util.List;
 
-public class ConfigEditorialesController {
+public class ConfigEditorialesController implements utils.Refrescable {
+    
+    @Override
+    public void refresh() {
+        cargarEditoriales("");
+    }
+    
     @FXML private TableView<Editorial> tblEditoriales;
     @FXML private TableColumn<Editorial, String> colEditorialId, colEditorialNombre, colEditorialEstado;
     @FXML private TextField txtBuscarEditorial, txtEditorialNombre;
@@ -18,10 +24,11 @@ public class ConfigEditorialesController {
 
     private final EditorialesDAO editorialesDAO;
     private Editorial editorialSeleccionada = null;
+    private final utils.Debouncer debouncer = new utils.Debouncer(300);
 
     public ConfigEditorialesController(EditorialesDAO editorialesDAO) { this.editorialesDAO = editorialesDAO; }
 
-    @FXML void initialize() { configurarTablaEditoriales(); cargarEditoriales(); }
+    @FXML void initialize() { configurarTablaEditoriales(); cargarEditoriales(""); }
 
     private void configurarTablaEditoriales() {
         colEditorialId.setCellValueFactory(cd -> Bindings.createStringBinding(() -> String.valueOf(cd.getValue().getId())));
@@ -33,15 +40,26 @@ public class ConfigEditorialesController {
         cbEditorialEstado.setItems(FXCollections.observableArrayList("Activo", "Inactivo"));
         cbEditorialEstado.setValue("Activo");
         txtBuscarEditorial.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal == null || newVal.trim().isEmpty()) { cargarEditoriales(); } else {
-                String lowerCaseFilter = newVal.toLowerCase();
-                List<Editorial> filtradas = editorialesDAO.obtenerTodas().stream().filter(e -> e.getNombre().toLowerCase().contains(lowerCaseFilter)).toList();
-                tblEditoriales.setItems(FXCollections.observableArrayList(filtradas));
-            }
+            debouncer.debounce(() -> cargarEditoriales(newVal));
         });
     }
 
-    private void cargarEditoriales() { tblEditoriales.setItems(FXCollections.observableArrayList(editorialesDAO.obtenerTodas())); }
+    private void cargarEditoriales(String filtro) {
+        tblEditoriales.setPlaceholder(new Label("Cargando..."));
+        java.util.concurrent.CompletableFuture.supplyAsync(() -> {
+            List<Editorial> todas = editorialesDAO.obtenerTodas();
+            if (filtro == null || filtro.trim().isEmpty()) {
+                return todas;
+            }
+            String lowerCaseFilter = filtro.toLowerCase();
+            return todas.stream().filter(e -> e.getNombre().toLowerCase().contains(lowerCaseFilter)).toList();
+        }).thenAcceptAsync(lista -> {
+            tblEditoriales.setItems(FXCollections.observableArrayList(lista));
+            if (lista.isEmpty()) {
+                tblEditoriales.setPlaceholder(new Label("No hay editoriales"));
+            }
+        }, javafx.application.Platform::runLater);
+    }
 
     @FXML void limpiarFormularioEditorial() { editorialSeleccionada = null; txtEditorialNombre.clear(); cbEditorialEstado.setValue("Activo"); lblEstadoEdicionEditorial.setText("Creando nueva editorial."); tblEditoriales.getSelectionModel().clearSelection(); }
 
@@ -51,10 +69,10 @@ public class ConfigEditorialesController {
         int estado = "Activo".equals(cbEditorialEstado.getValue()) ? 1 : 0;
         if (editorialSeleccionada == null) {
             Editorial nueva = new Editorial(0, nombre.trim().toUpperCase(), estado);
-            if (editorialesDAO.insertarEditorial(nueva)) { Alertas.mostrarExito("Editorial creada exitosamente."); limpiarFormularioEditorial(); cargarEditoriales(); } else { Alertas.mostrarError("No se pudo crear la editorial (puede que ya exista)."); }
+            if (editorialesDAO.insertarEditorial(nueva)) { Alertas.mostrarExito("Editorial creada exitosamente."); limpiarFormularioEditorial(); cargarEditoriales(""); } else { Alertas.mostrarError("No se pudo crear la editorial (puede que ya exista)."); }
         } else {
             editorialSeleccionada.setNombre(nombre.trim().toUpperCase()); editorialSeleccionada.setEstado(estado);
-            if (editorialesDAO.actualizarEditorial(editorialSeleccionada)) { Alertas.mostrarExito("Editorial actualizada exitosamente."); limpiarFormularioEditorial(); cargarEditoriales(); } else { Alertas.mostrarError("No se pudo actualizar la editorial."); }
+            if (editorialesDAO.actualizarEditorial(editorialSeleccionada)) { Alertas.mostrarExito("Editorial actualizada exitosamente."); limpiarFormularioEditorial(); cargarEditoriales(""); } else { Alertas.mostrarError("No se pudo actualizar la editorial."); }
         }
     }
 }

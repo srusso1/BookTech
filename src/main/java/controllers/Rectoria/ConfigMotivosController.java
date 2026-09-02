@@ -10,7 +10,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import utils.Alertas;
 
-public class ConfigMotivosController {
+public class ConfigMotivosController implements utils.Refrescable {
+    
+    @Override
+    public void refresh() {
+        cargarMotivosPrestamo();
+        cargarMotivosPlataforma();
+    }
+
     @FXML private TableView<MotivoPrestamo> tblMotivosPrestamo;
     @FXML private TableColumn<MotivoPrestamo, String> colPrestamoNombre, colPrestamoEstado;
     @FXML private TextField txtNuevoMotivoPrestamo;
@@ -39,8 +46,23 @@ public class ConfigMotivosController {
         tblMotivosPlataforma.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, nuevo) -> motivoPlataformaSeleccionado = nuevo);
     }
 
-    private void cargarMotivosPrestamo() { tblMotivosPrestamo.setItems(FXCollections.observableArrayList(motivosPrestamoDAO.obtenerTodosMotivosPrestamo())); }
-    private void cargarMotivosPlataforma() { tblMotivosPlataforma.setItems(FXCollections.observableArrayList(motivosPlataformaDAO.obtenerTodosMotivosPlataforma())); }
+    private void cargarMotivosPrestamo() {
+        tblMotivosPrestamo.setPlaceholder(new Label("Cargando..."));
+        java.util.concurrent.CompletableFuture.supplyAsync(motivosPrestamoDAO::obtenerTodosMotivosPrestamo)
+            .thenAcceptAsync(lista -> {
+                tblMotivosPrestamo.setItems(FXCollections.observableArrayList(lista));
+                if (lista.isEmpty()) tblMotivosPrestamo.setPlaceholder(new Label("No hay motivos"));
+            }, javafx.application.Platform::runLater);
+    }
+    
+    private void cargarMotivosPlataforma() {
+        tblMotivosPlataforma.setPlaceholder(new Label("Cargando..."));
+        java.util.concurrent.CompletableFuture.supplyAsync(motivosPlataformaDAO::obtenerTodosMotivosPlataforma)
+            .thenAcceptAsync(lista -> {
+                tblMotivosPlataforma.setItems(FXCollections.observableArrayList(lista));
+                if (lista.isEmpty()) tblMotivosPlataforma.setPlaceholder(new Label("No hay motivos"));
+            }, javafx.application.Platform::runLater);
+    }
 
     @FXML void clickAgregarMotivoPrestamo() {
         String nombre = txtNuevoMotivoPrestamo.getText();

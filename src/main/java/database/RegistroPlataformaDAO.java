@@ -69,103 +69,49 @@ public class RegistroPlataformaDAO {
     }
 
     public Map<String, Integer> obtenerTopDocentesUsoPlataforma(int limite) {
-        String query = """
-                SELECT 
-                    TRIM(
-                        COALESCE(d.nombre_1, '') || ' ' || 
-                        COALESCE(d.nombre_2, '') || ' ' || 
-                        COALESCE(d.apellido_1, '') || ' ' || 
-                        COALESCE(d.apellido_2, '')
-                    ) AS docente,
-                    COALESCE(SUM(r.total_minutos), 0) AS total_minutos
-                FROM registro_plataforma r
-                JOIN docentes d ON d.id = r.id_docente
-                GROUP BY d.id, d.nombre_1, d.nombre_2, d.apellido_1, d.apellido_2
-                HAVING COALESCE(SUM(r.total_minutos), 0) > 0
-                ORDER BY COALESCE(SUM(r.total_minutos), 0) DESC
-                LIMIT ?
-                """;
-
-        Map<String, Integer> datos = new LinkedHashMap<>();
-
-        try (Connection conexion = ConexionSQLite.conectar();
-             PreparedStatement ps = conexion.prepareStatement(query)) {
-
-            ps.setInt(1, limite);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    datos.put(rs.getString("docente"), rs.getInt("total_minutos"));
-                }
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener el top de docentes por uso de plataforma: " + e.getMessage(), e);
-        }
-
-        return datos;
+        return obtenerTopDocentesUsoPlataforma(null, null, limite);
     }
 
     public Map<String, Integer> obtenerTopGradosUsoPlataforma(int limite) {
-        String query = """
-                SELECT 
-                    grado,
-                    COALESCE(SUM(total_minutos), 0) AS total_minutos
-                FROM registro_plataforma
-                WHERE grado > 0
-                GROUP BY grado
-                HAVING COALESCE(SUM(total_minutos), 0) > 0
-                ORDER BY COALESCE(SUM(total_minutos), 0) DESC
-                LIMIT ?
-                """;
-
-        Map<String, Integer> datos = new LinkedHashMap<>();
-
-        try (Connection conexion = ConexionSQLite.conectar();
-             PreparedStatement ps = conexion.prepareStatement(query)) {
-
-            ps.setInt(1, limite);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    int grado = rs.getInt("grado");
-                    int totalMinutos = rs.getInt("total_minutos");
-                    datos.put("Grado " + grado, totalMinutos);
-                }
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al obtener el top de grados por uso de plataforma: " + e.getMessage(), e);
-        }
-
-        return datos;
+        return obtenerTopGradosUsoPlataforma(null, null, limite);
     }
 
     public Map<String, Integer> obtenerTopDocentesUsoPlataforma(String fechaInicio, String fechaFin, int limite) {
-        String query = """
+        StringBuilder query = new StringBuilder("""
                 SELECT 
-                    TRIM(
+                    TRIM(REPLACE(
                         COALESCE(d.nombre_1, '') || ' ' || 
                         COALESCE(d.nombre_2, '') || ' ' || 
                         COALESCE(d.apellido_1, '') || ' ' || 
-                        COALESCE(d.apellido_2, '')
-                    ) AS docente,
+                        COALESCE(d.apellido_2, ''), 
+                    '  ', ' ')) AS docente,
                     COALESCE(SUM(r.total_minutos), 0) AS total_minutos
                 FROM registro_plataforma r
                 JOIN docentes d ON d.id = r.id_docente
-                WHERE r.fecha >= ? AND r.fecha <= ?
+                """);
+        
+        if (fechaInicio != null && fechaFin != null) {
+            query.append(" WHERE r.fecha >= ? AND r.fecha <= ?\n");
+        }
+        
+        query.append("""
                 GROUP BY d.id, d.nombre_1, d.nombre_2, d.apellido_1, d.apellido_2
                 HAVING COALESCE(SUM(r.total_minutos), 0) > 0
                 ORDER BY COALESCE(SUM(r.total_minutos), 0) DESC
                 LIMIT ?
-                """;
+                """);
 
         Map<String, Integer> datos = new LinkedHashMap<>();
 
         try (Connection conexion = ConexionSQLite.conectar();
-             PreparedStatement ps = conexion.prepareStatement(query)) {
+             PreparedStatement ps = conexion.prepareStatement(query.toString())) {
 
-            ps.setString(1, fechaInicio);
-            ps.setString(2, fechaFin);
-            ps.setInt(3, limite);
+            int paramIndex = 1;
+            if (fechaInicio != null && fechaFin != null) {
+                ps.setString(paramIndex++, fechaInicio);
+                ps.setString(paramIndex++, fechaFin + " 23:59:59");
+            }
+            ps.setInt(paramIndex, limite);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -180,26 +126,36 @@ public class RegistroPlataformaDAO {
     }
 
     public Map<String, Integer> obtenerTopGradosUsoPlataforma(String fechaInicio, String fechaFin, int limite) {
-        String query = """
+        StringBuilder query = new StringBuilder("""
                 SELECT 
                     grado,
                     COALESCE(SUM(total_minutos), 0) AS total_minutos
                 FROM registro_plataforma
-                WHERE grado > 0 AND fecha >= ? AND fecha <= ?
+                WHERE grado > 0
+                """);
+        
+        if (fechaInicio != null && fechaFin != null) {
+            query.append(" AND fecha >= ? AND fecha <= ?\n");
+        }
+        
+        query.append("""
                 GROUP BY grado
                 HAVING COALESCE(SUM(total_minutos), 0) > 0
                 ORDER BY COALESCE(SUM(total_minutos), 0) DESC
                 LIMIT ?
-                """;
+                """);
 
         Map<String, Integer> datos = new LinkedHashMap<>();
 
         try (Connection conexion = ConexionSQLite.conectar();
-             PreparedStatement ps = conexion.prepareStatement(query)) {
+             PreparedStatement ps = conexion.prepareStatement(query.toString())) {
 
-            ps.setString(1, fechaInicio);
-            ps.setString(2, fechaFin);
-            ps.setInt(3, limite);
+            int paramIndex = 1;
+            if (fechaInicio != null && fechaFin != null) {
+                ps.setString(paramIndex++, fechaInicio);
+                ps.setString(paramIndex++, fechaFin + " 23:59:59");
+            }
+            ps.setInt(paramIndex, limite);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {

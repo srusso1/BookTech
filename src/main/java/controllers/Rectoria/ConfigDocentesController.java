@@ -10,7 +10,13 @@ import utils.Alertas;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfigDocentesController {
+public class ConfigDocentesController implements utils.Refrescable {
+    
+    @Override
+    public void refresh() {
+        cargarDocentes();
+    }
+    
     @FXML private TableView<Docente> tblDocentes;
     @FXML private TableColumn<Docente, String> colDocId, colDocNombre1, colDocNombre2, colDocApellido1, colDocApellido2;
     @FXML private TextField txtBuscarDocente, txtDocNombre1, txtDocNombre2, txtDocApellido1, txtDocApellido2;
@@ -18,12 +24,27 @@ public class ConfigDocentesController {
     @FXML private Button btnGuardarDocente, btnEliminarDocente, btnNuevoDocente;
 
     private final DocentesDAO docentesDAO;
+
+    @FXML private ComboBox<Integer> cbTamanioPagina;
+    @FXML private Label lblInfoPaginacion;
+    @FXML private Button btnAnterior, btnSiguiente;
+    
+    private int paginaActual = 1;
+    private int totalPaginas = 1;
+    private int registrosPorPagina = 20;
+
     private final ArrayList<Docente> docentesBaseTabla = new ArrayList<>();
     private Docente docenteSeleccionado;
+    private final utils.Debouncer debouncer = new utils.Debouncer(300);
 
     public ConfigDocentesController(DocentesDAO docentesDAO) { this.docentesDAO = docentesDAO; }
 
-    @FXML void initialize() { configurarTablaDocentes(); configurarFiltrosDocentes(); cargarDocentes(); }
+    @FXML void initialize() { 
+        if (btnAnterior != null) btnAnterior.setTooltip(new Tooltip("Página anterior"));
+        if (btnSiguiente != null) btnSiguiente.setTooltip(new Tooltip("Página siguiente"));
+        configurarTablaDocentes();
+        configurarPaginacion(); configurarFiltrosDocentes(); cargarDocentes(); 
+    }
 
     private void configurarTablaDocentes() {
         colDocId.setCellValueFactory(cd -> Bindings.createStringBinding(() -> String.valueOf(cd.getValue().getId())));
@@ -45,15 +66,69 @@ public class ConfigDocentesController {
         });
     }
 
-    private void configurarFiltrosDocentes() { if (txtBuscarDocente != null) txtBuscarDocente.textProperty().addListener((obs, oldText, newText) -> aplicarFiltroDocentes()); }
+    private void configurarFiltrosDocentes() { if (txtBuscarDocente != null) txtBuscarDocente.textProperty().addListener((obs, oldText, newText) -> { paginaActual = 1; debouncer.debounce(this::cargarDocentes); }); }
 
-    private void cargarDocentes() { docentesBaseTabla.clear(); docentesBaseTabla.addAll(docentesDAO.obtenerDocentes()); aplicarFiltroDocentes(); }
-
-    private void aplicarFiltroDocentes() {
-        String busqueda = txtBuscarDocente == null || txtBuscarDocente.getText() == null ? "" : txtBuscarDocente.getText().trim().toLowerCase();
-        List<Docente> filtrados = docentesBaseTabla.stream().filter(d -> busqueda.isEmpty() || d.getNombreCompleto().toLowerCase().contains(busqueda) || String.valueOf(d.getId()).contains(busqueda)).toList();
-        tblDocentes.setItems(FXCollections.observableArrayList(filtrados));
+    
+    
+    @FXML
+    void clickPaginaAnterior() {
+        if (paginaActual > 1) {
+            paginaActual--;
+            cargarDocentes();
+        }
     }
+
+    @FXML
+    void clickPaginaSiguiente() {
+        if (paginaActual < totalPaginas) {
+            paginaActual++;
+            cargarDocentes();
+        }
+    }
+
+    private void configurarPaginacion() {
+        cbTamanioPagina.setItems(javafx.collections.FXCollections.observableArrayList(20, 50, 100));
+        cbTamanioPagina.setValue(registrosPorPagina);
+        cbTamanioPagina.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                registrosPorPagina = newVal;
+                paginaActual = 1;
+                cargarDocentes();
+            }
+        });
+    }
+
+    private void cargarDocentes() {
+        String busqueda = txtBuscarDocente.getText();
+        int offset = (paginaActual - 1) * registrosPorPagina;
+        int registros = registrosPorPagina;
+        
+        tblDocentes.setPlaceholder(new Label("Cargando..."));
+        
+        java.util.concurrent.CompletableFuture.supplyAsync(() -> {
+            java.util.List<model.Docente> docentes = docentesDAO.obtenerPaginados(registros, offset, busqueda);
+            int totalRegistros = docentesDAO.contarTotal(busqueda);
+            return new Object[]{docentes, totalRegistros};
+        }).thenAcceptAsync(result -> {
+            @SuppressWarnings("unchecked")
+            java.util.List<model.Docente> docentes = (java.util.List<model.Docente>) result[0];
+            int totalRegistros = (int) result[1];
+            
+            totalPaginas = (int) Math.ceil((double) totalRegistros / registros);
+            if (totalPaginas == 0) totalPaginas = 1;
+            
+            lblInfoPaginacion.setText("Página " + paginaActual + " de " + totalPaginas + " (Total: " + totalRegistros + ")");
+            btnAnterior.setDisable(paginaActual <= 1);
+            btnSiguiente.setDisable(paginaActual >= totalPaginas);
+
+            tblDocentes.setItems(javafx.collections.FXCollections.observableArrayList(docentes));
+            
+            if (docentes.isEmpty()) {
+                tblDocentes.setPlaceholder(new Label("No hay docentes que coincidan"));
+            }
+        }, javafx.application.Platform::runLater);
+    }
+
 
     @FXML void clickGuardarDocente() {
         String n1 = txtDocNombre1.getText() != null ? txtDocNombre1.getText().trim().toUpperCase() : "";
